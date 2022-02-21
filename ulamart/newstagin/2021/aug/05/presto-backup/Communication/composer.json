@@ -1,0 +1,20 @@
+{
+    "name": "askantech/module-communication",
+    "description": "N/A",
+    "version": "1.0.0",
+    "require": {
+        "php": "7.0.2|7.0.4|~7.0.6|~7.1.0|~7.2.0|~7.3.0|~7.4.0|~7.4.1|~7.4.2|~7.4.3|~7.4.4|~7.4.5|~7.4.6|~7.4.7|~7.4.8",
+        "magento/module-catalog": ">=100.0.0",
+        "magento/module-configurable-product": ">=100.0.0",
+        "magento/framework": ">=100.0.0"
+    },
+    "type": "magento2-module",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Askantech\\Communication\\": ""
+        }
+    }
+}

@@ -1,0 +1,7 @@
+<?php
+$product = $block->getProduct(); ?>
+<!-- description -->
+<?php $pname=$product->getData('primary_product_name');?>
+<?php if ($pname != '') { ?>
+    <span class="pname"><?php echo $pname; ?> </span>
+<?php } ?>

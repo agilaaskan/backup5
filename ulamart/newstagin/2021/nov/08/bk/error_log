@@ -1,0 +1,42 @@
+[04-Aug-2021 05:17:24 UTC] PHP Fatal error:  Uncaught Error: Class 'Locale' not found in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php:64
+Stack trace:
+#0 /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php(28): Magento\Framework\Locale\Bundle\DataBundle->cleanLocale('en_US')
+#1 /home/ulamart/public_html/vendor/magento/framework/Setup/Lists.php(96): Magento\Framework\Locale\Bundle\DataBundle->get('en_US')
+#2 /home/ulamart/public_html/vendor/magento/framework/Validator/Locale.php(42): Magento\Framework\Setup\Lists->getLocaleList()
+#3 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(151): Magento\Framework\Validator\Locale->isValid('en_US')
+#4 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(98): Magento\Deploy\Console\InputValidator->checkLanguagesInput(Array, Array)
+#5 /home/ulamart/public_html/setup/src/Magento/Setup/Console/Command/DeployStaticContentCommand.php(119): Magento\Deploy\Console\InputValidator->validate(Object(Symf in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php on line 64
+[04-Aug-2021 05:17:25 UTC] PHP Fatal error:  Uncaught Error: Class 'Locale' not found in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php:64
+Stack trace:
+#0 /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php(28): Magento\Framework\Locale\Bundle\DataBundle->cleanLocale('en_US')
+#1 /home/ulamart/public_html/vendor/magento/framework/Setup/Lists.php(96): Magento\Framework\Locale\Bundle\DataBundle->get('en_US')
+#2 /home/ulamart/public_html/vendor/magento/framework/Validator/Locale.php(42): Magento\Framework\Setup\Lists->getLocaleList()
+#3 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(151): Magento\Framework\Validator\Locale->isValid('ta_IN')
+#4 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(98): Magento\Deploy\Console\InputValidator->checkLanguagesInput(Array, Array)
+#5 /home/ulamart/public_html/setup/src/Magento/Setup/Console/Command/DeployStaticContentCommand.php(119): Magento\Deploy\Console\InputValidator->validate(Object(Symf in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php on line 64
+[04-Aug-2021 05:17:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Locale' not found in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php:64
+Stack trace:
+#0 /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php(28): Magento\Framework\Locale\Bundle\DataBundle->cleanLocale('en_US')
+#1 /home/ulamart/public_html/vendor/magento/framework/Setup/Lists.php(96): Magento\Framework\Locale\Bundle\DataBundle->get('en_US')
+#2 /home/ulamart/public_html/vendor/magento/framework/Validator/Locale.php(42): Magento\Framework\Setup\Lists->getLocaleList()
+#3 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(151): Magento\Framework\Validator\Locale->isValid('ta_IN')
+#4 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(98): Magento\Deploy\Console\InputValidator->checkLanguagesInput(Array, Array)
+#5 /home/ulamart/public_html/setup/src/Magento/Setup/Console/Command/DeployStaticContentCommand.php(119): Magento\Deploy\Console\InputValidator->validate(Object(Symf in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php on line 64
+[04-Aug-2021 05:18:41 UTC] PHP Fatal error:  Uncaught Error: Class 'Locale' not found in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php:64
+Stack trace:
+#0 /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php(28): Magento\Framework\Locale\Bundle\DataBundle->cleanLocale('en_US')
+#1 /home/ulamart/public_html/vendor/magento/framework/Setup/Lists.php(96): Magento\Framework\Locale\Bundle\DataBundle->get('en_US')
+#2 /home/ulamart/public_html/vendor/magento/framework/Validator/Locale.php(42): Magento\Framework\Setup\Lists->getLocaleList()
+#3 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(151): Magento\Framework\Validator\Locale->isValid('ta_IN')
+#4 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(98): Magento\Deploy\Console\InputValidator->checkLanguagesInput(Array, Array)
+#5 /home/ulamart/public_html/setup/src/Magento/Setup/Console/Command/DeployStaticContentCommand.php(119): Magento\Deploy\Console\InputValidator->validate(Object(Symf in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php on line 64
+[04-Aug-2021 05:19:48 UTC] PHP Fatal error:  Uncaught Error: Class 'Locale' not found in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php:64
+Stack trace:
+#0 /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php(28): Magento\Framework\Locale\Bundle\DataBundle->cleanLocale('en_US')
+#1 /home/ulamart/public_html/vendor/magento/framework/Setup/Lists.php(96): Magento\Framework\Locale\Bundle\DataBundle->get('en_US')
+#2 /home/ulamart/public_html/vendor/magento/framework/Validator/Locale.php(42): Magento\Framework\Setup\Lists->getLocaleList()
+#3 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(151): Magento\Framework\Validator\Locale->isValid('en_US')
+#4 /home/ulamart/public_html/vendor/magento/module-deploy/Console/InputValidator.php(98): Magento\Deploy\Console\InputValidator->checkLanguagesInput(Array, Array)
+#5 /home/ulamart/public_html/setup/src/Magento/Setup/Console/Command/DeployStaticContentCommand.php(119): Magento\Deploy\Console\InputValidator->validate(Object(Symf in /home/ulamart/public_html/vendor/magento/framework/Locale/Bundle/DataBundle.php on line 64
+[16-Oct-2021 10:24:15 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/ulamart/public_html/generated/metadata/global.php on line 8
+[16-Oct-2021 10:24:15 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/ulamart/public_html/vendor/composer/composer/src/Composer/Console/Application.php on line 82

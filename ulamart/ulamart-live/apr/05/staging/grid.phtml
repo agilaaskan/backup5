@@ -1,0 +1,482 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+use Magento\Framework\App\Action\Action;
+
+/** @var \Magento\CatalogWidget\Block\Product\ProductsList $block */
+?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$storeid = $storeManager->getStore()->getStoreId();
+?>
+<?php if ($exist = ($block->getProductCollection() && $block->getProductCollection()->getSize())) : ?>
+    <?php
+    $type = 'widget-product-grid';
+
+    $mode = 'grid';
+
+    $image = 'new_products_content_widget_grid';
+    $tittle=$block->getTitle(); 
+    
+    if($tittle=="rice-trend" || $tittle=="rice-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 6])->getItems();
+     $cid = 6;
+    }
+    elseif($tittle=="flake-trend" || $tittle=="flake-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 7])->getItems();
+     $cid = 7;
+    }
+    elseif($tittle=="honey-trend" || $tittle=="honey-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 10])->getItems();
+     $cid = 10;
+    }
+    elseif($tittle=="spices-trend" || $tittle=="spices-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 12])->getItems();
+     $cid = 12;
+    }
+    elseif($tittle=="millets-trend" || $tittle=="millets-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 8])->getItems();
+     $cid = 8;
+    }
+    elseif($tittle=="sugar-trend" || $tittle=="sugar-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 13])->getItems();
+     $cid = 13;
+    }
+    elseif($tittle=="oils-trend" || $tittle=="oils-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 9])->getItems();
+     $cid = 9;
+    }
+    elseif($tittle=="pulses-trend" || $tittle=="pulses-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 11])->getItems();
+     $cid = 11;
+    }
+    elseif($tittle=="clay-trend" || $tittle=="clay-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 14])->getItems();
+     $cid = 14;
+    }
+    elseif($tittle=="other-trend" || $tittle=="other-popular") {
+        $items = $block->getProductCollection();
+     $items = $items->addCategoriesFilter(['eq' => 25])->getItems();
+     $cid = 25;
+    }
+    else {
+        $items = $block->getProductCollection()->getItems();
+        // $items =  $items->addAttributeToSort('position','ASC');
+    }
+
+    $showWishlist = true;
+    $showCompare = true;
+    $showCart = true;
+    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+    $description = false;
+    ?>
+    <div class="block widget block-products-list <?= /* @noEscape */ $mode ?>">
+        <?php if ($block->getTitle()) : ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($block->getTitle())) ?></strong>
+            </div>
+        <?php endif ?>
+
+        <div class="block-content">
+            <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
+            <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
+                <ol class="product-items <?= /* @noEscape */ $type ?>">
+                    <?php $iterator = 1; ?>
+                    <?php if($tittle=="rice-trend" || $tittle=="flake-trend" || $tittle=="clay-trend" || $tittle=="honey-trend" || $tittle=="spices-trend" || $tittle=="millets-trend" || $tittle=="sugar-trend" || $tittle=="oils-trend" || $tittle=="pulses-trend" || $tittle=="other-trend") {
+                     foreach ($items as $_item) : ?>
+                        <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item">' : '</li><li class="product-item">' ?>
+                        <div class="ss-col-33 ss-blue">
+                          <!-- custom category path -->
+                          <?php  
+                          if ($cid == 25) {
+                            $categories3 = $_item->getCategoryIds(); /*will return category ids array*/
+                            foreach($categories3 as $key => $category){ 
+                                $cat3 = $objectManager->create('Magento\Catalog\Model\Category')->load($category);
+                                $cid = $cat3->getId();
+                                    if(($cid != 25) && ($cid != 2) && ($cid != 22) && ($cid != 23)) {
+                                        $catl3 = $cat3->getUrl();
+                                    }
+                            } 
+                          } else {
+                            $cat3 = $objectManager->create('Magento\Catalog\Model\Category')->load($cid);
+                            $catl3 = $cat3->getUrl();
+                          }
+                          $newurl4 = $catl3."/".$_item->getUrlKey(); 
+                            ?> 
+                            <!-- custom  category path -->
+                             <div class="ss-pro-item">
+                                 <div class="ss-menu-pro-ig">
+                                    <a href="<?= $newurl4; ?>" class="product-item-photo" target="_blank">
+                                        <?= $block->getImage($_item, $image)->toHtml() ?>
+                                    </a>
+                                  </div>
+                            
+                            <div class="product-item-details">
+                            <div class="ss-menu-pro-cnt">
+                                    <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
+                                       href="<?= $newurl4; ?>"
+                                       class="product-item-link" target="_blank">
+                                        <?= $block->escapeHtml($_item->getName()) ?>
+                                    </a>
+                             </div>
+                                <?php if ($templateType) : ?>
+                                    <?= $block->getReviewsSummaryHtml($_item, $templateType) ?>
+                                <?php endif; ?>
+
+                                <?= $block->getProductPriceHtml($_item, $type) ?>
+                                <!-- custom code for configure -->
+                                <?php $ptype = $_item->getTypeId();?>
+                                <?php  if($ptype=='configurable'): ?>
+                                    <?php $_objectManager = \Magento\Framework\App\ObjectManager::getInstance(); ?>
+                                    <?php $product = $_objectManager->get('\Magento\Catalog\Model\Product')->load($_item->getId()); ?>
+                                    <?php $productTypeInstance = $_objectManager->get('Magento\ConfigurableProduct\Model\Product\Type\Configurable');
+                                    $productAttributeOptions = $productTypeInstance->getConfigurableAttributesAsArray($product); ?>
+                                       <!-- new code -->
+                                       <?php 
+                                         $_children = $product->getTypeInstance()->getUsedProducts($product);
+                                         $attributeValue1=[];
+                                         $attributeValue2=[];
+                                         $attributeValue3=[];
+                                         $cweight_array=[];
+                                        foreach ($_children as $child){ 
+                                            $cweight1 = $child->getWeight();
+                                            array_push($cweight_array,$cweight1);
+                                            $attribute1 = $child->getResource()->getAttribute('grams');
+                                            $attribute2 = $child->getResource()->getAttribute('kg');
+                                            $attribute3 = $child->getResource()->getAttribute('litre');
+                                        // Get Value
+                                        array_push($attributeValue1,$attribute1->getFrontend()->getValue($child)); 
+                                        array_push($attributeValue2,$attribute2->getFrontend()->getValue($child)); 
+                                        array_push($attributeValue3,$attribute3->getFrontend()->getValue($child)); 
+                                        // Get Label
+                                        $attributeLabel1 = $attribute1->getStoreLabel(); 
+                                        $attributeLabel2 = $attribute2->getStoreLabel();
+                                         $attributeLabel3 = $attribute3->getStoreLabel(); ?>
+                                       <?php }?>
+                                       <p style="display:none;"><?php
+                                       asort($cweight_array);
+                                       $new_weight=array();
+                                       foreach($cweight_array as $x => $x_value) {
+                                        array_push($new_weight,$x_value);
+                                      }
+                                       
+                                        ?> </p>
+                                         <span class="custom-kg">
+                                        <?php 
+                                        if(isset($new_weight) && count($new_weight)>0){
+                                            $cc = $new_weight[0];
+                                            if ($cc == 0.10000) {
+                                                $cc = 100;
+                                            }
+                                            if ($cc == 0.50000) {
+                                                $cc = 0.5;
+                                            }
+                                            if ($cc == 0.25000) {
+                                                $cc = 0.25;
+                                            }
+                                            if ($cc == 0.02500) {
+                                                $cc = 0.025;
+                                            }
+                                            if ($cc == 0.01000) {
+                                                $cc = 0.01;
+                                            }
+                                            if(isset($attributeValue1) && count($attributeValue1)>0){ 
+                                                $result = preg_replace('/\b\d+\b/', '', $attributeValue1[0]);
+                                                if($result!='')
+                                                    $result=$cc.str_replace('.','',$result); 
+                                                    echo $result;
+                                                
+                                            }  
+                                            if(isset($attributeValue2) && count($attributeValue2)>0){ 
+                                                $result = preg_replace('/\b\d+\b/', '', $attributeValue2[0]);
+                                                if($result!='')
+
+                                                    $result=$cc.str_replace('.','',$result); 
+                                                    echo $result;
+                                            } 
+                                            if(isset($attributeValue3) && count($attributeValue3)>0){ 
+                                                $result = preg_replace('/\b\d+\b/', '', $attributeValue3[0]);
+                                                if($result!='')
+
+                                                    $result=$cc.str_replace('.','',$result); 
+                                                    echo $result;
+                                            } 
+                                        } ?>
+                                        </span>
+                                        <!-- new code -->
+                               <?php endif ?>
+                                <!-- custom code for configure -->
+                            </div>
+                        </div>
+                     </div>
+                        <?= ($iterator == count($items) + 1) ? '</li>' : '' ?>
+                    <?php endforeach;
+                     }  elseif($tittle=="rice-popular" || $tittle=="flake-popular" || $tittle=="clay-popular" || $tittle=="honey-popular" || $tittle=="spices-popular" || $tittle=="millets-popular" || $tittle=="sugar-popular" || $tittle=="oils-popular" || $tittle=="pulses-popular" || $tittle=="other-popular") {
+                        foreach ($items as $_item) : ?>
+                           <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item">' : '</li><li class="product-item">' ?>
+                           <div class="product-item-info popular">
+                            <!-- custom category path -->
+                            <?php  
+                          if ($cid == 25) {
+                            $categories2 = $_item->getCategoryIds(); /*will return category ids array*/
+                            foreach($categories2 as $key => $category1){ 
+                                $cat2 = $objectManager->create('Magento\Catalog\Model\Category')->load($category1);
+                                $cid = $cat2->getId();
+                                    if(($cid != 25) && ($cid != 2) && ($cid != 22) && ($cid != 23)) {
+                                        $catl2 = $cat2->getUrl();
+                                    }
+                            } 
+                          } else {
+                            $cat2 = $objectManager->create('Magento\Catalog\Model\Category')->load($cid);
+                            $catl2 = $cat2->getUrl();
+                          }
+                          $newurl3 = $catl2."/".$_item->getUrlKey(); 
+                         ?> 
+                            <!-- custom  category path -->
+                               <a href="<?= $newurl3; ?>" class="product-item-photo" target="_blank">
+                                   <?= $block->getImage($_item, $image)->toHtml() ?>
+                               </a>
+                               <div class="product-item-details">
+                                   <strong class="product-item-name">
+                                       <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
+                                          href="<?= $newurl3; ?>"
+                                          class="product-item-link" target="_blank">
+                                          <?php $name= $block->escapeHtml($_item->getName()) ?>
+                                          <?php if(($storeid == 1)) { ?>
+                                <?php echo $name = strlen($name ) > 50 ? substr($name ,0,43)."..." : $name ;?>
+                                <?php } else {
+                                  echo $name;
+                                } ?>
+                                       </a>
+                                   </strong>
+                                   <?php if ($templateType) : ?>
+                                       <?= $block->getReviewsSummaryHtml($_item, $templateType) ?>
+                                   <?php endif; ?>
+   
+                                   <?= $block->getProductPriceHtml($_item, $type) ?>
+   
+                                  
+   
+                                   <?php if ($showWishlist || $showCompare || $showCart) : ?>
+                                       <div class="product-item-inner">
+                                           <div class="product-item-actions">
+                                               <?php if ($showCart) : ?>
+                                                   <div class="actions-primary">
+                                                       <?php if ($_item->isSaleable()) : ?>
+                                                           <?php $postParams = $block->getAddToCartPostParams($_item); ?>
+                                                           <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtmlAttr($_item->getSku()) ?>" action="<?= $block->escapeUrl($postParams['action']) ?>" method="post">
+                                                               <input type="hidden" name="product" value="<?= $block->escapeHtmlAttr($postParams['data']['product']) ?>">
+                                                               <input type="hidden" name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                               <?= $block->getBlockHtml('formkey') ?>
+                                                               <button type="submit"
+                                                                       title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>"
+                                                                       class="action tocart primary">
+                                                                   <span><?= $block->escapeHtml(__('Add to Cart')) ?></span>
+                                                               </button>
+                                                           </form>
+                                                       <?php else : ?>
+                                                           <?php if ($_item->getIsSalable()) : ?>
+                                                               <div class="stock available"><span><?= $block->escapeHtml(__('In stock')) ?></span></div>
+                                                           <?php else : ?>
+                                                               <div class="stock unavailable"><span><?= $block->escapeHtml(__('Out of stock')) ?></span></div>
+                                                           <?php endif; ?>
+                                                       <?php endif; ?>
+                                                   </div>
+                                               <?php endif; ?>
+                                           </div>
+                                       </div>
+                                   <?php endif; ?>
+                               </div>
+                           </div>
+                           <?= ($iterator == count($items) + 1) ? '</li>' : '' ?>
+                       <?php endforeach;
+                       }  elseif($tittle=="rice-menu" || $tittle=="flake-menu" || $tittle=="clay-menu" || $tittle=="honey-menu" || $tittle=="spices-menu" || $tittle=="millets-menu" || $tittle=="sugar-menu" || $tittle=="oils-menu" || $tittle=="pulses-menu" || $tittle=="other-menu") {
+                        foreach ($items as $_item) : ?>
+                           <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item">' : '</li><li class="product-item">' ?>
+                           <!-- custom category path -->
+                           <?php $categories1 = $_item->getCategoryIds(); /*will return category ids array*/
+                                foreach($categories1 as $key => $category){ 
+                                    $cat1 = $objectManager->create('Magento\Catalog\Model\Category')->load($category);
+                                    $cid = $cat1->getId();
+                                        if(($cid != 25) && ($cid != 2) && ($cid != 22) && ($cid != 23)) {
+                                            $catl1 = $cat1->getUrl();
+                                        }
+                                } 
+                              $newurl2 = $catl1."/".$_item->getUrlKey(); 
+                            ?> 
+                            <!-- custom  category path -->
+                                       <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
+                                          href="<?= $newurl2; ?>"
+                                          class="product-item-link" target="_blank">
+                                          <?= $block->escapeHtml($_item->getName()) ?>
+                                       </a>
+                           <?= ($iterator == count($items) + 1) ? '</li>' : '' ?>
+                       <?php endforeach;
+                        }  else {
+                        foreach ($items as $_item) : ?>
+                        <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item normal">' : '</li><li class="product-item normal">' ?>
+                        <div class="product-item-info">
+                    <!-- custom place -->
+                     <?php if ($showWishlist || $showCompare || $showCart) : ?>
+
+                        <div class="product-item-inner custom">
+                                <div class="product-item-actions custom">
+                                       <?php if ($showWishlist || $showCompare) : ?>
+                                            <div class="actions-secondary" data-role="add-to-links">
+                                                <?php //phpcs:disable ?>
+                                                 <?php if ($this->helper(\Magento\Wishlist\Helper\Data::class)->isAllow() && $showWishlist) : ?>
+                                                 <?php //phpcs:enable ?>
+                                                        <a href="#"
+                                                           data-post='<?= /* @noEscape */ $block->getAddToWishlistParams($_item) ?>' class="action towishlist" data-action="add-to-wishlist" title="<?= $block->escapeHtmlAttr(__('Add to Wish List')) ?>">
+                                                            <span><?= $block->escapeHtml(__('Add to Wish List')) ?></span>
+                                                        </a>
+                                                 <?php endif; ?>
+                                             </div>
+                                        <?php endif; ?>
+                                </div>
+                        </div>
+                    <?php endif; ?>
+                     <!-- custom place -->
+                                    <!-- custom category path -->
+                                    <?php $categories = $_item->getCategoryIds(); /*will return category ids array*/
+                                        $j = 0;
+                                        foreach($categories as $key => $category){     
+                                        $j++;
+                                        $cat = $objectManager->create('Magento\Catalog\Model\Category')->load($category);
+                                        $j++;
+                                        $cat = $objectManager->create('Magento\Catalog\Model\Category')->load($category);
+                                        $cid = $cat->getId();
+                                          if(($cid != 25) && ($cid != 2) && ($cid != 22) && ($cid != 23)) {
+                                             $catl = $cat->getUrl();
+                                        }
+                                       } 
+                                       $newurl1 = $catl."/".$_item->getUrlKey(); 
+                                       ?> 
+                                     <!-- custom  category path -->
+                            <a href="<?= $newurl1; ?>" class="product-item-photo" target="_blank">
+                                <?= $block->getImage($_item, $image)->toHtml() ?>
+                            </a>
+                            <div class="product-item-details">
+                                <strong class="product-item-name ss">
+                                    <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
+                                       href="<?= $newurl1; ?>"
+                                       class="product-item-link" target="_blank">
+                                       <?php $name= $block->escapeHtml($_item->getName()) ?>
+                                       <?php if(($storeid == 1) || ($storeid == 0)) { ?>
+                                <?php echo $name = strlen($name ) > 50 ? substr($name ,0,43)."..." : $name ;?>
+                                <?php } else {
+                                  echo $name;
+                                } ?>
+                                    </a>
+                                </strong>
+                                <?php if ($templateType) : ?>
+                                    <?= $block->getReviewsSummaryHtml($_item, $templateType) ?>
+                                <?php endif; ?>
+
+                                <?= $block->getProductPriceHtml($_item, $type) ?>
+                                <!-- custom code for configure -->
+                                <?php $ptype = $_item->getTypeId();?>
+                                <?php  if($ptype=='configurable'): ?>
+                                    <?php $_objectManager = \Magento\Framework\App\ObjectManager::getInstance(); ?>
+                                    <?php $product = $_objectManager->get('\Magento\Catalog\Model\Product')->load($_item->getId()); ?>
+                                    <?php $productTypeInstance = $_objectManager->get('Magento\ConfigurableProduct\Model\Product\Type\Configurable');
+                                    $productAttributeOptions = $productTypeInstance->getConfigurableAttributesAsArray($product); ?>
+                                    <!-- new code -->
+                                    <?php 
+                                         $_children = $product->getTypeInstance()->getUsedProducts($product);
+                                         $attributeValue1=[];
+                                         $attributeValue2=[];
+                                         $attributeValue3=[];
+                                         $cweight_array=[];
+                                        foreach ($_children as $child){ 
+                                            $cweight1 = $child->getWeight();
+                                            array_push($cweight_array,$cweight1);
+                                            $attribute1 = $child->getResource()->getAttribute('grams');
+                                            $attribute2 = $child->getResource()->getAttribute('kg');
+                                            $attribute3 = $child->getResource()->getAttribute('litre');
+                                        // Get Value
+                                        array_push($attributeValue1,$attribute1->getFrontend()->getValue($child)); 
+                                        array_push($attributeValue2,$attribute2->getFrontend()->getValue($child)); 
+                                        array_push($attributeValue3,$attribute3->getFrontend()->getValue($child)); 
+                                        // Get Label
+                                        $attributeLabel1 = $attribute1->getStoreLabel(); 
+                                        $attributeLabel2 = $attribute2->getStoreLabel();
+                                         $attributeLabel3 = $attribute3->getStoreLabel(); ?>
+                                       <?php }?>
+                                       <p style="display:none;"><?php
+                                       asort($cweight_array);
+                                       $new_weight=array();
+                                       foreach($cweight_array as $x => $x_value) {
+                                        array_push($new_weight,$x_value);
+                                      }
+                                       
+                                        ?> </p>
+                                         <span class="custom-kg widget">
+                                        <?php 
+                                        if(isset($new_weight) && count($new_weight)>0){
+                                            $cc = $new_weight[0];
+                                            if ($cc == 0.10000) {
+                                                $cc = 100;
+                                            }
+                                            if ($cc == 0.50000) {
+                                                $cc = 0.5;
+                                            }
+                                            if ($cc == 0.25000) {
+                                                $cc = 0.25;
+                                            }
+                                            if ($cc == 0.02500) {
+                                                $cc = 0.025;
+                                            }
+                                            if ($cc == 0.01000) {
+                                                $cc = 0.01;
+                                            }
+                                            if(isset($attributeValue1) && count($attributeValue1)>0){ 
+                                                $result = preg_replace('/\b\d+\b/', '', $attributeValue1[0]);
+                                                if($result!='')
+                                                    $result=$cc.str_replace('.','',$result); 
+                                                    echo $result;
+                                                
+                                            }  
+                                            if(isset($attributeValue2) && count($attributeValue2)>0){ 
+                                                $result = preg_replace('/\b\d+\b/', '', $attributeValue2[0]);
+                                                if($result!='')
+
+                                                    $result=$cc.str_replace('.','',$result); 
+                                                    echo $result;
+                                            } 
+                                            if(isset($attributeValue3) && count($attributeValue3)>0){ 
+                                                $result = preg_replace('/\b\d+\b/', '', $attributeValue3[0]);
+                                                if($result!='')
+
+                                                    $result=$cc.str_replace('.','',$result); 
+                                                    echo $result;
+                                            } 
+                                        } ?>
+                                        </span>
+                                        <!-- new code -->
+                               <?php endif ?>
+                                <!-- custom code for configure -->
+                                                              
+                            </div>
+                        </div>
+                        <?= ($iterator == count($items) + 1) ? '</li>' : '' ?>
+                    <?php endforeach; 
+                    } ?>
+                </ol>
+            </div>
+            <?= $block->getPagerHtml() ?>
+        </div>
+    </div>
+<?php endif;?>

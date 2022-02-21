@@ -1,0 +1,26 @@
+<?php 
+/**
+ * Askan Technology
+ *
+ * @category  AskanTech
+ * @package   Askantech_Communication
+ * @author    Askan
+ * @copyright Copyright (c) AskanTech (https://www.askantech.com/)
+ * @license   https://www.askantech.com/Communication/LICENSE.txt
+ */
+$collection = $block->getModificationDetails();
+?>
+<div><?php echo $collection;?>
+<form action="<?= /* @escapeNotVerified */ $block->escapeUrl($block->getUrl('askantech_communication/index/index')) ?>" method="post">
+<input name="form_key" type="hidden" value="<?php /* @escapeNotVerified */ echo $block->getFormKey() ?>" />
+    <input type="hidden" name="querry_id" value="<?= $block->getquerry() ?>">
+    <input type="hidden" name="chatfrom" value="admin"/>
+    <Textarea name="queries" placeholder="Write your comment.." style="margin: 10px 0px; height: 130px; padding: 12px; border: 1px solid rgb(204, 204, 204); border-radius: 4px; resize: vertical; width: 50%; display: block;" required></Textarea>
+    <select name="status" style="width: 20%;padding: 12px;border: 1px solid #ccc;border-radius: 4px;resize: vertical;">
+      <option value="Pending">Pending</option>
+      <option value="Completed">Completed</option></select>
+    <input type="submit" value="Submit" style="width: 20%;padding: 12px;border: 1px solid #ccc;border-radius: 4px;resize: vertical;background: #373330;color: #ffffff;"/>
+</form>
+</div>
+
+

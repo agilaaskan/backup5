@@ -1,0 +1,61 @@
+<style>
+body .form_section2{background-color:#fff !important;}
+body .store_details{color:#000;}
+body button.action.submit.primary.contact_sub {
+width: 78px !important;border-radius: 10px !important;}
+@media screen and (max-width: 767px) {
+html body .field.comment.required.float_left.message_con {width: 68%;}}
+body .field.comment.required.float_left.message_con {width: 85%;}
+.menu-list span.old-price.sly-old-price .price{
+text-decoration: line-through;color: #8e8e8e !important;padding-right:5px;}
+.message.success{border: 1px solid #2f6b17;}
+.message.error{border: 1px solid #e02b27;}
+@media only screen and (max-width: 1550px) and (min-width: 1415px) {
+body #block-related-heading:before {left: 26%;}}
+p.covid-alert { background-color: #000;color: #fff; padding: 10px 10px;
+border-top-left-radius: 15px; display: inline-block;border-bottom-right-radius: 15px;}
+@media only screen and (max-width:420px) {
+     body.checkout-index-index input[type='text'],
+     body.checkout-index-index input[type='email'],
+     body.checkout-index-index input[type="password"],
+     body.checkout-index-index input[type='number'],
+     body.checkout-index-index textarea { font-size: 16px !important; }}
+body .page-header .panel.wrapper {border: none;}
+body .widget.block.block-static-block {margin-bottom:0px;}
+.cod-block {background-color: #000;color: #fff;text-align: center; padding: 8px;
+    font-family: 'Poppins', sans-serif;}
+body .products.wrapper.grid.products-related img.mplazyload.mplazyload-icon {width: 20% !important;} a.pp-vd:before {z-index:11;}
+@media only screen and (min-width: 768px) {
+body .fotorama-item.fotorama:before {top:450px !important;}
+body .product.media:before {top:270px !important;height:550px !important;}}
+body.cms-home .widget.block {margin-bottom: 0px;}
+.block.related .block-content.content .block-actions {display: none;}
+body .block.related .related-available .product-item-name {margin-left: 0px; }
+body .field.choice.related {display: none;}
+body .trend-pro img.mplazyload.mplazyload-icon {width: 50% !important;margin: 0 auto;height:auto;}
+body .banner-slider img.mplazyload.mplazyload-icon.owl-image.img-responsive {width: 5% !important;margin: 0 auto;padding: 0px;}
+.custom-smenu,h3.chead {font-family: 'poppins';}
+.sub-cat {font-family: "Soleil";}
+body.customer-account-login .page-main {
+background-image: url(http://www.ulamart.com/pub/media/home/signup1.png); max-width: 100%;}
+body.customer-account-login .actions-toolbar>.primary .action {
+    background-color: #2f6b17;border-color: #2f6b17;
+    color: #fff;font-weight: 500; padding: 13px 20px;width: 200px;}
+body.customer-account-login .page-main input {
+    border: none !important; height: 40px !important;}
+@media only screen and (min-width:768px) {
+body .navigation .level0:hover:after{width:auto;}}
+@media only screen and (min-width:768px) {
+body .videoModal .modal-body iframe {width:60% !important;margin: 0 auto;height:100% !important;}
+.coupon-ban {margin-top: -45px;}.shop-cat h3 { margin: 0px;}}
+@media only screen and (min-width: 768px) {body .minicart-wrapper {width: 31%;}}
+@media only screen and (min-width: 2340px) {body .minicart-wrapper {width: 17%;}}
+@media only screen and (max-width: 2341px) and (min-width:1880px) {body .minicart-wrapper {width: 22%;	}}
+@media only screen and (max-width: 1881px) and (min-width:1480px) {body .minicart-wrapper {width: 30%;}	}
+@media only screen and (max-width:767px) {
+ .videoModal .modal-body{max-height: 225px !important;}
+body .videoModal .modal-body iframe {width: 95% !important;height:100%;}
+.ss-ig-vd img{width: 100%;height:100%; object-fit: contain;}
+body.catalog-product-view input#qty{padding-top:2px !important;}
+body .ves-megamenu.menu-hover .nav-item:hover>.submenu {display: none;}}
+</style>

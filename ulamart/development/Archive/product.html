@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>UlaMart</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-4.4.0.css">
+    <link rel="preload" as="font" href="assets/fonts/fontawesome-webfont.woff" crossorigin="anonymous">
+    <link rel="preload" as="font" href="assets/fonts/fontawesome-webfont.woff2" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/custom.css">  
+</head>
+<body>
+    <div class="page-wrapper scrolled">
+        <!-- Header -->
+        <header>
+            <div class="ss-header">
+                <div class="ss-container">
+                    <div class="row">                    
+                        <div class="ss-col-15">
+                            <div class="ss-mob-bg">
+                                <div class="ss-mob-menu">
+                                    <img class="lazy" data-src="assets/img/hamberg.png" alt="ss-ig">
+                                </div>
+                                <div class="ss-mob-logo">
+                                    <img class="lazy" data-src="assets/img/mob-logo.png" alt="ss-ig">
+                                </div>
+                            </div>
+                            <div class="logo">
+                                <img class="lazy" data-src="assets/img/ulamart-logo.png" alt="ss-ig">
+                            </div>
+                        </div>
+                        <div class="ss-col-85">
+                            <div class="row">
+                                <div class="ss-menu-one">
+                                    <div class="row">
+                                        <div class="ss-col-75">
+                                            <div class="row">
+                                                <div class="search-container">
+                                                    <form action="/action_page.php">
+                                                        <input type="text" name="search">
+                                                        <button type="submit"><i class="fa fa-search"></i></button>
+                                                    </form>
+                                                </div>
+                                                <div class="ss-qod">
+                                                    <button id="myBtn">Quick Order</button>
+                                                    <div id="myModal" class="modal">
+                                                        <div class="modal-content">
+                                                            <span class="close">&times;</span>
+                                                            <p>Some text in the Modal..</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-25">
+                                            <div class="row">
+                                                <div class="ss-col-60">
+                                                    <a href="https://api.whatsapp.com/send?phone=0005250" class="wtp"
+                                                        target="_blank">
+                                                        <img class="lazy" data-src="assets/img/whatsapp.png" alt="ss-ig" width="25" height="25">
+                                                        <div class="ss-wtp">
+                                                            <p>Support</p>
+                                                            <div class="wtp-no">+91 93610 08194</div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="ss-col-40">
+                                                    <div class="ss-shop-icon">
+                                                        <div class="row">
+                                                            <div class="ss-wish"><i class="fa fa-heart-o"
+                                                                    aria-hidden="true"></i>
+                                                                <div class="ss-count">0</div>
+                                                            </div>
+                                                            <div class="ss-cart"><i class="fa fa-shopping-cart"
+                                                                    aria-hidden="true"></i>
+                                                                <div class="ss-count">0</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ss-menu-two">
+                                    <div class="row">
+                                        <div class="ss-col-75">
+                                            <nav class="navigation">
+                                                <ul>
+                                                    <li class="ss-ap"><a href="#">All Products</a></li>
+                                                    <li onmouseout="removeClass(this, 'active');" onmouseover="addClass(this, 'active');"><a href="#">Rice</a>
+                                                        <div class="submenu dropdown">
+                                                            <div class="ss-container">
+                                                                <div class="row">
+                                                                    <div class="ss-col-70">
+                                                                        <div class="rice-bowl-menu">
+                                                                            <h3>Trending rice products</h3>
+                                                                            <div class="row">
+                                                                                <div class="ss-col-33 ss-blue">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-red">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-green">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-vlt">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-ylw">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-blt">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-red">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-blue">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-33 ss-green">
+                                                                                    <div class="ss-rice-item">
+                                                                                        <div class="ss-menu-rice-ig"><img class="lazy"
+                                                                                            data-src="assets/img/bowl-ig.png"
+                                                                                                alt="ss-ig"></div>
+                                                                                        <div class="ss-menu-rice-cnt">
+                                                                                            <a href="#">Mappillai Samba Red
+                                                                                                Rice</a>
+                                                                                            <span
+                                                                                                class="ss-menu-price">₹70</span><span
+                                                                                                class="ss-kg-menu">0.5kg</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="ss-mega-menu">
+                                                                            <div class="row">
+                                                                                <ul>
+                                                                                    <li><a href="#">Kudavazhai Rice</a></li>
+                                                                                    <li><a href="#">Bamboo Rice</a></li>
+                                                                                    <li><a href="#">Arubathaam Kuruvai
+                                                                                            Rice</a></li>
+                                                                                    <li><a href="#">Garudan Samba Rice</a>
+                                                                                    </li>
+                                                                                    <li><a href="#">Idli Rice-Organic
+                                                                                            Rice</a></li>
+                                                                                    <li><a href="#">Karun Kuruvai Organic
+                                                                                            Rice</a></li>
+                                                                                    <li><a href="#">Karuppu Kavuni Rice</a>
+                                                                                    </li>
+                                                                                    <li><a href="#">Kichili Samba Organic
+                                                                                            Rice</a></li>
+                                                                                    <li><a href="#">Mappillai Samba Rice</a>
+                                                                                    </li>
+                                                                                    <li><a href="#">Navara Rice</a></li>
+                                                                                    <li><a href="#">Ottadaiyan Rice</a></li>
+                                                                                    <li><a href="#">Poongar Rice</a></li>
+                                                                                    <li><a href="#">Kudavazhai Rice</a></li>
+                                                                                    <li><a href="#">Bamboo Rice</a></li>
+                                                                                    <li><a href="#">Arubathaam Kuruvai
+                                                                                            Rice</a></li>
+                                                                                    <li><a href="#">Garudan Samba Rice</a>
+                                                                                    </li>
+                                                                                    <li><a href="#">Idli Rice-Organic
+                                                                                            Rice</a></li>
+                                                                                    <li><a href="#">Karun Kuruvai Organic
+                                                                                            Rice</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="ss-col-30">
+                                                                        <div class="ss-pop-rice">
+                                                                            <h3>Popular rice products</h3>
+                                                                            <div class="row">
+                                                                                <div class="ss-col-50">
+                                                                                    <div class="ss-rice-blk">
+                                                                                        <div class="ss-rice-ig">
+                                                                                            <img class="lazy" data-src="assets/img/pop-rice-1.png"
+                                                                                                alt="ss-ig">
+                                                                                        </div>
+                                                                                        <p>Arubathaam Kuruvai - 60am Kuruvai
+                                                                                        </p>
+                                                                                        <div class="row">
+                                                                                            <div class="ss-col-50">
+                                                                                                <img class="lazy" data-src="assets/img/star.png"
+                                                                                                    alt="ss-ig">
+                                                                                                <span
+                                                                                                    class="price-new">₹70</span><span
+                                                                                                    class="price-old">₹90</span>
+                                                                                            </div>
+                                                                                            <div class="ss-col-50">
+                                                                                                <div class="ss-cart-btn"><a
+                                                                                                        href="#">Add to
+                                                                                                        Cart</a></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="ss-col-50">
+                                                                                    <div class="ss-rice-blk">
+                                                                                        <div class="ss-rice-ig">
+                                                                                            <img class="lazy" data-src="assets/img/pop-rice-1.png"
+                                                                                                alt="ss-ig">
+                                                                                        </div>
+                                                                                        <p>Bamboo Rice -Organic Unpolished
+                                                                                            Rice</p>
+                                                                                        <div class="row">
+                                                                                            <div class="ss-col-50">
+                                                                                                <img class="lazy" data-src="assets/img/star.png"
+                                                                                                    alt="ss-ig">
+                                                                                                <span
+                                                                                                    class="price-new">₹195</span><span
+                                                                                                    class="price-old">₹225</span>
+                                                                                            </div>
+                                                                                            <div class="ss-col-50">
+                                                                                                <div class="ss-cart-btn"><a
+                                                                                                        href="#">Add to
+                                                                                                        Cart</a></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="ss-offer">
+                                                                            <h4>Organic food</h4>
+                                                                            <p>up to <strong>20% off</strong></p>
+                                                                            <span class="offer-price-new">₹70</span><span
+                                                                                class="offer-price-old">₹90</span>
+                                                                            <div class="ss-shop-now">
+                                                                                <a href="#">SHOP NOW</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li><a href="#">Fryums & Flakes</a></li>
+                                                    <li><a href="#">Honey</a></li>
+                                                    <li><a href="#">Spices</a></li>
+                                                    <li><a href="#">Millets</a></li>
+                                                    <li><a href="#">Sugar & Salt</a></li>
+                                                    <li><a href="#">Oil</a></li>
+                                                    <li><a href="#">Pulses</a></li>
+                                                    <li><a href="#">Earthern Clay Cookwares</a></li>
+                                                    <li><a href="#">Other Products</a></li>
+                                                </ul>
+                                            </nav>
+                                            <div class="mob-nav wrap scrol">
+                                                <div class='label top-left'>
+                                                    <div class="ss-mob-menus">
+                                                        <img class="lazy" data-src="assets/img/hamberg-gn.png" alt="ss-ig">
+                                                    </div>
+                                                    <!-- <div class="ss-arw">
+                                                        <img class="lazy" data-src="assets/img/lt-arw.png" alt="ss-ig">
+                                                    </div>                                                    -->
+                                                    <button id="slideLeft" type="button">Prev</button>
+                                                    <div id="ss-stick" class="ss-mob-sticky">
+                                                        <ul>
+                                                            <li class="act"><a href="#desp">Product info</a></li>
+                                                            <li><a href="#desp">Description</a></li>
+                                                            <li><a href="#hp">Health Benefits</a></li>
+                                                            <li><a href="#recp">Recipies</a></li>
+                                                            <li><a href="#vd">Videos</a></li>
+                                                            <li><a href="#rw">Reviews</a></li>
+                                                        </ul>
+                                                    </div> 
+                                                    <button id="slideRight" type="button">Next</button>
+                                                    <div class="ss-mob-share">
+                                                        <img class="lazy" data-src="assets/img/share.png" alt="ss-ig">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-25">
+                                            <div class="ss-lg-lang">
+                                                <div class="row">
+                                                    <div class="ss-col-50">
+                                                        <div class="ss-lg">
+                                                            <a href="#">Login / Register</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ss-col-50">
+                                                        <div class="ss-lang">
+                                                            <a href="#">English / தமிழ்</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ss-burger-menu">
+                                    <div class="ss-menu-bgr-cls"><img class="lazy" data-src="assets/img/close.png" alt="ss-ig"></div>
+                                    <ul>
+                                        <li class="ss-adn"><a href="#">All Products</a></li>
+                                        <li class="ss-adn">
+                                            <a href="#">Rice</a>
+                                            <div class="ss-submenu-mob">
+                                                <div class="row">
+                                                    <ul>
+                                                        <li><a href="#">Kudavazhai Rice</a></li>
+                                                        <li><a href="#">Bamboo Rice</a></li>
+                                                        <li><a href="#">Arubathaam Kuruvai Rice</a></li>
+                                                        <li><a href="#">Garudan Samba Rice</a></li>
+                                                        <li><a href="#">Idli Rice-Organic Rice</a></li>
+                                                        <li><a href="#">Karun Kuruvai Organic Rice</a></li>
+                                                        <li><a href="#">Karuppu Kavuni Rice</a></li>
+                                                        <li><a href="#">Kichili Samba Organic Rice</a></li>
+                                                        <li><a href="#">Mappillai Samba Rice</a></li>
+                                                        <li><a href="#">Navara Rice</a></li>
+                                                        <li><a href="#">Ottadaiyan Rice</a></li>
+                                                        <li><a href="#">Poongar Rice</a></li>
+                                                        <li><a href="#">Kudavazhai Rice</a></li>
+                                                        <li><a href="#">Bamboo Rice</a></li>
+                                                        <li><a href="#">Arubathaam Kuruvai Rice</a></li>
+                                                        <li><a href="#">Garudan Samba Rice</a></li>
+                                                        <li><a href="#">Idli Rice-Organic Rice</a></li>
+                                                        <li><a href="#">Karun Kuruvai Organic Rice</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="ss-adn"><a href="#">Fryums & Flakes</a></li>
+                                        <li class="ss-adn"><a href="#">Honey</a></li>
+                                        <li class="ss-adn"><a href="#">Spices</a></li>
+                                        <li class="ss-adn"><a href="#">Millets</a></li>
+                                        <li class="ss-adn"><a href="#">Sugar & Salt</a></li>
+                                        <li class="ss-adn"><a href="#">Oil</a></li>
+                                        <li class="ss-adn"><a href="#">Pulses</a></li>
+                                        <li class="ss-adn"><a href="#">Earthern Clay Cookwares</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Header End -->
+        <!-- Product Details-->
+        <div class="ss-product-model">
+                <div class="row">
+                    <div class="ss-col-55">
+                        <div class="ss-lt-sec">
+                            <div class="ss-breadscrumb">
+                                <ol class="ss-items">
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">Rice</a></li>
+                                    <li class="current"><a href="#">Karuppu Kavuni Rice (Black Rice) - 100% Organic</a></li>
+                                </ol>
+                            </div>
+                            <div class="ss-prod-ig">
+                                <div class="ss-ig-vert">
+                                    <div class="ss-pro-vertical active">
+                                        <img class="lazy" onclick="document.getElementById('myImage').src='assets/img/rice.png'" data-src="assets/img/slider-thumbnail.png" alt="ss-ig">
+                                    </div>
+                                    <div class="ss-pro-vertical">
+                                        <img class="lazy" onclick="document.getElementById('myImage').src='assets/img/rice-ar.png'" data-src="assets/img/slider-thumbnail.png" alt="ss-ig">
+                                    </div>
+                                    <div class="ss-pro-vertical">
+                                        <img class="lazy" onclick="document.getElementById('myImage').src='assets/img/rice.png'" data-src="assets/img/slider-thumbnail.png" alt="ss-ig">
+                                    </div>
+                                </div>
+                                <div class="ss-pro-focus">
+                                    <img class="lazy" id="myImage" src="assets/img/rice.png" alt="ss-ig">
+                                    <div class="ss-wishlist">
+                                        <img class="lazy" data-src="assets/img/wishlist.png" alt="ss-ig">
+                                        <p>Add to Wishlist</p>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ss-col-45">
+                        <div class="ss-rt-sec">
+                            <div class="ss-food-cat">
+                                <img class="lazy" data-src="assets/img/vegan-icon.png" alt="ss-ig">
+                                <p>In stock</p>
+                            </div>
+                            <div class="product-title">
+                                <h2>Karuppu Kavuni</h2>
+                                <p>Black Rice - Forbidden Rice - Organic Rice</p>
+                            </div>
+                            <div class="ss-review">
+                                <span class="ss-rating"><img class="lazy" data-src="assets/img/star.png" alt="ss-ig"><span><a href="#">64 ratings</a></span></span>
+                                <span class="ss-wt-rw"><a href="#">write a review</a></span>
+                                <span class="ss-ans"><a href="#">6 answered questions</a></span>
+                            </div>
+                            <div class="ss-price-details">
+                                <div class="ss-original-price">
+                                    <div class="price-title">Original Price</div>
+                                    <span class="ss-op">:</span>
+                                    <div class="ss-price-amount">₹154.00</div>
+                                </div>
+                                <div class="ss-offer-price">
+                                    <div class="offer-price-title">Offer Price</div>
+                                    <span class="ss-off">:</span>
+                                    <div class="ss-offer-amount"><span class="ss-offer-at">₹128.00</span><span class="tax">(tax excluded)</span><span class="fr-dly">FREE Delivery.</span></div>
+                                </div>
+                                <div class="ss-discount-price">
+                                    <div class="ss-discount-ig"><img class="lazy" data-src="assets/img/discount_icon.png" alt="ss-ig"></div>
+                                    <div class="ss-discount-details">
+                                        <span class="ss-save">You Save</span>
+                                        <span class="ss-save-price">₹30.00</span>
+                                        <span class="spl-ofr">(Special offer</span>
+                                        <span class="ss-dd">:</span>
+                                        <span class="spl-ofr-price"><strong>20%</strong> off)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="price-qty-prt">
+                                <div class="price-qty InputGroup">
+                                    <input type="radio" name="size" id="size_1" value="small" checked />
+                                    <label for="size_1">500 gm<span class="ss-price">₹ 229.00</span></label>
+                                    <input type="radio" name="size" id="size_2" value="small" />
+                                    <label for="size_2">1 KG<span class="ss-price">₹ 379.00</span></label>
+                                    <input type="radio" name="size" id="size_3" value="small" />
+                                    <label for="size_3">2 KG<span class="ss-price">₹ 749.00</span></label>
+                                    <input type="radio" name="size" id="size_4" value="small" />
+                                    <label for="size_4">3 KG<span class="ss-price">₹ 999.00</span></label>
+                                    <input type="radio" name="size" id="size_5" value="small" />
+                                    <label for="size_5">5 KG<span class="ss-price">₹ 1,529.00</span></label>
+                                    <input type="radio" name="size" id="size_6" value="small" />
+                                    <label for="size_6">8 KG<span class="ss-price">₹ 2,399.00</span></label>
+                                </div>
+                            </div>
+                            <div class="ss-add-to-cart">
+                                <div class="ss-qty">
+                                    <p>Quantity</p>
+                                    <div class="control">
+                                        <button class="bttn bttn-left" id="minus">
+                                        <span>-</span>
+                                        </button>
+                                        <input type="number" class="input" id="input" readonly>
+                                        <button class="bttn bttn-right" id="plus">
+                                        <span>+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="ss-cart-btns">
+                                    <button><img class="lazy" data-src="assets/img/cart.png" alt="ss-ig">Add to Cart</button>
+                                </div>
+                            </div>
+                            <div class="ss-cont-text">
+                                <p><img class="lazy" data-src="assets/img/leave-png.png" alt="ss-ig">Proudly cultivated in Tamilnadu’s virgin soil</p> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ss-mob-cart">
+                        <div class="row">
+                            <div class="ss-qty-prc">
+                                <div class="ss-pro-qty">1 KG</div>
+                                <div class="ss-pro-price">₹128.00</div>
+                            </div>
+                            <div class="ss-add">
+                                <div class="ss-cart-btns">
+                                    <button><img class="lazy" data-src="assets/img/cart.png" alt="ss-ig">Add to Cart</button>
+                                </div>
+                            </div>
+                            <div class="ss-fav">
+                                <img class="lazy" data-src="assets/img/wishlist.png" alt="ss-ig">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <!-- Product Details End -->
+        <!-- Table of Content -->
+        <div class="ss-product-cont">
+            <div class="ss-container">
+                <div class="ss-sec-1">
+                    <h3>Karuppu Kavuni par boiled rice</h3>
+                    <div class="ss-cnt-txt">
+                        <p>Commonly called by the name Emperor’s rice, black rice was believed to be consumed by ancient Chinese. This forbidden rice contains more phytonutrients in it. It is highly rich in fiber, antioxidants and acts as a perfect detoxifier for liver, prevents diabetes, cancer.</p>
+                        <p>Many recipes are made using Black rice. Most popular among them is Dosa, puttu, Pudding with Coconut & Mango, Risotto, plain rice with various curries and others.</p>
+                    </div>
+                </div>
+                <div class="ss-tbl-cnt">
+                    <p>Table of Content</p>
+                    <ul>
+                        <li><a href="#desp">Product Description</a></li>
+                        <li><a href="#hp">Health Benefits</a></li>
+                        <li><a href="#recp">Recipies</a></li>
+                        <li><a href="#vd">Videos</a></li>
+                        <li><a href="#rw">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="ss-sec-2">
+                    <h3>Customers also bought</h3>
+                    <div class="ss-pro-card sss-container">
+                        <div id="ss-pro-cl" class="row">
+                            <div class="ss-col-25">
+                                <div class="ss-pro-blk">
+                                    <div class="ss-product-ig">
+                                        <img class="lazy" data-src="assets/img/rice-card.png"
+                                            alt="ss-ig">
+                                    </div>
+                                    <p>Arubathaam Kuruvai - 60am Kuruvai
+                                    </p>
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <img class="lazy" data-src="assets/img/star.png"
+                                                alt="ss-ig">
+                                            <span
+                                                class="price-new">₹70</span><span
+                                                class="price-old">₹90</span>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <!-- <div class="ss-cart-btn"><a
+                                                    href="#">Add to
+                                                    Cart</a></div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ss-col-25">
+                                <div class="ss-pro-blk">
+                                    <div class="ss-product-ig">
+                                        <img class="lazy" data-src="assets/img/rice-card.png"
+                                            alt="ss-ig">
+                                    </div>
+                                    <p>Bamboo Rice -Organic Unpolished
+                                        Rice</p>
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <img class="lazy" data-src="assets/img/star.png"
+                                                alt="ss-ig">
+                                            <span
+                                                class="price-new">₹195</span><span
+                                                class="price-old">₹225</span>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <!-- <div class="ss-cart-btn"><a
+                                                    href="#">Add to
+                                                    Cart</a></div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ss-col-25">
+                                <div class="ss-pro-blk">
+                                    <div class="ss-product-ig">
+                                        <img class="lazy" data-src="assets/img/rice-card.png"
+                                            alt="ss-ig">
+                                    </div>
+                                    <p>Arubathaam Kuruvai - 60am Kuruvai
+                                    </p>
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <!-- <img class="lazy" data-src="assets/img/star.png"
+                                                alt="ss-ig"> -->
+                                            <span
+                                                class="price-new">₹70</span><span
+                                                class="price-old">₹90</span>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <!-- <div class="ss-cart-btn"><a
+                                                    href="#">Add to
+                                                    Cart</a></div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ss-col-25">
+                                <div class="ss-pro-blk">
+                                    <div class="ss-product-ig">
+                                        <img class="lazy" data-src="assets/img/rice-card.png"
+                                            alt="ss-ig">
+                                    </div>
+                                    <p>Bamboo Rice -Organic Unpolished
+                                        Rice</p>
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <!-- <img class="lazy" data-src="assets/img/star.png"
+                                                alt="ss-ig"> -->
+                                            <span
+                                                class="price-new">₹195</span><span
+                                                class="price-old">₹225</span>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <!-- <div class="ss-cart-btn"><a
+                                                    href="#">Add to
+                                                    Cart</a></div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Table of Content End -->
+        <!-- Description, Health Benefits & Video Section -->
+        <div class="ss-pro-description">
+                <div id="desp" class="sss-container ss-desp ss-fl-ig ">
+                    <h3>Product Description</h3>
+                    <div class="desp-box">
+                        <p>It is commonly known by the name Emperor’s rice. It is also known as purple rice or Forbidden rice. The reason why this type of rice is called by royal terms is that, it enriches the health and ensures the longevity. 
+                            It is used to prepare varieties of desserts during ancient times. Earlier in those days, one has to get consent from the royals to consume it, as it is believed that it cures almost all the body related problems.
+                            It is said that China was the first to use this type of rice. <span id="dots">...</span><span id="more">The black color pigmentation is due to the presence of anthocyanin in it, which is normally present in blueberries and blackberries. It has a nutty flavor.
+                            Since they are very rich in phytonutrients, consuming it shields you from major risks of heart, intestinal problems, liver problems and much more.</span></p>
+                        <div class="ss-alt-name"><span><strong>Alternative Names:</strong></span><span>Forbidden rice | Karuppu Kavuni Arisi | Rice</span></div>    
+                        <button onclick="myFunction()" id="myBtns">View more...</button>                
+                    </div>
+                </div>
+                <div id="hp" class="sss-container ss-hb ss-fl-ig">
+                    <h3>Health Benefits</h3>
+                    <div class="hb-pt txt show-more-height">
+                        <div class="row">
+                            <div class="ss-col-50">
+                                <ul class="hb-lt">
+                                    <li>Black rice is highly rich in Fiber content</li>
+                                    <li>This type of rice has highest level of antioxidants than any other type of rice variety
+                                        As we know antioxidants helps to fight the free radicals (Causes damages to the tissues and cells) which </li>
+                                    <li>Released from the human body. It also reduces inflammation.t absolutely reduces atherosclerosis – Consuming Black rice helps in removal of fatty materials which gets deposited 
+                                        in the inner walls of arteries. It also prevents the disease which arises.</li>
+                                </ul>
+                            </div>
+                            <div class="ss-col-50">
+                                <ul class="hb-lt">
+                                    <li>Consuming black rice on regular basis, reduces </li>
+                                    <li>the risk of Asthma</li>
+                                    <li>It acts as a wonderful Detoxifier for liver</li>
+                                    <li>It also helps in prevention of diabetes</li>
+                                    <li>It entirely controls the Hypertension</li>
+                                    <li>Low-density Lipoprotein cholesterol, which is bad cholesterol)</li>
+                                    <li>It helps in preventing Cancer
+                                        It improves the digestive system</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="show-more">View more...</div>
+                </div>
+                <div id="vd" class="sss-container ss-pop-video ss-fl-ig">
+                    <div class="row"> 
+                        <div class="ss-col-40">                                           
+                            <h3 class="ss-desk-txt">Videos</h3>
+                            <div class="ss-vid-bg">
+                                <p>It is commonly known by the name Emperor’s rice. It is also known as purple rice or Forbidden rice. 
+                                    The reason why this type of rice is called by royal terms is that, it enriches the health and ensures the longevity <span id="dots-1">...</span><span id="more-1">
+                                It is used to prepare varieties of desserts during ancient times. Earlier in those days, one has to get consent from the royals to consume it, as it is believed that it cures almost all the body related problems.
+                                        It is said that China was the first to use this type of rice. The black color pigmentation is due to the presence of anthocyanin in it, which is normally present</span></p>
+                                        <button onclick="myFunction()" id="myBtns-1">View more...</button>  
+                            </div>
+                        </div>
+                        <div class="ss-col-60">                                           
+                        <h3 class="ss-mob-txt">Videos</h3>
+                            <div class="ss-ig-vd">
+                                <img class="lazy rc-tt" data-src="assets/img/blk-rice.png" alt="ss-ig">
+                                <div class="ss-pop-vd">
+                                    <a href="#img1" class="pp-vd">
+                                        <img class="lazy" data-src="assets/img/rice-recp.png" alt="ss-ig">
+                                    </a>
+                                    <div class="lightbox close" id="img1">
+                                        <div id="videoModal" class="modal hide fade in" role="dialog" aria-hidden="false" style="display: block;">
+                                        <!-- <div class="modal-header">
+                                            <button type="button" class="close full-height" data-dismiss="modal" aria-hidden="true">X</button>
+                                            <h3>Donna Galletta- Showreel</h3>
+                                        </div> -->
+                                        <div class="modal-body"><iframe width="870" height="489" class="amigolazy" data-lazy="5000" data-src="https://www.youtube.com/embed/y11PS8OmehU?controls=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+                                        <div class="modal-footer"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div> 
+        <!-- Description, Health Benefits & Video Section End -->
+        <!-- Recepies section -->
+        <div id="recp" class="ss-recipes">        
+            <div class="sss-container ss-recp ss-fl-ig">
+                <h3>Recipies</h3>
+                <p>Using Black rice, we can make the following dishes:</p>
+                <div class="recp-pt txt ss-pt-one show-more-height">
+                    <div class="row">
+                        <div class="ss-col-50">
+                            <ul class="recp-lt">
+                                <li>Black Rice Idly</li>
+                                <li>Black Rice Dosa</li>
+                                <li>Black Rice Puttu</li>
+                                <li>Plain rice for Meals</li>
+                                <li>Black rice Risotto</li>
+                                <li>Baked Orange Cauliflower & Black Rice</li>
+                                <li>Forbidden Cold Ramen</li>
+                                <li>Black Rice Pudding with Coconut & Mango</li>
+                                <li>Black Fried Rice With Snap Peas and Scallions</li>
+                                <li>Miso Forbidden Rice Bowls</li>
+                                <li>Thai Chicken Forbidden Rice Soup</li>
+                            </ul>
+                        </div>
+                        <div class="ss-col-50">
+                            <ul class="recp-lt">
+                                <li>Black Rice Ramen With Garlic Matcha Chickpeas</li>
+                                <li>Black Rice And Arborio Risotto With Artichokes</li>
+                                <li>Black Rice And Spinach Salad</li>
+                                <li>Black Rice Tabbouleh With Chickpeas Feta and Pistachios</li>
+                                <li>Soy Ginger Shrimp with Forbidden Rice</li>
+                                <li>Black Rice, Beet, and Kale Salad with Cider Flax Dressing</li>
+                                <li>Black Sushi Burger</li>
+                                <li>Farmer’s Market Forbidden Rice Bowls With Tahini Apricot Sauce</li>
+                                <li>Black Rice Noodle Bowl With Roasted Squash and Creamy Miso Dressing</li>
+                                <li>Senposai, Daikon and Chili Garlic Chicken Wraps</li>
+                                <li>Mango Sticky Rice Lassi Parfait</li>
+                                <li>Porcini Mushroom, Greens and Forbidden Rice Gratin</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="show-more ss-more-one">View more...</div>
+            </div>
+        </div>
+        <!-- Recepies End -->
+        <!-- Profile section -->
+        <div id="rw" class="ss-rev">
+            <div class="demo">
+                <div class="sss-container ss-rws ss-fl-ig">
+                    <h3>Farmer Information</h3>
+                    <div class="row">
+                        <div class="ss-col-100">
+                            <div id="testimonial-slider" class="slideshow-container">
+                                <div class="ss-profiles mySlides fade">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                                <img class="lazy" data-src="assets/img/farmer-ig.png" alt="ss-ig">
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial">
+                                                <h4>A FAMILY OWNED FARM</h4>
+                                                <p class="description more">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie, justo nec
+                                                    convallis sollicitudin, sapien lorem dictum lacus, non consequat odio ipsum nec est. Sed
+                                                    mattis egestas elementum. Nulla facilisi. Quisque placerat risus ac nunc ornare tincidunt.
+                                                    Sed quis faucibus nunc. Pellentesque accumsan arcu mi, eget venenatis mauris.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ss-profiles mySlides fade">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                                <img class="lazy" data-src="assets/img/farmer-ig-1.jpg" alt="ss-ig">
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial">
+                                                <h4>A FAMILY OWNED FARM</h4>
+                                                <p class="description more">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie, justo nec
+                                                    convallis sollicitudin, sapien lorem dictum lacus, non consequat odio ipsum nec est. Sed
+                                                    mattis egestas elementum. Nulla facilisi. Quisque placerat risus ac nunc ornare tincidunt.
+                                                    Sed quis faucibus nunc. Pellentesque accumsan arcu mi, eget venenatis mauris.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ss-profiles mySlides fade">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                                <img class="lazy" data-src="assets/img/farmer-ig-2.jpg" alt="ss-ig">
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial">
+                                                <h4>A FAMILY OWNED FARM</h4>
+                                                <p class="description more">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie, justo nec
+                                                    convallis sollicitudin, sapien lorem dictum lacus, non consequat odio ipsum nec est. Sed
+                                                    mattis egestas elementum. Nulla facilisi. Quisque placerat risus ac nunc ornare tincidunt.
+                                                    Sed quis faucibus nunc. Pellentesque accumsan arcu mi, eget venenatis mauris.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ss-profiles mySlides fade">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                                <img class="lazy" data-src="assets/img/farmer-ig-3.jpg" alt="ss-ig">
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial">
+                                                <h4>A FAMILY OWNED FARM</h4>
+                                                <p class="description more">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie, justo nec
+                                                    convallis sollicitudin, sapien lorem dictum lacus, non consequat odio ipsum nec est. Sed
+                                                    mattis egestas elementum. Nulla facilisi. Quisque placerat risus ac nunc ornare tincidunt.
+                                                    Sed quis faucibus nunc. Pellentesque accumsan arcu mi, eget venenatis mauris.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ss-profiles mySlides fade">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                                <img class="lazy" data-src="assets/img/farmer-ig.png" alt="ss-ig">
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial">
+                                                <h4>A FAMILY OWNED FARM</h4>
+                                                <p class="description more">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie, justo nec
+                                                    convallis sollicitudin, sapien lorem dictum lacus, non consequat odio ipsum nec est. Sed
+                                                    mattis egestas elementum. Nulla facilisi. Quisque placerat risus ac nunc ornare tincidunt.
+                                                    Sed quis faucibus nunc. Pellentesque accumsan arcu mi, eget venenatis mauris.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="owl-buttons">
+                                    <a class="" onclick="plusSlides(-1)">&#10094;</a>
+                                    <a class="" onclick="plusSlides(1)">&#10095;</a>
+                                </div>
+                            </div>
+                            <div class="ss-dots" style="text-align:center">
+                                <span class="dot" onclick="currentSlide(1)"></span>
+                                <span class="dot" onclick="currentSlide(2)"></span>
+                                <span class="dot" onclick="currentSlide(3)"></span>
+                                <span class="dot" onclick="currentSlide(4)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Profile section End-->
+        <!-- cities section -->
+        <div class="ss-acc">        
+            <div class="sss-container ss-acc ss-fl-ig">
+                <h3>Karuppu kavani rice be delivered in the below cities</h3>
+                <div class="tab">
+                    <button class="tablinks" onclick="openCity(event, 'tn')" id="defaultOpen"><img class="lazy" data-src="assets/img/tn.png" alt="ss-ig">Tamilnadu</button>
+                    <button class="tablinks" onclick="openCity(event, 'kl')"><img class="lazy" data-src="assets/img/kl.png" alt="ss-ig">Kerala</button>
+                    <button class="tablinks" onclick="openCity(event, 'kr')"><img class="lazy" data-src="assets/img/kr.png" alt="ss-ig">Karnataka</button>
+                    <button class="tablinks" onclick="openCity(event, 'an')"><img class="lazy" data-src="assets/img/an.png" alt="ss-ig">Andra</button>
+                    <button class="tablinks" onclick="openCity(event, 'mh')"><img class="lazy" data-src="assets/img/mh.png" alt="ss-ig">Mumbai</button>
+                </div>
+                <div id="tn" class="tabcontent txt">
+                    <div class="ss-ctn txt  ss-pt-two show-more-height">
+                        <p>Ariyalur</p><p>Chengalpattu</p><p>Chennai</p><p>Coimbatore</p><p>Cuddalore</p><p>Dharmapuri</p><p>Dindigul</p>
+                        <p>Erode</p><p>Kallakurichi</p><p>Kanchipuram</p><p>Kanyakumari</p><p>Karur</p><p>Krishnagiri</p><p>Madurai</p>
+                        <p>Nagapattinam</p><p>Namakkal</p><p>Nilgiris</p><p>Perambalur</p><p>Pudukkottai</p><p>Ramanathapuram</p><p>Ranipet</p>
+                        <p>Salem</p><p>Sivaganga</p><p>Tenkasi</p><p>Thanjavur</p><p>Theni</p><p>Thoothukudi(Tuticorin)</p><p>Tiruchirappalli</p>
+                        <p>Tirunelveli</p><p>Tirupathur</p><p>Tiruppur</p><p>Tiruvallur</p><p>Tiruvannamalai</p><p>Tiruvarur</p><p>Vellore</p>
+                        <p>Viluppuram</p><p>Virudhunagar</p>
+                    </div>
+                    <div class="show-more ss-more-two">View more...</div> 
+                </div>              
+                <div id="kl" class="tabcontent txt ">
+                    <div class="ss-ctn txt ss-pt-three show-more-height">
+                        <p>Ariyalur</p><p>Chengalpattu</p><p>Chennai</p><p>Coimbatore</p><p>Cuddalore</p><p>Dharmapuri</p><p>Dindigul</p>
+                        <p>Erode</p><p>Kallakurichi</p><p>Kanchipuram</p><p>Kanyakumari</p><p>Karur</p><p>Krishnagiri</p><p>Madurai</p>
+                        <p>Nagapattinam</p><p>Namakkal</p><p>Nilgiris</p><p>Tiruvallur</p><p>Tiruvannamalai</p><p>Tiruvarur</p><p>Vellore</p>
+                        <p>Viluppuram</p><p>Virudhunagar</p>
+                    </div>
+                    <div class="show-more ss-more-three">View more...</div> 
+                </div>              
+                <div id="kr" class="tabcontent txt ">
+                    <div class="ss-ctn txt ss-pt-four show-more-height">
+                        <p>Ariyalur</p><p>Chengalpattu</p><p>Chennai</p><p>Coimbatore</p><p>Theni</p><p>Thoothukudi(Tuticorin)</p><p>Tiruchirappalli</p>
+                        <p>Tirunelveli</p><p>Tirupathur</p><p>Tiruppur</p><p>Tiruvallur</p><p>Tiruvannamalai</p><p>Tiruvarur</p><p>Vellore</p>
+                        <p>Viluppuram</p><p>Virudhunagar</p>
+                    </div>
+                    <div class="show-more ss-more-four">View more...</div>
+                </div>
+                <div id="an" class="tabcontent txt ">
+                    <div class="ss-ctn txt ss-pt-five show-more-height">
+                        <p>Ariyalur</p><p>Chengalpattu</p><p>Chennai</p><p>Coimbatore</p><p>Cuddalore</p><p>Dharmapuri</p><p>Dindigul</p>
+                        <p>Erode</p><p>Kallakurichi</p><p>Theni</p><p>Thoothukudi(Tuticorin)</p><p>Tiruchirappalli</p>
+                        <p>Tirunelveli</p><p>Tirupathur</p><p>Tiruppur</p><p>Tiruvallur</p><p>Tiruvannamalai</p><p>Tiruvarur</p><p>Vellore</p>
+                        <p>Viluppuram</p><p>Virudhunagar</p>
+                    </div>
+                    <div class="show-more ss-more-five">View more...</div>
+                </div>
+                <div id="mh" class="tabcontent txt ">
+                    <div class="ss-ctn txt ss-pt-six show-more-height">
+                        <p>Ariyalur</p><p>Chengalpattu</p><p>Chennai</p><p>Coimbatore</p><p>Cuddalore</p><p>Dharmapuri</p><p>Dindigul</p>
+                        <p>Erode</p><p>Kallakurichi</p><p>Kanchipuram</p><p>Kanyakumari</p><p>Karur</p><p>Krishnagiri</p><p>Madurai</p>
+                        <p>Nagapattinam</p><p>Namakkal</p><p>Nilgiris</p><p>Perambalur</p><p>Pudukkottai</p><p>Ramanathapuram</p><p>Ranipet</p>
+                        <p>Salem</p><p>Sivaganga</p><p>Tenkasi</p><p>Thanjavur</p><p>Theni</p><p>Thoothukudi(Tuticorin)</p><p>Tiruchirappalli</p>
+                        <p>Tirunelveli</p><p>Tirupathur</p>
+                    </div>
+                    <div class="show-more ss-more-six">View more...</div>
+                </div>
+            </div>
+        </div>  
+        <!-- cities section End --> 
+    </div>
+    <script src="assets/js/app.js"></script>   
+    <script>
+        function _extends() { return (_extends = Object.assign || function (t) { for (var e = 1; e < arguments.length; e++) { var n = arguments[e]; for (var o in n) Object.prototype.hasOwnProperty.call(n, o) && (t[o] = n[o]) } return t }).apply(this, arguments) } function _typeof(t) { return (_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && "function" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t })(t) } !function (t, e) { "object" === ("undefined" == typeof exports ? "undefined" : _typeof(exports)) && "undefined" != typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define(e) : t.LazyLoad = e() }(this, function () { "use strict"; var t = "undefined" != typeof window, e = t && !("onscroll" in window) || "undefined" != typeof navigator && /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent), n = t && "IntersectionObserver" in window, o = t && "classList" in document.createElement("p"), r = { elements_selector: "img", container: e || t ? document : null, threshold: 300, thresholds: null, data_src: "src", data_srcset: "srcset", data_sizes: "sizes", data_bg: "bg", class_loading: "loading", class_loaded: "loaded", class_error: "error", load_delay: 0, auto_unobserve: !0, callback_enter: null, callback_exit: null, callback_reveal: null, callback_loaded: null, callback_error: null, callback_finish: null, use_native: !1 }, a = function (t, e) { var n, o = new t(e); try { n = new CustomEvent("LazyLoad::Initialized", { detail: { instance: o } }) } catch (t) { (n = document.createEvent("CustomEvent")).initCustomEvent("LazyLoad::Initialized", !1, !1, { instance: o }) } window.dispatchEvent(n) }; var i = function (t, e) { return t.getAttribute("data-" + e) }, s = function (t, e, n) { var o = "data-" + e; null !== n ? t.setAttribute(o, n) : t.removeAttribute(o) }, c = function (t) { return "true" === i(t, "was-processed") }, l = function (t, e) { return s(t, "ll-timeout", e) }, u = function (t) { return i(t, "ll-timeout") }, d = function (t, e) { t && t(e) }, f = function (t, e) { t._loadingCount += e, 0 === t._elements.length && 0 === t._loadingCount && d(t._settings.callback_finish) }, _ = function (t) { for (var e, n = [], o = 0; e = t.children[o]; o += 1)"SOURCE" === e.tagName && n.push(e); return n }, v = function (t, e, n) { n && t.setAttribute(e, n) }, g = function (t, e) { v(t, "sizes", i(t, e.data_sizes)), v(t, "srcset", i(t, e.data_srcset)), v(t, "src", i(t, e.data_src)) }, m = { IMG: function (t, e) { var n = t.parentNode; n && "PICTURE" === n.tagName && _(n).forEach(function (t) { g(t, e) }); g(t, e) }, IFRAME: function (t, e) { v(t, "src", i(t, e.data_src)) }, VIDEO: function (t, e) { _(t).forEach(function (t) { v(t, "src", i(t, e.data_src)) }), v(t, "src", i(t, e.data_src)), t.load() } }, b = function (t, e) { var n, o, r = e._settings, a = t.tagName, s = m[a]; if (s) return s(t, r), f(e, 1), void (e._elements = (n = e._elements, o = t, n.filter(function (t) { return t !== o }))); !function (t, e) { var n = i(t, e.data_src), o = i(t, e.data_bg); n && (t.style.backgroundImage = 'url("'.concat(n, '")')), o && (t.style.backgroundImage = o) }(t, r) }, h = function (t, e) { o ? t.classList.add(e) : t.className += (t.className ? " " : "") + e }, p = function (t, e, n) { t.addEventListener(e, n) }, y = function (t, e, n) { t.removeEventListener(e, n) }, E = function (t, e, n) { y(t, "load", e), y(t, "loadeddata", e), y(t, "error", n) }, w = function (t, e, n) { var r = n._settings, a = e ? r.class_loaded : r.class_error, i = e ? r.callback_loaded : r.callback_error, s = t.target; !function (t, e) { o ? t.classList.remove(e) : t.className = t.className.replace(new RegExp("(^|\\s+)" + e + "(\\s+|$)"), " ").replace(/^\s+/, "").replace(/\s+$/, "") }(s, r.class_loading), h(s, a), d(i, s), f(n, -1) }, I = function (t, e) { var n = function n(r) { w(r, !0, e), E(t, n, o) }, o = function o(r) { w(r, !1, e), E(t, n, o) }; !function (t, e, n) { p(t, "load", e), p(t, "loadeddata", e), p(t, "error", n) }(t, n, o) }, k = ["IMG", "IFRAME", "VIDEO"], A = function (t, e) { var n = e._observer; z(t, e), n && e._settings.auto_unobserve && n.unobserve(t) }, L = function (t) { var e = u(t); e && (clearTimeout(e), l(t, null)) }, x = function (t, e) { var n = e._settings.load_delay, o = u(t); o || (o = setTimeout(function () { A(t, e), L(t) }, n), l(t, o)) }, z = function (t, e, n) { var o = e._settings; !n && c(t) || (k.indexOf(t.tagName) > -1 && (I(t, e), h(t, o.class_loading)), b(t, e), function (t) { s(t, "was-processed", "true") }(t), d(o.callback_reveal, t), d(o.callback_set, t)) }, O = function (t) { return !!n && (t._observer = new IntersectionObserver(function (e) { e.forEach(function (e) { return function (t) { return t.isIntersecting || t.intersectionRatio > 0 }(e) ? function (t, e) { var n = e._settings; d(n.callback_enter, t), n.load_delay ? x(t, e) : A(t, e) }(e.target, t) : function (t, e) { var n = e._settings; d(n.callback_exit, t), n.load_delay && L(t) }(e.target, t) }) }, { root: (e = t._settings).container === document ? null : e.container, rootMargin: e.thresholds || e.threshold + "px" }), !0); var e }, N = ["IMG", "IFRAME"], C = function (t, e) { return function (t) { return t.filter(function (t) { return !c(t) }) }((n = t || function (t) { return t.container.querySelectorAll(t.elements_selector) }(e), Array.prototype.slice.call(n))); var n }, M = function (t, e) { this._settings = function (t) { return _extends({}, r, t) }(t), this._loadingCount = 0, O(this), this.update(e) }; return M.prototype = { update: function (t) { var n, o = this, r = this._settings; (this._elements = C(t, r), !e && this._observer) ? (function (t) { return t.use_native && "loading" in HTMLImageElement.prototype }(r) && ((n = this)._elements.forEach(function (t) { -1 !== N.indexOf(t.tagName) && (t.setAttribute("loading", "lazy"), z(t, n)) }), this._elements = C(t, r)), this._elements.forEach(function (t) { o._observer.observe(t) })) : this.loadAll() }, destroy: function () { var t = this; this._observer && (this._elements.forEach(function (e) { t._observer.unobserve(e) }), this._observer = null), this._elements = null, this._settings = null }, load: function (t, e) { z(t, this, e) }, loadAll: function () { var t = this; this._elements.forEach(function (e) { A(e, t) }) } }, t && function (t, e) { if (e) if (e.length) for (var n, o = 0; n = e[o]; o += 1)a(t, n); else a(t, e) }(M, window.lazyLoadOptions), M });
+    </script>
+    <script>
+        let amframe = document.querySelectorAll('.amigolazy');
+        window.onload = function(){
+        for(let i=0; i<amframe.length;i++){
+            let amsrc = amframe[i];
+            let amdata = amsrc.getAttribute("data-src");
+            let datanew = amsrc.getAttribute("data-lazy");
+            if(datanew === null){
+            datanew = 1500;
+            }
+            setTimeout(function(){
+            amframe[i].setAttribute("src",amdata);
+            console.info(datanew + "ms Lazyloaded " + amframe[i].src);
+            }, datanew);
+        }
+        }
+    </script>
+    <script>
+        (function() {
+            function logElementEvent(eventName, element) {
+                console.log(
+                    Date.now(),
+                    eventName,
+                    element.getAttribute("data-src")
+                );
+            }
+            var callback_enter = function(element) {
+                logElementEvent("ENTERED", element);
+            };
+            var callback_exit = function(element) {
+                logElementEvent("EXITED", element);
+            };
+            var callback_reveal = function(element) {
+                logElementEvent("REVEALED", element);
+            };
+            var callback_loaded = function(element) {
+                logElementEvent("LOADED", element);
+            };
+            var callback_error = function(element) {
+                logElementEvent("ERROR", element);
+                element.src =
+                    "https://via.placeholder.com/440x560/?text=Error+Placeholder";
+            };
+            var callback_finish = function() {
+                logElementEvent("FINISHED", document.documentElement);
+            };
+            var ll = new LazyLoad({
+                elements_selector: ".lazy",
+                callback_enter: callback_enter,
+                callback_exit: callback_exit,
+                callback_reveal: callback_reveal,
+                callback_loaded: callback_loaded,
+                callback_error: callback_error,
+                callback_finish: callback_finish
+            });
+        })();
+    </script>
+    <script>
+        (function() {
+            var lazyLoadInstances = [];
+            function logElementEvent(eventName, element) {
+                console.log(
+                    Date.now(),
+                    eventName,
+                    element.getAttribute("data-src")
+                );
+            }
+            var callback_enter = function(element) {
+                var oneLL = new LazyLoad({
+                    container: element
+                });
+                lazyLoadInstances.push(oneLL);
+                logElementEvent("ENTERED", element);
+            };
+            var callback_exit = function(element) {
+                logElementEvent("EXITED", element);
+            };
+            var callback_reveal = function(element) {
+                logElementEvent("REVEALED", element);
+            };
+            var callback_loaded = function(element) {
+                logElementEvent("LOADED", element);
+            };
+            var callback_error = function(element) {
+                logElementEvent("ERROR", element);
+                element.src =
+                    "https://via.placeholder.com/440x560/?text=Error+Placeholder";
+            };
+            var callback_finish = function() {
+                logElementEvent("FINISHED", document.documentElement);
+            };
+            var lazyLazy = new LazyLoad({
+                elements_selector: ".cc-slidebox-wrapper.owl-carousel",
+                callback_enter: callback_enter,
+                callback_exit: callback_exit,
+                callback_reveal: callback_reveal,
+                callback_loaded: callback_loaded,
+                callback_error: callback_error,
+                callback_finish: callback_finish
+            });
+        })();
+    </script> 
+</body>
+</html>

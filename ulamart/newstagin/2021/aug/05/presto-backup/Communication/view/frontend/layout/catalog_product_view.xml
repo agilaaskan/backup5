@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * Askan Technology
+ *
+ * @category  AskanTech
+ * @package   Askantech_Communication
+ * @author    Askan
+ * @copyright Copyright (c) AskanTech (https://www.askantech.com/)
+ * @license   https://www.askantech.com/Communication/LICENSE.txt
+ */
+ -->
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>      
+        <referenceBlock name="product.info.details">
+          <!-- <block class="Askantech\Communication\Block\Form" name="contactus.tab" as="contactus" template="Askantech_Communication::form.phtml" group="detailed_info" cacheable="false">
+             <arguments>
+                <argument translate="true" name="title" xsi:type="string">Product Enquiry</argument>
+                <argument name="sort_order" xsi:type="string">120</argument>
+             </arguments>
+          </block> -->
+        </referenceBlock>
+         <referenceContainer name="product.info.form.content">
+ 
+     <!-- <block class="Askantech\Communication\Block\Form" name="product.info.enquiry" after="product.info.addtocart" template="Askantech_Communication::popup.phtml" cacheable="false"> -->
+     <!-- </block> -->
+ </referenceContainer>
+    </body>
+</page>

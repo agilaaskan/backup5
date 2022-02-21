@@ -1,0 +1,78 @@
+<?php
+/**
+ * Askan Technology
+ *
+ * @category  AskanTech
+ * @package   Askantech_Communication
+ * @author    Askan
+ * @copyright Copyright (c) AskanTech (https://www.askantech.com/)
+ * @license   https://www.askantech.com/Communication/LICENSE.txt
+ */
+?>
+<script>
+   require([
+       "jquery",
+       "Magento_Ui/js/modal/modal",
+       'mage/backend/notification',
+       "prototype"
+   ], function(jQuery, modal, notification) {
+
+//<![CDATA[
+       Window.keepMultiModalWindow = true;
+       var askanView = {
+           overlayShowEffectOptions : null,
+           overlayHideEffectOptions : null,
+           modal: null,
+           open : function(viewUrl, elementId, subject, querry) {
+               if (viewUrl && elementId) {
+                   jQuery.ajax({
+                       url: viewUrl,
+                       data: {
+                           id: elementId,
+                           querry: querry
+                       },
+                       showLoader: true,
+                       dataType: 'html',
+                       success: function(data, textStatus, transport) {
+                           this.openDialogWindow(data, elementId, subject, querry);
+                       }.bind(this)
+                   });
+               }
+           },
+           openDialogWindow : function(data, elementId, subject, querry) {
+               var self = this;
+               if (this.modal) {
+                   this.modal.html(jQuery(data).html());
+               } else {
+                   this.modal = jQuery(data).modal({
+                       title: 'Chat conversation',
+                       modalClass: 'magento',
+                       type: 'slide',
+                       firedElementId: elementId,
+                       buttons: [{
+                           text: jQuery.mage.__('Close'),
+                           class: 'action- scalable back',
+                           click: function () {
+                               self.closeDialogWindow(this);
+                           }
+                       }],
+                       close: function () {
+                           self.closeDialogWindow(this);
+                       }
+                   });
+               }
+               this.modal.modal('openModal');
+           },
+           closeDialogWindow : function(dialogWindow) {
+
+               jQuery('body').trigger('processStop');
+               dialogWindow.closeModal();
+               Windows.overlayShowEffectOptions = this.overlayShowEffectOptions;
+               Windows.overlayHideEffectOptions = this.overlayHideEffectOptions;
+           }
+       };
+
+       window.askanView = askanView;
+//]]>
+   });
+</script>

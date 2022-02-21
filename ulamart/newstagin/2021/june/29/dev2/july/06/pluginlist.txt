@@ -1,0 +1,37 @@
+mageplaza-deleteorder
+mageplaza-smtp
+mageplaza-socialshare
+askantech-review
+asorder-neworderattribute
+Brandung-CODfee
+Ebizmarts-mailchimp
+Harrigo-breadcrumb
+Faonni-price
+Infibeam-ccavenue
+Lillik-pricedecimal
+Lof-layernavigation
+MMA-customAPi
+MagePal-reindex
+MageWorx-serach
+Meetanshi-Deferjs
+Meetanshi-gridcolumn
+Noon-hidedefaultstorecode
+rayzorpay
+stripe
+Ulmod-ordercomment
+
+our modules: custom payment and shipping methods
+
+mageplaza-deleteorder
+mageplaza-socialshare
+stripe
+Infibeam-ccavenue - 
+Prashant_Priceslider
+
+MMA-customAPi - please confirm
+askantech-review- please confirm
+
+Brandung-CODfee - write custom code
+Faonni-price / Lillik-pricedecimal- write custom code or use magneto functionality
+
+

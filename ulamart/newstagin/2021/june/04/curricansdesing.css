@@ -1,0 +1,42 @@
+.checkout-index-index .opc-wrapper .step-content #customer-email-fieldset>.field>.control, .checkout-index-index .opc-wrapper .step-content .fieldset.address>.field>.control {
+    margin-left: unset;
+}
+
+.opc-wrapper .fieldset>.field>.label, .field .control.input-field .label {
+    overflow: unset;
+}
+
+.billing-address-same-as-shipping-block.field.choice input[type=checkbox], .create-account-block .field.choice input[type=checkbox] {
+    position: unset;
+    opacity: unset;
+}
+
+.fieldset.address .field.choice {
+    width: unset;
+    float: left !important;
+    margin-left: 135px;
+}
+
+#checkout-shipping-method-load {
+    overflow-y: unset;
+}
+
+#co-place-order-area .actions-toolbar .place-order-primary{
+    width: 100%;
+}
+
+.opc-wrapper .fieldset>.field>.label {
+    float: left !important;
+}
+
+#customer-email-fieldset>.field.required>.label {
+    float: none !important;
+}
+
+.field {
+    position: initial;
+}
+
+.opc-block-summary .table-totals .grand .mark {
+    padding-right: 30px !important;
+}

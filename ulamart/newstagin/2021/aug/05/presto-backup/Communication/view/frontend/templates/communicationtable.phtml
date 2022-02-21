@@ -1,0 +1,288 @@
+<?php
+/**
+ * Askan Technology
+ *
+ * @category  AskanTech
+ * @package   Askantech_Communication
+ * @author    Askan
+ * @copyright Copyright (c) AskanTech (https://www.askantech.com/)
+ * @license   https://www.askantech.com/Communication/LICENSE.txt
+ */
+?>
+<div><?php echo $block->chatdata(); 
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$baseurl = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+$key_form = $objectManager->get('Magento\Framework\Data\Form\FormKey');
+
+?>
+
+<style>
+body.chat-popup-open{
+    overflow: hidden;
+}
+table.chathistory th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #f7c133;
+    color: black;
+}
+table.chathistory th, table.chathistory td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+.chat-popup {
+    position: fixed;
+    z-index: 9;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0 0 0 / 22%);
+}
+.askantechcommunication-customer-index .chat-popup {
+    padding-top: 50px !important;
+    overflow:hidden;
+    z-index: 999999;
+}
+@media all and (max-width:767px){
+textarea[name="queries"] {
+    width: 100% !important;
+}
+.reply-form{
+    text-align:center;
+}
+.chat-content {
+    width: 80%;
+}
+td.subject-before-desktop {
+    display: none;
+}
+    td.subject-before-mobile {
+    display: block;
+}
+}
+tr.readstatus0 {
+    font-weight: bold;
+}
+.chat-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    width: 70%;
+    border-radius: 10px;
+}
+span.close-chat {
+    color: #a5a5a5;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-chat:hover,
+.close-chat:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+@media all and (min-width:768px){
+    .message-content-only.scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    }
+    td.subject-before-desktop {
+    display: table-cell;
+}
+    td.subject-before-mobile {
+    display: none;
+}
+}
+div#submit_status {
+    color: #58b158;
+    text-align: center;
+}
+div#submit_status_error {
+    color: #ff2b2b;
+    text-align: center;
+}
+@media all and (max-width:767px){
+    .message-content-only.scroll {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    }
+    .child-left {
+    font-size: 16px !important;
+}
+    .pager {
+    text-align: center !important;
+}
+.child-right {
+    width: 100% !important;
+    font-size: 16px !important;
+}
+.child-left {
+   width: 100% !important;
+}
+table.chathistory th, table.chathistory td {
+    border: none;
+    padding: 8px;
+}
+td.subject-before-mobile {
+    font-size: 20px;
+}
+td.subject-before-mobile:before {
+    content: "Subject : ";
+}
+td.productname-before-mobile:before {
+    content: "Product : ";
+}
+td.status-before-mobile:before {
+    content: "Status : ";
+}
+td.date-before-mobile:before {
+    content: "Created At : ";
+}
+html body table.chathistory.paginated tr.readstatus0, html body table.chathistory.paginated tr.readstatus1 {
+    display: inline-grid;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+html body table.chathistory.paginated tbody {
+    display: inline-grid;
+}
+table.chathistory th {
+    display: none;
+}
+}
+button.pg-goto {
+    color: black;
+    border: 1px solid white;
+    box-shadow: none !important;
+    font-weight: bold;
+    background: white;
+}
+.pager {
+    text-align: right;
+}
+.pager .span-pager {
+    padding: 4px 14px;
+    cursor: pointer;
+    color: black;
+}
+.pager .span-pager.pg-selected {
+    background: #f7c133;
+    padding: 3px 14px;
+    border-radius: 3px;
+    color: black !important;
+}
+.parent-left-right:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.child-right {
+    width: 20%;
+    padding-right: 24px;
+    text-align: right;
+}
+.child-left {
+    width: 75%;
+}
+</style>
+<script>
+require(['jquery'], function () {
+    jQuery( "body" ).delegate( ".chat-action", "click", function() {
+        jQuery(this).next().show();
+        jQuery('body').addClass('chat-popup-open');
+    });
+    jQuery( "body" ).delegate( ".close-chat", "click", function() {
+        jQuery(this).parent().parent().hide();
+        jQuery('body').removeClass('chat-popup-open');
+    });
+    jQuery( "body" ).delegate( "a.chat-action-sub", "click", function() {
+    // jQuery('a.chat-action-sub').click(function(){
+    jQuery(this).parent().siblings('td.action-btn').find('.chat-popup').show();
+    jQuery('body').addClass('chat-popup-open');
+    });
+
+    //pagination
+     jQuery('table.paginated').each(function () {
+        var $table = jQuery(this);
+        var itemsPerPage = 5;
+        var currentPage = 0;
+        var pages = Math.ceil($table.find("tr:not(:has(th))").length / itemsPerPage);
+        $table.bind('repaginate', function () {
+            if (pages > 1) {
+                var pager;
+                if ($table.next().hasClass("pager"))
+                    pager = $table.next().empty(); else
+                    pager = jQuery('<div class="pager" style="padding-top: 20px; direction:ltr; " align="center"></div>');
+
+                jQuery('<button class="pg-goto"></button>').text(' << ').bind('click', function () {
+                    currentPage = 0;
+                    $table.trigger('repaginate');
+                }).appendTo(pager);
+
+                jQuery('<button class="pg-goto"> < </button>').bind('click', function () {
+                    if (currentPage > 0)
+                        currentPage--;
+                    $table.trigger('repaginate');
+                }).appendTo(pager);
+
+                var startPager = currentPage > 2 ? currentPage - 2 : 0;
+                var endPager = startPager > 0 ? currentPage + 3 : 5;
+                if (endPager > pages) {
+                    endPager = pages;
+                    startPager = pages - 5; if (startPager < 0)
+                        startPager = 0;
+                }
+
+                for (var page = startPager; page < endPager; page++) {
+                    jQuery('<span id="pg' + page + '" class="span-pager ' + (page == currentPage ? 'pg-selected' : 'pg-normal') + '"></span>').text(page + 1).bind('click', {
+                        newPage: page
+                    }, function (event) {
+                        currentPage = event.data['newPage'];
+                        $table.trigger('repaginate');
+                    }).appendTo(pager);
+                }
+
+                jQuery('<button class="pg-goto"> > </button>').bind('click', function () {
+                    if (currentPage < pages - 1)
+                        currentPage++;
+                    $table.trigger('repaginate');
+                }).appendTo(pager);
+                jQuery('<button class="pg-goto"> >> </button>').bind('click', function () {
+                    currentPage = pages - 1;
+                    $table.trigger('repaginate');
+                }).appendTo(pager);
+
+                if (!$table.next().hasClass("pager"))
+                    pager.insertAfter($table);
+                //pager.insertBefore($table);
+
+            }// end $table.bind('repaginate', function () { ...
+
+            $table.find(
+                'tbody tr:not(:has(th))').hide().slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).show();
+        });
+
+        $table.trigger('repaginate');
+    });
+
+
+    // enquiry form submit
+    
+
+            jQuery('#enquiry-form input[type="submit"]').click(function(){
+            var timezone_offset_minutes = new Date().getTimezoneOffset();
+            timezone_offset_minutes = timezone_offset_minutes == 0 ? 0 : -timezone_offset_minutes;
+            console.log(timezone_offset_minutes); 
+            jQuery('#customer_time') . val(timezone_offset_minutes);
+        });
+});
+</script>    
+
+</div>

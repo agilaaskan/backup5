@@ -1,0 +1,13 @@
+.faq-qes-inputbox {
+    width:50%;
+}
+.faq-ans-inputbox {
+    width:50%;
+}
+input.faq-add {
+    background: #e3e3e3;
+    border-color: #e3e3e3;
+    padding: 5px 40px;
+    color: #000;
+    font-weight: 600;
+}

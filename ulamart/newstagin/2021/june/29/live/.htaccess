@@ -1,0 +1,1103 @@
+############################################
+## overrides deployment configuration mode value
+## use command bin/magento deploy:mode:set to switch modes
+
+#   SetEnv MAGE_MODE developer
+
+############################################
+## uncomment these lines for CGI mode
+## make sure to specify the correct cgi php binary file name
+## it might be /cgi-bin/php-cgi
+
+#    Action php5-cgi /cgi-bin/php5-cgi
+#    AddHandler php5-cgi .php
+
+############################################
+## GoDaddy specific options
+
+#   Options -MultiViews
+
+## you might also need to add this line to php.ini
+##     cgi.fix_pathinfo = 1
+## if it still doesn't work, rename php.ini to php5.ini
+
+############################################
+## this line is specific for 1and1 hosting
+
+    #AddType x-mapp-php5 .php
+    #AddHandler x-mapp-php5 .php
+
+############################################
+## enable usage of methods arguments in backtrace
+
+    SetEnv MAGE_DEBUG_SHOW_ARGS 1
+
+############################################
+## default index file
+
+    DirectoryIndex index.php
+
+############################################
+## adjust memory limit
+
+    php_value memory_limit 2024M
+    php_value max_execution_time 180000
+
+############################################
+## disable automatic session start
+## before autoload was initialized
+
+    php_flag session.auto_start off
+
+############################################
+## enable resulting html compression
+
+    #php_flag zlib.output_compression on
+
+###########################################
+## disable user agent verification to not break multiple image upload
+
+    php_flag suhosin.session.cryptua off
+
+<IfModule mod_security.c>
+###########################################
+## disable POST processing to not break multiple image upload
+
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+<IfModule mod_deflate.c>
+
+############################################
+## enable apache served files compression
+## http://developer.yahoo.com/performance/rules.html#gzip
+
+    # Insert filter on all content
+    SetOutputFilter DEFLATE
+    # Insert filter on selected content types only
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json image/svg+xml
+
+    # Netscape 4.x has some problems...
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+    # Netscape 4.06-4.08 have some more problems
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+    # MSIE masquerades as Netscape, but it is fine
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+    # Don't compress images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+
+    # Make sure proxies don't deliver the wrong content
+    Header append Vary User-Agent env=!dont-vary
+
+</IfModule>
+
+<IfModule mod_ssl.c>
+
+############################################
+## make HTTPS env vars available for CGI mode
+
+    SSLOptions StdEnvVars
+
+</IfModule>
+
+############################################
+## workaround for Apache 2.4.6 CentOS build when working via ProxyPassMatch with HHVM (or any other)
+## Please, set it on virtual host configuration level
+
+##    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+############################################
+
+<IfModule mod_rewrite.c>
+
+############################################
+## enable rewrites
+
+    # The following line has better security but add some performance overhead - see https://httpd.apache.org/docs/2.4/en/misc/perf-tuning.html
+    Options -FollowSymLinks +SymLinksIfOwnerMatch
+    RewriteEngine on
+
+############################################
+## you can put here your magento root folder
+## path relative to web root
+
+    #RewriteBase /magento/
+
+############################################
+## workaround for HTTP authorization
+## in CGI environment
+    RewriteRule (.+)\.html?$ https://www.ulamart.com/$1 [R=301,L]
+
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+############################################
+## TRACE and TRACK HTTP methods disabled to prevent XSS attacks
+
+    RewriteCond %{REQUEST_METHOD} ^TRAC[EK]
+    RewriteRule .* - [L,R=405]
+
+############################################
+## redirect for mobile user agents
+
+    #RewriteCond %{REQUEST_URI} !^/mobiledirectoryhere/.*$
+    #RewriteCond %{HTTP_USER_AGENT} "android|blackberry|ipad|iphone|ipod|iemobile|opera mobile|palmos|webos|googlebot-mobile" [NC]
+    #RewriteRule ^(.*)$ /mobiledirectoryhere/ [L,R=302]
+
+############################################
+## never rewrite for existing files, directories and links
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+
+############################################
+## rewrite everything else to index.php
+
+    RewriteRule .* index.php [L]
+
+</IfModule>
+
+
+############################################
+## Prevent character encoding issues from server overrides
+## If you still have problems, use the second line instead
+
+    AddDefaultCharset Off
+    #AddDefaultCharset UTF-8
+    AddType 'text/html; charset=UTF-8' html
+
+<IfModule mod_expires.c>
+
+############################################
+## Add default Expires header
+## http://developer.yahoo.com/performance/rules.html#expires
+
+    ExpiresDefault "access plus 1 year"
+    ExpiresByType text/html A0
+    ExpiresByType text/plain A0
+
+</IfModule>
+
+###########################################
+## Deny access to root files to hide sensitive application information
+    RedirectMatch 403 /\.git
+
+    <Files composer.json>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files composer.lock>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files .gitignore>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files .htaccess>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files .htaccess.sample>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files .php_cs.dist>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files .travis.yml>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files CHANGELOG.md>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files COPYING.txt>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files Gruntfile.js>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files LICENSE.txt>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files LICENSE_AFL.txt>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files nginx.conf.sample>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files package.json>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files php.ini.sample>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files README.md>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files magento_umask>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files auth.json>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+    <Files .user.ini>
+        <IfVersion < 2.4>
+            order allow,deny
+            deny from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all denied
+        </IfVersion>
+    </Files>
+
+# For 404s and 403s that aren't handled by the application, show plain 404 response
+ErrorDocument 404 /pub/errors/404.php
+ErrorDocument 403 /pub/errors/404.php
+
+################################
+## If running in cluster environment, uncomment this
+## http://developer.yahoo.com/performance/rules.html#etags
+
+    #FileETag none
+
+# ######################################################################
+# # INTERNET EXPLORER                                                  #
+# ######################################################################
+
+# ----------------------------------------------------------------------
+# | Document modes                                                     |
+# ----------------------------------------------------------------------
+
+# Force Internet Explorer 8/9/10 to render pages in the highest mode
+# available in the various cases when it may not.
+#
+# https://hsivonen.fi/doctype/#ie8
+#
+# (!) Starting with Internet Explorer 11, document modes are deprecated.
+# If your business still relies on older web apps and services that were
+# designed for older versions of Internet Explorer, you might want to
+# consider enabling `Enterprise Mode` throughout your company.
+#
+# https://msdn.microsoft.com/en-us/library/ie/bg182625.aspx#docmode
+# http://blogs.msdn.com/b/ie/archive/2014/04/02/stay-up-to-date-with-enterprise-mode-for-internet-explorer-11.aspx
+
+<IfModule mod_headers.c>
+
+    Header set X-UA-Compatible "IE=edge"
+
+    # `mod_headers` cannot match based on the content-type, however,
+    # the `X-UA-Compatible` response header should be send only for
+    # HTML documents and not for the other resources.
+
+    <FilesMatch "\.(appcache|atom|bbaw|bmp|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|htc|ico|jpe?g|js|json(ld)?|m4[av]|manifest|map|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
+        Header unset X-UA-Compatible
+    </FilesMatch>
+
+</IfModule>
+Redirect 301 /en https://www.ulamart.com
+Redirect 301 /en/velchi.html https://www.ulamart.com/velchi
+Redirect 301 /en/thanga-samba-rice1.html https://www.ulamart.com/thanga-samba-rice1
+Redirect 301 /en/red-thuvaram-parupputhur-dal.html https://www.ulamart.com/red-thuvaram-parupputhur-dal
+Redirect 301 /en/Valmilagu-spices.html https://www.ulamart.com/Valmilagu-spices
+Redirect 301 /en/Thippili-spices.html https://www.ulamart.com/Thippili-spices
+Redirect 301 /en/avarampoo-soap.html https://www.ulamart.com/avarampoo-soap
+Redirect 301 /en/shikkai-soap.html https://www.ulamart.com/shikkai-soap
+Redirect 301 /en/cow-soap.html https://www.ulamart.com/cow-soap
+Redirect 301 /en/kalanamak.html https://www.ulamart.com/kalanamak
+Redirect 301 /en/kothamalli-samba.html https://www.ulamart.com/kothamalli-samba
+Redirect 301 /en/kuzhiyattichan-samba.html https://www.ulamart.com/kuzhiyattichan-samba
+Redirect 301 /en/sorna-masuri-.html https://www.ulamart.com/sorna-masuri-
+Redirect 301 /en/katta-samba-rice.html https://www.ulamart.com/katta-samba-rice
+Redirect 301 /en/idly-rice.html https://www.ulamart.com/idly-rice
+Redirect 301 /en/clap-pot-hole-in-lid.html https://www.ulamart.com/clap-pot-hole-in-lid
+Redirect 301 /en/clay-thattu-idli.html https://www.ulamart.com/clay-thattu-idli
+Redirect 301 /en/multi-pack-traditional-rice-organic.html https://www.ulamart.com/multi-pack-traditional-rice-organic
+Redirect 301 /en/clay-candle-stand.html https://www.ulamart.com/clay-candle-stand
+Redirect 301 /en/herbal-hair-oil.html https://www.ulamart.com/herbal-hair-oil
+Redirect 301 /en/black-chana-dal.html https://www.ulamart.com/black-chana-dal
+Redirect 301 /en/vendhayam.html https://www.ulamart.com/vendhayam
+Redirect 301 /en/roasted-bengal-grams.html https://www.ulamart.com/roasted-bengal-grams
+Redirect 301 /en/neemflowerchips.html https://www.ulamart.com/neemflowerchips
+Redirect 301 /en/red-rice-flakes.html https://www.ulamart.com/red-rice-flakes
+Redirect 301 /en/wheat-flour.html https://www.ulamart.com/wheat-flour
+Redirect 301 /en/nilavembukudineer.html https://www.ulamart.com/nilavembukudineer
+Redirect 301 /en/Kabasurakudineer.html https://www.ulamart.com/Kabasurakudineer
+Redirect 301 /en/combo-pack-colourful-traditional-rices.html https://www.ulamart.com/combo-pack-colourful-traditional-rices
+Redirect 301 /en/Coconut-Shell-Serving-Spoon.html https://www.ulamart.com/coconut-shell-serving-spoon
+Redirect 301 /en/pr-codwfeeplus.html https://www.ulamart.com/pr-codwfeeplus
+Redirect 301 /en/mappillai-samba-organic-unpolished.html https://www.ulamart.com/mappillai-samba-organic-unpolished
+Redirect 301 /en/thooyamalli-rice.html https://www.ulamart.com/thooyamalli-rice
+Redirect 301 /en/kichili-samba-rice.html https://www.ulamart.com/kichili-samba-rice
+Redirect 301 /en/seeraga-samba-rice.html https://www.ulamart.com/seeraga-samba-rice
+Redirect 301 /en/red-rice.html https://www.ulamart.com/red-rice
+Redirect 301 /en/black-rice.html https://www.ulamart.com/black-rice
+Redirect 301 /en/organic-poongar-boiled-hand-pounded-rice.html https://www.ulamart.com/organic-poongar-boiled-hand-pounded-rice
+Redirect 301 /en/varappu-kudainchan.html https://www.ulamart.com/varappu-kudainchan
+Redirect 301 /en/virgin-coconut-oil.html https://www.ulamart.com/virgin-coconut-oil
+Redirect 301 /en/sesame-oil.html https://www.ulamart.com/sesame-oil
+Redirect 301 /en/groundnut-oil.html https://www.ulamart.com/groundnut-oil
+Redirect 301 /en/hill-honey.html https://www.ulamart.com/hill-honey
+Redirect 301 /en/tulsi-honey.html https://www.ulamart.com/tulsi-honey
+Redirect 301 /en/neem-honey.html https://www.ulamart.com/neem-honey
+Redirect 301 /en/naaval-honey.html https://www.ulamart.com/naaval-honey
+Redirect 301 /en/drumstick-honey.html https://www.ulamart.com/drumstick-honey
+Redirect 301 /en/kattuyanam-organic-unpolished-rice-parboiled.html https://www.ulamart.com/kattuyanam-organic-unpolished-rice-parboiled
+Redirect 301 /en/bamboo-rice.html https://www.ulamart.com/bamboo-rice
+Redirect 301 /en/kullakar-rice.html https://www.ulamart.com/kullakar-rice
+Redirect 301 /en/ragi-finger-millet.html https://www.ulamart.com/ragi-finger-millet
+Redirect 301 /en/little-millet.html https://www.ulamart.com/little-millet
+Redirect 301 /en/foxtail-millet.html https://www.ulamart.com/foxtail-millet
+Redirect 301 /en/unpolished-toor-dal.html https://www.ulamart.com/unpolished-toor-dal
+Redirect 301 /en/garudan-samba-rice.html https://www.ulamart.com/garudan-samba-rice
+Redirect 301 /en/karun-kuruvai-rice.html https://www.ulamart.com/karun-kuruvai-rice
+Redirect 301 /en/kudavazhai-red-rice.html https://www.ulamart.com/kudavazhai-red-rice
+Redirect 301 /en/organic-ponni-rice.html https://www.ulamart.com/organic-ponni-rice
+Redirect 301 /en/pearl-millet-kambu.html https://www.ulamart.com/pearl-millet-kambu
+Redirect 301 /en/aloevera-cucumber-muringo-soap.html https://www.ulamart.com/aloevera-cucumber-muringo-soap
+Redirect 301 /en/orange-peel-soap.html https://www.ulamart.com/orange-peel-soap
+Redirect 301 /en/vettiveru-soap.html https://www.ulamart.com/vettiveru-soap
+Redirect 301 /en/nalangu-maavu-soap.html https://www.ulamart.com/nalangu-maavu-soap
+Redirect 301 /en/multani-mitti-herbal-soap.html https://www.ulamart.com/multani-mitti-herbal-soap
+Redirect 301 /en/raw-natural-seasalt-non-iodised.html https://www.ulamart.com/raw-natural-seasalt-non-iodised
+Redirect 301 /en/country-sugar.html https://www.ulamart.com/country-sugar
+Redirect 301 /en/black-pepper-milagu.html https://www.ulamart.com/black-pepper-milagu
+Redirect 301 /en/navara-rice.html https://www.ulamart.com/navara-rice
+Redirect 301 /en/shikakai-powder.html https://www.ulamart.com/shikakai-powder
+Redirect 301 /en/vetti-veru-root.html https://www.ulamart.com/vetti-veru-root
+Redirect 301 /en/clove-spices.html https://www.ulamart.com/clove-spices
+Redirect 301 /en/shikakai-soap.html https://www.ulamart.com/shikakai-soap
+Redirect 301 /en/charcoal-soap.html https://www.ulamart.com/charcoal-soap
+Redirect 301 /en/clay-small-pot-with-lid.html https://www.ulamart.com/clay-small-pot-with-lid
+Redirect 301 /en/clay-water-bottle.html https://www.ulamart.com/clay-water-bottle
+Redirect 301 /en/small-pot-for-kids.html https://www.ulamart.com/small-pot-for-kids
+Redirect 301 /en/clay-plate-and-tumbler.html https://www.ulamart.com/clay-plate-and-tumbler
+Redirect 301 /en/clay-sprouter.html https://www.ulamart.com/clay-sprouter
+Redirect 301 /en/carrot-soap.html https://www.ulamart.com/carrot-soap
+Redirect 301 /en/kuppaimeni-soap-handmade-herbal.html https://www.ulamart.com/kuppaimeni-soap-handmade-herbal
+Redirect 301 /en/green-gram-soap.html https://www.ulamart.com/green-gram-soap
+Redirect 301 /en/aloe-vera-neem-soap-herbal.html https://www.ulamart.com/aloe-vera-neem-soap-herbal
+Redirect 301 /en/porso-millet.html https://www.ulamart.com/porso-millet
+Redirect 301 /en/barnyard-millet.html https://www.ulamart.com/barnyard-millet
+Redirect 301 /en/urad-dal-black.html https://www.ulamart.com/urad-dal-black
+Redirect 301 /en/rajamudi-red-rice.html https://www.ulamart.com/rajamudi-red-rice
+Redirect 301 /en/neemoil.html https://www.ulamart.com/neemoil
+Redirect 301 /en/kudampuli-cambodge.html https://www.ulamart.com/kudampuli-cambodge
+Redirect 301 /en/black-rice-flour.html https://www.ulamart.com/black-rice-flour
+Redirect 301 /en/green-gram-moong.html https://www.ulamart.com/green-gram-moong
+Redirect 301 /en/bridegroom-rice-flour.html https://www.ulamart.com/bridegroom-rice-flour
+Redirect 301 /en/health-mix-porridge.html https://www.ulamart.com/health-mix-porridge
+Redirect 301 /en/organic-idli-rice.html https://www.ulamart.com/organic-idli-rice
+Redirect 301 /en/homemade-sambar-powder.html https://www.ulamart.com/homemade-sambar-powder
+Redirect 301 /en/loofah-scrubber.html https://www.ulamart.com/loofah-scrubber
+Redirect 301 /en/combo-pack-traditional-rices.html https://www.ulamart.com/combo-pack-traditional-rices
+Redirect 301 /en/thanga-samba-rice.html https://www.ulamart.com/thanga-samba-rice
+Redirect 301 /en/split-urad-dal-black.html https://www.ulamart.com/split-urad-dal-black
+Redirect 301 /en/black-rice-vathal.html https://www.ulamart.com/black-rice-vathal
+Redirect 301 /en/black-rice-spring-vathal.html https://www.ulamart.com/black-rice-spring-vathal
+Redirect 301 /en/combo-pack-traditional-millets.html https://www.ulamart.com/combo-pack-traditional-millets
+Redirect 301 /en/kichili-samba-broken-rice.html https://www.ulamart.com/kichili-samba-broken-rice
+Redirect 301 /en/mappillai-samba-raw-rice.html https://www.ulamart.com/mappillai-samba-raw-rice
+Redirect 301 /en/vetiver-face-mask.html https://www.ulamart.com/vetiver-face-mask
+Redirect 301 /en/combo-pack-raw-rices.html https://www.ulamart.com/combo-pack-raw-rices
+Redirect 301 /en/60am-kuruvai-organic-unpolished.html https://www.ulamart.com/60am-kuruvai-organic-unpolished
+Redirect 301 /en/finger-millet-flour-ragi-flour.html https://www.ulamart.com/finger-millet-flour-ragi-flour
+Redirect 301 /en/pearl-millet-flour-kambu.html https://www.ulamart.com/pearl-millet-flour-kambu
+Redirect 301 /en/clay-coffee-mug.html https://www.ulamart.com/clay-coffee-mug
+Redirect 301 /en/clay-cup-and-saucer.html https://www.ulamart.com/clay-cup-and-saucer
+Redirect 301 /en/Flakes-mappillai-samba.html https://www.ulamart.com/Flakes-mappillai-samba
+Redirect 301 /en/urad-dal-white.html https://www.ulamart.com/urad-dal-white
+Redirect 301 /en/medium-kitchen-set-for-kids.html https://www.ulamart.com/medium-kitchen-set-for-kids
+Redirect 301 /en/terracotta-buddha-idol.html https://www.ulamart.com/terracotta-buddha-idol
+Redirect 301 /en/organic-poongar-raw-hand-pounded-rice.html https://www.ulamart.com/organic-poongar-raw-hand-pounded-rice
+Redirect 301 /en/kattuyanam-raw-rice-organic-unpolished.html https://www.ulamart.com/kattuyanam-raw-rice-organic-unpolished
+Redirect 301 /en/ottadaiyan-rice.html https://www.ulamart.com/ottadaiyan-rice
+Redirect 301 /en/clay-pen-stand.html https://www.ulamart.com/clay-pen-stand
+Redirect 301 /en/organic-poongar-rice-flour.html https://www.ulamart.com/organic-poongar-rice-flour
+Redirect 301 /en/turmeric-powder.html https://www.ulamart.com/turmeric-powder
+Redirect 301 /en/clay-classic-coffee-cup.html https://www.ulamart.com/clay-classic-coffee-cup
+Redirect 301 /en/paper-pen.html https://www.ulamart.com/paper-pen
+Redirect 301 /en/moringa-leaf-idly-powder.html https://www.ulamart.com/moringa-leaf-idly-powder
+Redirect 301 /en/rainbow-paper-pencil.html https://www.ulamart.com/rainbow-paper-pencil
+Redirect 301 /en/newspaper-pencil.html https://www.ulamart.com/newspaper-pencil
+Redirect 301 /en/small-size-clay-pot-with-lid.html https://www.ulamart.com/small-size-clay-pot-with-lid
+Redirect 301 /en/plantable-ganesha.html https://www.ulamart.com/plantable-ganesha
+Redirect 301 /en/cow-ghee.html https://www.ulamart.com/cow-ghee
+Redirect 301 /en/combo-pack-oil.html https://www.ulamart.com/combo-pack-oil
+Redirect 301 /en/Cow-dung-Pot.html https://www.ulamart.com/Cow-dung-Pot
+Redirect 301 /en/A4-paper.html https://www.ulamart.com/A4-paper
+Redirect 301 /en/Combo-pack-clay-pen-pen-stand.html https://www.ulamart.com/Combo-pack-clay-pen-pen-stand
+Redirect 301 /en/wiro-bound-recycled-paper-notebook-kit.html https://www.ulamart.com/wiro-bound-recycled-paper-notebook-kit
+Redirect 301 /en/multi-purpose-shopping-bag-vegetable-bag.html https://www.ulamart.com/multi-purpose-shopping-bag-vegetable-bag
+Redirect 301 /en/thooyamalli-raw-rice.html https://www.ulamart.com/thooyamalli-raw-rice
+Redirect 301 /en/white-raw-rice.html https://www.ulamart.com/white-raw-rice
+Redirect 301 /en/recycled-paper-drawing-pencils-10-shades.html https://www.ulamart.com/recycled-paper-drawing-pencils-10-shades
+Redirect 301 /en/plantable-paper-pencils-pack-of-10.html https://www.ulamart.com/plantable-paper-pencils-pack-of-10
+Redirect 301 /en/plantable-paper-pen-with-holder-pack-of-5.html https://www.ulamart.com/plantable-paper-pen-with-holder-pack-of-5
+Redirect 301 /en/plantable-notebook-pack-of-5.html https://www.ulamart.com/plantable-notebook-pack-of-5
+Redirect 301 /en/mappillai-samba-vathal.html https://www.ulamart.com/mappillai-samba-vathal
+Redirect 301 /en/executive-notebook-kit.html https://www.ulamart.com/executive-notebook-kit
+Redirect 301 /en/clay-house.html https://www.ulamart.com/clay-house
+Redirect 301 /en/cotton-bag.html https://www.ulamart.com/cotton-bag
+Redirect 301 /en/medium-size-ladle-coconut-shell.html https://www.ulamart.com/medium-size-ladle-coconut-shell
+Redirect 301 /en/Coconut-Shell-Spoon.html https://www.ulamart.com/Coconut-Shell-Spoon
+Redirect 301 /en/Clay-kumkum-box.html https://www.ulamart.com/Clay-kumkum-box
+Redirect 301 /en/cat-money-bank.html https://www.ulamart.com/cat-money-bank
+Redirect 301 /en/piggy-bank.html https://www.ulamart.com/piggy-bank
+Redirect 301 /en/fish-money-bank.html https://www.ulamart.com/fish-money-bank
+Redirect 301 /en/angry-bird-money-bank.html https://www.ulamart.com/angry-bird-money-bank
+Redirect 301 /en/Flakes-Kattuyanam.html https://www.ulamart.com/Flakes-Kattuyanam
+Redirect 301 /en/organic-sivan-samba-rice.html https://www.ulamart.com/organic-sivan-samba-rice
+Redirect 301 /en/multi-flower-farm-honey.html https://www.ulamart.com/multi-flower-farm-honey
+Redirect 301 /en/Clay-bird-nest.html https://www.ulamart.com/Clay-bird-nest
+Redirect 301 /en/palm-sugar.html https://www.ulamart.com/palm-sugar
+Redirect 301 /en/palm-jaggery.html https://www.ulamart.com/palm-jaggery
+Redirect 301 /en/combo-pack-idli-rice-white-urad-dal.html https://www.ulamart.com/combo-pack-idli-rice-white-urad-dal
+Redirect 301 /en/a2-cow-ghee-country-sugar.html https://www.ulamart.com/a2-cow-ghee-country-sugar
+Redirect 301 /en/popcorn.html https://www.ulamart.com/popcorn
+Redirect 301 /en/Black-clay-small-pot-with-lid.html https://www.ulamart.com/Black-clay-small-pot-with-lid
+Redirect 301 /en/aniseed-spices.html https://www.ulamart.com/aniseed-spices
+Redirect 301 /en/cardamom-spices.html https://www.ulamart.com/cardamom-spices
+Redirect 301 /en/cumin-seeds.html https://www.ulamart.com/cumin-seeds
+Redirect 301 /en/fennel-seeds.html https://www.ulamart.com/fennel-seeds
+Redirect 301 /en/organic-kallundai-samba-rice.html https://www.ulamart.com/organic-kallundai-samba-rice
+Redirect 301 /en/pearl-millet-flakes.html https://www.ulamart.com/pearl-millet-flakes
+Redirect 301 /en/black-clay-house.html https://www.ulamart.com/black-clay-house
+Redirect 301 /en/Coloured-small-pot-for-kids.html https://www.ulamart.com/Coloured-small-pot-for-kids
+Redirect 301 /en/mappillai-samba-broken-rice-unpolished.html https://www.ulamart.com/mappillai-samba-broken-rice-unpolished
+Redirect 301 /en/combo-pack-pongal-special.html https://www.ulamart.com/combo-pack-pongal-special
+Redirect 301 /en/medium-kitchen-set-for-kids-white.html https://www.ulamart.com/medium-kitchen-set-for-kids-white
+Redirect 301 /en/black-rice-par-boiled.html https://www.ulamart.com/black-rice-par-boiled
+Redirect 301 /en/wet-clay.html https://www.ulamart.com/wet-clay
+Redirect 301 /en/Clay-foot-scrubber.html https://www.ulamart.com/Clay-foot-scrubber
+Redirect 301 /en/Flakes-Black-rice.html https://www.ulamart.com/Flakes-Black-rice
+Redirect 301 /en/valan-samba-rice.html https://www.ulamart.com/valan-samba-rice
+Redirect 301 /ta/sitemap https://www.ulamart.com/sitemap.xml
+Redirect 301 /en/sitemap https://www.ulamart.com/sitemap.xml
+Redirect 301 /sitemap https://www.ulamart.com/sitemap.xml
+Redirect 301 /en/best-sales https://www.ulamart.com/best-sales/
+Redirect 301 /en/contact-us https://www.ulamart.com/contact-us/
+Redirect 301 /en/new-products https://www.ulamart.com/new-products/
+Redirect 301 /en/rice/mappillai-samba-rice.html https://www.ulamart.com/rice/mappillai-samba-rice/
+Redirect 301 /en/rice/thooyamalli-rice.html https://www.ulamart.com/rice/thooyamalli-rice/
+Redirect 301 /en/rice/kichili-samba-rice.html https://www.ulamart.com/rice/kichili-samba-rice/
+Redirect 301 /en/rice/seeraga-samba-rice.html https://www.ulamart.com/rice/seeraga-samba-rice/
+Redirect 301 /en/rice/red-rice.html https://www.ulamart.com/rice/red-rice/
+Redirect 301 /en/rice/black-rice.html https://www.ulamart.com/rice/black-rice/
+Redirect 301 /en/rice/organic-poongar-boiled-hand-pounded-rice.html https://www.ulamart.com/rice/organic-poongar-boiled-hand-pounded-rice/
+Redirect 301 /en/oil/virgin-coconut-oil.html https://www.ulamart.com/oil/virgin-coconut-oil/
+Redirect 301 /en/oil/sesame-oil.html https://www.ulamart.com/oil/sesame-oil/
+Redirect 301 /en/oil/groundnut-oil.html https://www.ulamart.com/oil/groundnut-oil/
+Redirect 301 /en/honey/hill-honey.html https://www.ulamart.com/honey/hill-honey/
+Redirect 301 /en/honey/tulsi-honey.html https://www.ulamart.com/honey/tulsi-honey/
+Redirect 301 /en/honey/neem-honey.html https://www.ulamart.com/honey/neem-honey/
+Redirect 301 /en/honey/naaval-honey.html https://www.ulamart.com/honey/naaval-honey/
+Redirect 301 /en/honey/drumstick-honey.html https://www.ulamart.com/honey/drumstick-honey/
+Redirect 301 /en/rice/kattuyanam-rice.html https://www.ulamart.com/rice/kattuyanam-rice/
+Redirect 301 /en/rice/bamboo-rice.html https://www.ulamart.com/rice/bamboo-rice/
+Redirect 301 /en/rice/kullakar-rice.html https://www.ulamart.com/rice/kullakar-rice/
+Redirect 301 /en/millets/ragi-finger-millet.html https://www.ulamart.com/millets/ragi-finger-millet/
+Redirect 301 /en/millets/little-millet.html https://www.ulamart.com/millets/little-millet/
+Redirect 301 /en/millets/foxtail-millet.html https://www.ulamart.com/millets/foxtail-millet/
+Redirect 301 /en/pulses/unpolished-toor-dal-.html https://www.ulamart.com/pulses/unpolished-toor-dal-/
+Redirect 301 /en/rice/garudan-samba-rice.html https://www.ulamart.com/rice/garudan-samba-rice/
+Redirect 301 /en/rice/karun-kuruvai-rice.html https://www.ulamart.com/rice/karun-kuruvai-rice/
+Redirect 301 /en/rice/kudavazhai-red-rice.html https://www.ulamart.com/rice/kudavazhai-red-rice/
+Redirect 301 /en/rice/organic-ponni-rice.html https://www.ulamart.com/rice/organic-ponni-rice/
+Redirect 301 /en/millets/pearl-millet-kambu.html https://www.ulamart.com/millets/pearl-millet-kambu/
+Redirect 301 /en/personal-care/aloevera-cucumber-muringo-soap.html https://www.ulamart.com/personal-care/aloevera-cucumber-muringo-soap/
+Redirect 301 /en/personal-care/orange-peel-soap.html https://www.ulamart.com/personal-care/orange-peel-soap/
+Redirect 301 /en/personal-care/nalangu-maavu-soap.html https://www.ulamart.com/personal-care/nalangu-maavu-soap/
+Redirect 301 /en/personal-care/multani-mitti-herbal-soap.html https://www.ulamart.com/personal-care/multani-mitti-herbal-soap/
+Redirect 301 /en/sugar-salt/raw-natural-seasalt-non-iodised.html https://www.ulamart.com/sugar-salt/raw-natural-seasalt-non-iodised/
+Redirect 301 /en/sugar-salt/country-sugar.html https://www.ulamart.com/sugar-salt/country-sugar/
+Redirect 301 /en/spices/black-pepper-milagu.html https://www.ulamart.com/spices/black-pepper-milagu/
+Redirect 301 /en/rice/navara-rice.html https://www.ulamart.com/rice/navara-rice/
+Redirect 301 /en/herbal-products/shikakai-powder.html https://www.ulamart.com/herbal-products/shikakai-powder/
+Redirect 301 /en/charcoal-soap.html https://www.ulamart.com/charcoal-soap/
+Redirect 301 /en/clay-small-pot-with-lid.html https://www.ulamart.com/clay-small-pot-with-lid/
+Redirect 301 /en/clay-water-bottle.html https://www.ulamart.com/clay-water-bottle/
+Redirect 301 /en/small-pot-for-kids.html https://www.ulamart.com/small-pot-for-kids/
+Redirect 301 /en/clay-plate-and-tumbler.html https://www.ulamart.com/clay-plate-and-tumbler/
+Redirect 301 /en/clay-thattu-idli.html https://www.ulamart.com/clay-thattu-idli/
+Redirect 301 /en/clay-sprouter.html https://www.ulamart.com/clay-sprouter/
+Redirect 301 /en/personal-care/kuppaimeni-soap-handmade-herbal.html https://www.ulamart.com/personal-care/kuppaimeni-soap-handmade-herbal/
+Redirect 301 /en/personal-care/green-gram-soap.html https://www.ulamart.com/personal-care/green-gram-soap/
+Redirect 301 /en/personal-care/aloe-vera-neem-soap-herbal.html https://www.ulamart.com/personal-care/aloe-vera-neem-soap-herbal/
+Redirect 301 /en/millets/porso-millet.html https://www.ulamart.com/millets/porso-millet/
+Redirect 301 /en/millets/barnyard-millet.html https://www.ulamart.com/millets/barnyard-millet/
+Redirect 301 /en/pulses/urad-dal-black.html https://www.ulamart.com/pulses/urad-dal-black/
+Redirect 301 /en/rice/rajamudi-red-rice.html https://www.ulamart.com/rice/rajamudi-red-rice/
+Redirect 301 /en/oil/neemoil.html https://www.ulamart.com/oil/neemoil/
+Redirect 301 /en/spices/kudampuli-cambodge.html https://www.ulamart.com/spices/kudampuli-cambodge/
+Redirect 301 /en/flour/black-rice-flour.html https://www.ulamart.com/flour/black-rice-flour/
+Redirect 301 /en/pulses/green-gram-moong.html https://www.ulamart.com/pulses/green-gram-moong/
+Redirect 301 /en/flour/bridegroom-rice-flour.html https://www.ulamart.com/flour/bridegroom-rice-flour/
+Redirect 301 /en/content/terms-and-conditions-of-ulamart.html https://www.ulamart.com/content/terms-and-conditions-of-ulamart/
+Redirect 301 /en/content/about-ulamart-team.html https://www.ulamart.com/content/about-ulamart-team/
+Redirect 301 /en/content/privacy-policy.html https://www.ulamart.com/content/privacy-policy/
+Redirect 301 /en/content/shipping-and-return-policy-ulamartcom.html https://www.ulamart.com/content/shipping-and-return-policy-ulamartcom/
+Redirect 301 /ta/best-sales https://www.ulamart.com/ta/best-sales/
+Redirect 301 /ta/contact-us https://www.ulamart.com/ta/contact-us/
+Redirect 301 /ta/new-products https://www.ulamart.com/ta/new-products/
+Redirect 301 /ta/rice/mappillai-samba-red-rice.html https://www.ulamart.com/ta/rice/mappillai-samba-red-rice/
+Redirect 301 /ta/rice/thuyamalli.html https://www.ulamart.com/ta/rice/thuyamalli/
+Redirect 301 /ta/rice/kichili-samba.html https://www.ulamart.com/ta/rice/kichili-samba/
+Redirect 301 /ta/rice/seeraga-samba-rice.html https://www.ulamart.com/ta/rice/seeraga-samba-rice/
+Redirect 301 /ta/rice/sivappukavuni-arisi.html https://www.ulamart.com/ta/rice/sivappukavuni-arisi/
+Redirect 301 /ta/rice/karuppu-kavuni-arisi.html https://www.ulamart.com/ta/rice/karuppu-kavuni-arisi/
+Redirect 301 /ta/rice/poongar-kai-kutthal-arici.html https://www.ulamart.com/ta/rice/poongar-kai-kutthal-arici/
+Redirect 301 /ta/oil/thuyathenkai-oil.html https://www.ulamart.com/ta/oil/thuyathenkai-oil/
+Redirect 301 /ta/oil/nallennai-oil-.html https://www.ulamart.com/ta/oil/nallennai-oil-/
+Redirect 301 /ta/oil/kadalaaiennai.html https://www.ulamart.com/ta/oil/kadalaaiennai/
+Redirect 301 /ta/honey/maalaithen.html https://www.ulamart.com/ta/honey/maalaithen/
+Redirect 301 /ta/honey/tulsi-honey.html https://www.ulamart.com/ta/honey/tulsi-honey/
+Redirect 301 /ta/honey/vembuthen.html https://www.ulamart.com/ta/honey/vembuthen/
+Redirect 301 /ta/honey/naaval-honey.html https://www.ulamart.com/ta/honey/naaval-honey/
+Redirect 301 /ta/honey/murugaithen.html https://www.ulamart.com/ta/honey/murugaithen/
+Redirect 301 /ta/rice/kattuyanam-arisi.html https://www.ulamart.com/ta/rice/kattuyanam-arisi/
+Redirect 301 /ta/rice/ta-bamboo-rice.html https://www.ulamart.com/ta/rice/ta-bamboo-rice/
+Redirect 301 /ta/rice/kullakar-rice.html https://www.ulamart.com/ta/rice/kullakar-rice/
+Redirect 301 /ta/millets/organic-kelvaragu.html https://www.ulamart.com/ta/millets/organic-kelvaragu/
+Redirect 301 /ta/millets/samai.html https://www.ulamart.com/ta/millets/samai/
+Redirect 301 /ta/millets/organic-thinai.html https://www.ulamart.com/ta/millets/organic-thinai/
+Redirect 301 /ta/pulses/thuvaramparuppu.html https://www.ulamart.com/ta/pulses/thuvaramparuppu/
+Redirect 301 /ta/rice/garudan-samba.html https://www.ulamart.com/ta/rice/garudan-samba/
+Redirect 301 /ta/rice/karunguruvai-rice.html https://www.ulamart.com/ta/rice/karunguruvai-rice/
+Redirect 301 /ta/rice/kudavazhai-rice.html https://www.ulamart.com/ta/rice/kudavazhai-rice/
+Redirect 301 /ta/rice/Ponni-rice.html https://www.ulamart.com/ta/rice/Ponni-rice/
+Redirect 301 /ta/millets/Kambu.html https://www.ulamart.com/ta/millets/Kambu/
+Redirect 301 /ta/personal-care/kattrazhai-murungai-Vellari-soap.html https://www.ulamart.com/ta/personal-care/kattrazhai-murungai-Vellari-soap/
+Redirect 301 /ta/personal-care/orange-soap.html https://www.ulamart.com/ta/personal-care/orange-soap/
+Redirect 301 /ta/personal-care/nalangu-maavu.html https://www.ulamart.com/ta/personal-care/nalangu-maavu/
+Redirect 301 /ta/personal-care/multani-mitti-soap.html https://www.ulamart.com/ta/personal-care/multani-mitti-soap/
+Redirect 301 /ta/sugar-salt/Kadal-uppu-non-iodised.html https://www.ulamart.com/ta/sugar-salt/Kadal-uppu-non-iodised/
+Redirect 301 /ta/sugar-salt/nattu-sakkarai.html https://www.ulamart.com/ta/sugar-salt/nattu-sakkarai/
+Redirect 301 /ta/spices/karuppu-Milagu.html https://www.ulamart.com/ta/spices/karuppu-Milagu/
+Redirect 301 /ta/rice/navara-arisi.html https://www.ulamart.com/ta/rice/navara-arisi/
+Redirect 301 /ta/herbal-products/-100-.html https://www.ulamart.com/ta/herbal-products/-100-/
+Redirect 301 /ta/black-soap.html https://www.ulamart.com/ta/black-soap/
+Redirect 301 /ta/clay-pot-1.html https://www.ulamart.com/ta/clay-pot-1/
+Redirect 301 /ta/clay-water-jug.html https://www.ulamart.com/ta/clay-water-jug/
+Redirect 301 /ta/small-pot-for-kids.html https://www.ulamart.com/ta/small-pot-for-kids/
+Redirect 301 /ta/clay-plate-and-tumbler.html https://www.ulamart.com/ta/clay-plate-and-tumbler/
+Redirect 301 /ta/clay-thattu-idli.html https://www.ulamart.com/ta/clay-thattu-idli/
+Redirect 301 /ta/clay-sprouts-pot.html https://www.ulamart.com/ta/clay-sprouts-pot/
+Redirect 301 /ta/personal-care/kuppaimeni-soap-ta.html https://www.ulamart.com/ta/personal-care/kuppaimeni-soap-ta/
+Redirect 301 /ta/personal-care/greengram-soap-ta.html https://www.ulamart.com/ta/personal-care/greengram-soap-ta/
+Redirect 301 /ta/personal-care/aloe-vera-neem-soap-ta.html https://www.ulamart.com/ta/personal-care/aloe-vera-neem-soap-ta/
+Redirect 301 /ta/millets/panivaragu.html https://www.ulamart.com/ta/millets/panivaragu/
+Redirect 301 /ta/millets/kuthiraivali.html https://www.ulamart.com/ta/millets/kuthiraivali/
+Redirect 301 /ta/pulses/karuppu-ulundu.html https://www.ulamart.com/ta/pulses/karuppu-ulundu/
+Redirect 301 /ta/rice/rajamudi-rice.html https://www.ulamart.com/ta/rice/rajamudi-rice/
+Redirect 301 /ta/oil/veppamennai.html https://www.ulamart.com/ta/oil/veppamennai/
+Redirect 301 /ta/spices/kudampuli-tamarind.html https://www.ulamart.com/ta/spices/kudampuli-tamarind/
+Redirect 301 /ta/flour/karuppu-kavuni-arisi-maavu.html https://www.ulamart.com/ta/flour/karuppu-kavuni-arisi-maavu/
+Redirect 301 /ta/pulses/pasi-paruppu.html https://www.ulamart.com/ta/pulses/pasi-paruppu/
+Redirect 301 /ta/flour/mapillai-samba-arisi-maavu.html https://www.ulamart.com/ta/flour/mapillai-samba-arisi-maavu/
+Redirect 301 /ta/content/ulamart-.html https://www.ulamart.com/ta/content/ulamart-/
+Redirect 301 /ta/content/-.html https://www.ulamart.com/ta/content/-/
+Redirect 301 /ta/content/privacy-policy.html https://www.ulamart.com/ta/content/privacy-policy/
+Redirect 301 /ta/content/shipping-and-return-policy-ulamartcom.html https://www.ulamart.com/ta/content/shipping-and-return-policy-ulamartcom/
+Redirect 301 /clay-coffee-mug https://www.ulamart.com/earthen-clay-cookwares/clay-coffee-mug
+Redirect 301 /clay-cup-and-saucer https://www.ulamart.com/earthen-clay-cookwares/clay-cup-and-saucer
+Redirect 301 /medium-kitchen-set-for-kids https://www.ulamart.com/earthen-clay-cookwares/medium-kitchen-set-for-kids
+Redirect 301 /small-pot-for-kids https://www.ulamart.com/earthen-clay-cookwares/small-pot-for-kids
+Redirect 301 /clay-sprouter https://www.ulamart.com/earthen-clay-cookwares/clay-sprouter
+Redirect 301 /terracotta-buddha-idol https://www.ulamart.com/earthen-clay-cookwares/terracotta-buddha-idol
+Redirect 301 /shikakai-powder https://www.ulamart.com/herbal-products/shikakai-powder
+Redirect 301 /vetti-veru-root https://www.ulamart.com/herbal-products/vetti-veru-root
+Redirect 301 /clay-pen-stand https://www.ulamart.com/stationery/clay-pen-stand
+Redirect 301 /clay-plate-and-tumbler https://www.ulamart.com/earthen-clay-cookwares/clay-plate-and-tumbler
+Redirect 301 /small-size-clay-pot-with-lid https://www.ulamart.com/earthen-clay-cookwares/small-size-clay-pot-with-lid
+Redirect 301 /60am-kuruvai-organic-unpolished https://www.ulamart.com/rice/60am-kuruvai-organic-unpolished
+Redirect 301 /thooyamalli-rice https://www.ulamart.com/rice/thooyamalli-rice
+Redirect 301 /seeraga-samba-rice https://www.ulamart.com/rice/seeraga-samba-rice
+Redirect 301 /red-rice https://www.ulamart.com/rice/red-rice
+Redirect 301 /black-rice https://www.ulamart.com/rice/black-rice
+Redirect 301 /kudavazhai-red-rice https://www.ulamart.com/rice/kudavazhai-red-rice
+Redirect 301 /organic-ponni-rice https://www.ulamart.com/rice/organic-ponni-rice
+Redirect 301 /navara-rice https://www.ulamart.com/rice/navara-rice
+Redirect 301 /organic-idli-rice https://www.ulamart.com/rice/organic-idli-rice
+Redirect 301 /thanga-samba-rice https://www.ulamart.com/rice/thanga-samba-rice
+Redirect 301 /kattuyanam-organic-unpolished-rice-parboiled https://www.ulamart.com/rice/kattuyanam-organic-unpolished-rice-parboiled
+Redirect 301 /bamboo-rice https://www.ulamart.com/rice/bamboo-rice
+Redirect 301 /kullakar-rice https://www.ulamart.com/rice/kullakar-rice
+Redirect 301 /karun-kuruvai-rice https://www.ulamart.com/rice/karun-kuruvai-rice
+Redirect 301 /kichili-samba-rice https://www.ulamart.com/rice/kichili-samba-rice
+Redirect 301 /clay-small-pot-with-lid https://www.ulamart.com/earthen-clay-cookwares/clay-small-pot-with-lid
+Redirect 301 /clay-classic-coffee-cup https://www.ulamart.com/earthen-clay-cookwares/clay-classic-coffee-cup
+Redirect 301 /aloevera-cucumber-muringo-soap https://www.ulamart.com/personal-care/aloevera-cucumber-muringo-soap
+Redirect 301 /orange-peel-soap https://www.ulamart.com/personal-care/orange-peel-soap
+Redirect 301 /vettiveru-soap https://www.ulamart.com/personal-care/vettiveru-soap
+Redirect 301 /carrot-soap https://www.ulamart.com/personal-care/carrot-soap
+Redirect 301 /green-gram-soap https://www.ulamart.com/personal-care/green-gram-soap
+Redirect 301 /charcoal-soap https://www.ulamart.com/personal-care/charcoal-soap
+Redirect 301 /aloe-vera-neem-soap-herbal https://www.ulamart.com/personal-care/aloe-vera-neem-soap-herbal
+Redirect 301 /kuppaimeni-soap-handmade-herbal https://www.ulamart.com/personal-care/kuppaimeni-soap-handmade-herbal
+Redirect 301 /shikakai-soap https://www.ulamart.com/personal-care/shikakai-soap
+Redirect 301 /nalangu-maavu-soap https://www.ulamart.com/personal-care/nalangu-maavu-soap
+Redirect 301 /multani-mitti-herbal-soap https://www.ulamart.com/personal-care/multani-mitti-herbal-soap
+Redirect 301 /loofah-scrubber https://www.ulamart.com/personal-care/loofah-scrubber
+Redirect 301 /vetiver-face-mask https://www.ulamart.com/personal-care/vetiver-face-mask
+Redirect 301 /moringa-leaf-idly-powder https://www.ulamart.com/spices/moringa-leaf-idly-powder
+Redirect 301 /neemoil https://www.ulamart.com/herbal-products/neemoil
+Redirect 301 /a4-paper https://www.ulamart.com/stationery/a4-paper
+Redirect 301 /newspaper-pencil https://www.ulamart.com/stationery/newspaper-pencil
+Redirect 301 /rainbow-paper-pencil https://www.ulamart.com/stationery/rainbow-paper-pencil
+Redirect 301 /paper-pen https://www.ulamart.com/stationery/paper-pen
+Redirect 301 /ragi-finger-millet https://www.ulamart.com/millets/ragi-finger-millet
+Redirect 301 /little-millet https://www.ulamart.com/millets/little-millet
+Redirect 301 /foxtail-millet https://www.ulamart.com/millets/foxtail-millet
+Redirect 301 /pearl-millet-kambu https://www.ulamart.com/millets/pearl-millet-kambu
+Redirect 301 /porso-millet https://www.ulamart.com/millets/porso-millet
+Redirect 301 /barnyard-millet https://www.ulamart.com/millets/barnyard-millet
+Redirect 301 /urad-dal-black https://www.ulamart.com/pulses/urad-dal-black
+Redirect 301 /green-gram-moong https://www.ulamart.com/pulses/green-gram-moong
+Redirect 301 /split-urad-dal-black https://www.ulamart.com/pulses/split-urad-dal-black
+Redirect 301 /unpolished-toor-dal https://www.ulamart.com/pulses/unpolished-toor-dal
+Redirect 301 /country-sugar https://www.ulamart.com/sugar-salt/country-sugar
+Redirect 301 /black-rice-flour https://www.ulamart.com/flour/black-rice-flour
+Redirect 301 /bridegroom-rice-flour https://www.ulamart.com/flour/bridegroom-rice-flour
+Redirect 301 /organic-poongar-rice-flour https://www.ulamart.com/flour/organic-poongar-rice-flour
+Redirect 301 /urad-dal-white https://www.ulamart.com/pulses/urad-dal-white
+Redirect 301 /raw-natural-seasalt-non-iodised https://www.ulamart.com/sugar-salt/raw-natural-seasalt-non-iodised
+Redirect 301 /health-mix-porridge https://www.ulamart.com/flour/health-mix-porridge
+Redirect 301 /pearl-millet-flour-kambu https://www.ulamart.com/flour/pearl-millet-flour-kambu
+Redirect 301 /finger-millet-flour-ragi-flour https://www.ulamart.com/flour/finger-millet-flour-ragi-flour
+Redirect 301 /homemade-sambar-powder https://www.ulamart.com/spices/homemade-sambar-powder
+Redirect 301 /turmeric-powder https://www.ulamart.com/spices/turmeric-powder
+Redirect 301 /groundnut-oil https://www.ulamart.com/oil/groundnut-oil
+Redirect 301 /sesame-oil https://www.ulamart.com/oil/sesame-oil
+Redirect 301 /virgin-coconut-oil https://www.ulamart.com/oil/virgin-coconut-oil
+Redirect 301 /drumstick-honey https://www.ulamart.com/honey/drumstick-honey
+Redirect 301 /naaval-honey https://www.ulamart.com/honey/naaval-honey
+Redirect 301 /tulsi-honey https://www.ulamart.com/honey/tulsi-honey
+Redirect 301 /hill-honey https://www.ulamart.com/honey/hill-honey
+Redirect 301 /neem-honey https://www.ulamart.com/honey/neem-honey
+Redirect 301 /black-rice-vathal https://www.ulamart.com/fryums-flakes/black-rice-vathal
+Redirect 301 /flakes-mappillai-samba https://www.ulamart.com/fryums-flakes/flakes-mappillai-samba
+Redirect 301 /black-pepper-milagu https://www.ulamart.com/spices/black-pepper-milagu
+Redirect 301 /kattuyanam-raw-rice-organic-unpolished https://www.ulamart.com/rice/kattuyanam-raw-rice-organic-unpolished
+Redirect 301 /garudan-samba-rice https://www.ulamart.com/rice/garudan-samba-rice
+Redirect 301 /mappillai-samba-raw-rice https://www.ulamart.com/rice/mappillai-samba-raw-rice
+Redirect 301 /cow-ghee https://www.ulamart.com/oil/cow-ghee
+Redirect 301 /multi-purpose-shopping-bag-vegetable-bag https://www.ulamart.com/stationery/multi-purpose-shopping-bag-vegetable-bag
+Redirect 301 /mappillai-samba-organic-unpolished https://www.ulamart.com/rice/mappillai-samba-organic-unpolished
+Redirect 301 /kichili-samba-broken-rice https://www.ulamart.com/rice/kichili-samba-broken-rice
+Redirect 301 /organic-poongar-raw-hand-pounded-rice https://www.ulamart.com/rice/organic-poongar-raw-hand-pounded-rice
+Redirect 301 /organic-poongar-boiled-hand-pounded-rice https://www.ulamart.com/rice/organic-poongar-boiled-hand-pounded-rice
+Redirect 301 /ottadaiyan-rice https://www.ulamart.com/rice/ottadaiyan-rice
+Redirect 301 /medium-size-ladle-coconut-shell https://www.ulamart.com/wooden-utensils/medium-size-ladle-coconut-shell
+Redirect 301 /739 https://www.ulamart.com/catalog/product/view/id/739
+Redirect 301 /cotton-bag https://www.ulamart.com/stationery/cotton-bag
+Redirect 301 /executive-notebook-kit https://www.ulamart.com/stationery/executive-notebook-kit
+Redirect 301 /plantable-notebook-pack-of-5 https://www.ulamart.com/stationery/plantable-notebook-pack-of-5
+Redirect 301 /plantable-paper-pencils-pack-of-10 https://www.ulamart.com/stationery/plantable-paper-pencils-pack-of-10
+Redirect 301 /recycled-paper-drawing-pencils-10-shades https://www.ulamart.com/stationery/recycled-paper-drawing-pencils-10-shades
+Redirect 301 /plantable-paper-pen-with-holder-pack-of-5 https://www.ulamart.com/stationery/plantable-paper-pen-with-holder-pack-of-5
+Redirect 301 /palm-sugar https://www.ulamart.com/sugar-salt/palm-sugar
+Redirect 301 /palm-jaggery https://www.ulamart.com/sugar-salt/palm-jaggery
+Redirect 301 /clay-house https://www.ulamart.com/earthen-clay-cookwares/clay-house
+Redirect 301 /coconut-shell-spoon https://www.ulamart.com/wooden-utensils/coconut-shell-spoon
+Redirect 301 /pearl-millet-flakes https://www.ulamart.com/fryums-flakes/pearl-millet-flakes
+Redirect 301 /popcorn https://www.ulamart.com/pulses/popcorn
+Redirect 301 /cardamom-spices https://www.ulamart.com/spices/cardamom-spices
+Redirect 301 /cumin-seeds https://www.ulamart.com/spices/cumin-seeds
+Redirect 301 /clove-spices https://www.ulamart.com/spices/clove-spices
+Redirect 301 /fennel-seeds https://www.ulamart.com/spices/fennel-seeds
+Redirect 301 /aniseed-spices https://www.ulamart.com/spices/aniseed-spices
+Redirect 301 /black-clay-house https://www.ulamart.com/earthen-clay-cookwares/black-clay-house
+Redirect 301 /black-clay-small-pot-with-lid https://www.ulamart.com/earthen-clay-cookwares/black-clay-small-pot-with-lid
+Redirect 301 /coloured-small-pot-for-kids https://www.ulamart.com/earthen-clay-cookwares/coloured-small-pot-for-kids
+Redirect 301 /mappillai-samba-broken-rice-unpolished https://www.ulamart.com/rice/mappillai-samba-broken-rice-unpolished
+Redirect 301 /multi-flower-farm-honey https://www.ulamart.com/honey/multi-flower-farm-honey
+Redirect 301 /kudampuli-cambodge https://www.ulamart.com/spices/kudampuli-cambodge
+Redirect 301 /thooyamalli-raw-rice https://www.ulamart.com/rice/thooyamalli-raw-rice
+Redirect 301 /medium-kitchen-set-for-kids-white https://www.ulamart.com/earthen-clay-cookwares/medium-kitchen-set-for-kids-white
+Redirect 301 /mappillai-samba-vathal https://www.ulamart.com/fryums-flakes/mappillai-samba-vathal
+Redirect 301 /organic-sivan-samba-rice https://www.ulamart.com/rice/organic-sivan-samba-rice
+Redirect 301 /organic-kallundai-samba-rice https://www.ulamart.com/rice/organic-kallundai-samba-rice
+Redirect 301 /flakes-kattuyanam https://www.ulamart.com/fryums-flakes/flakes-kattuyanam
+Redirect 301 /double-sided-foot-scrubber-dead-skin-callus-remover-pedicure-tool https://www.ulamart.com/earthen-clay-cookwares/double-sided-foot-scrubber-dead-skin-callus-remover-pedicure-tool
+Redirect 301 /wet-clay https://www.ulamart.com/earthen-clay-cookwares/wet-clay
+Redirect 301 /flakes-black-rice https://www.ulamart.com/fryums-flakes/flakes-black-rice
+Redirect 301 /white-raw-rice https://www.ulamart.com/rice/white-raw-rice
+Redirect 301 /black-rice-par-boiled https://www.ulamart.com/rice/black-rice-par-boiled
+Redirect 301 /ta/clay-coffee-cup https://www.ulamart.com/ta/earthen-clay-cookwares/clay-coffee-cup
+Redirect 301 /ta/kaliman-cup-and-saucer https://www.ulamart.com/ta/earthen-clay-cookwares/kaliman-cup-and-saucer
+Redirect 301 /ta/choppu-saaman https://www.ulamart.com/ta/earthen-clay-cookwares/choppu-saaman
+Redirect 301 /ta/small-pot-for-kids https://www.ulamart.com/ta/earthen-clay-cookwares/small-pot-for-kids
+Redirect 301 /ta/clay-sprouts-pot https://www.ulamart.com/ta/earthen-clay-cookwares/clay-sprouts-pot
+Redirect 301 /ta/clay-buddha-idol https://www.ulamart.com/ta/earthen-clay-cookwares/clay-buddha-idol
+Redirect 301 /ta/shikakai-hair-wash https://www.ulamart.com/ta/herbal-products/shikakai-hair-wash
+Redirect 301 /ta/vetti-veru https://www.ulamart.com/ta/herbal-products/vetti-veru
+Redirect 301 /ta/earthen-pen-stand https://www.ulamart.com/ta/stationery/earthen-pen-stand
+Redirect 301 /ta/clay-plate-and-tumbler https://www.ulamart.com/ta/earthen-clay-cookwares/clay-plate-and-tumbler
+Redirect 301 /ta/small-size-clay-pot https://www.ulamart.com/ta/earthen-clay-cookwares/small-size-clay-pot
+Redirect 301 /ta/60am-kuruvai https://www.ulamart.com/ta/rice/60am-kuruvai
+Redirect 301 /ta/thuyamalli https://www.ulamart.com/ta/rice/thuyamalli
+Redirect 301 /ta/seeraga-samba-rice https://www.ulamart.com/ta/rice/seeraga-samba-rice
+Redirect 301 /ta/sivappukavuni-arisi https://www.ulamart.com/ta/rice/sivappukavuni-arisi
+Redirect 301 /ta/karuppu-kavuni-arisi https://www.ulamart.com/ta/rice/karuppu-kavuni-arisi
+Redirect 301 /ta/kudavazhai-rice https://www.ulamart.com/ta/rice/kudavazhai-rice
+Redirect 301 /ta/ponni-rice https://www.ulamart.com/ta/rice/ponni-rice
+Redirect 301 /ta/navara-arisi https://www.ulamart.com/ta/rice/navara-arisi
+Redirect 301 /ta/organic-idli-arisi https://www.ulamart.com/ta/rice/organic-idli-arisi
+Redirect 301 /ta/thanga-samba https://www.ulamart.com/ta/rice/thanga-samba
+Redirect 301 /ta/kattuyanam-arisi https://www.ulamart.com/ta/rice/kattuyanam-arisi
+Redirect 301 /ta/ta-bamboo-rice https://www.ulamart.com/ta/rice/ta-bamboo-rice
+Redirect 301 /ta/kullakar-rice https://www.ulamart.com/ta/rice/kullakar-rice
+Redirect 301 /ta/karunguruvai-rice https://www.ulamart.com/ta/rice/karunguruvai-rice
+Redirect 301 /ta/kichili-samba https://www.ulamart.com/ta/rice/kichili-samba
+Redirect 301 /ta/thayirsatti https://www.ulamart.com/ta/earthen-clay-cookwares/thayirsatti
+Redirect 301 /ta/earthen-classic-coffee-cup https://www.ulamart.com/ta/earthen-clay-cookwares/earthen-classic-coffee-cup
+Redirect 301 /ta/kattrazhai-murungai-vellari-soap https://www.ulamart.com/ta/personal-care/kattrazhai-murungai-vellari-soap
+Redirect 301 /ta/orange-soap https://www.ulamart.com/ta/personal-care/orange-soap
+Redirect 301 /ta/vetti-veru-soap https://www.ulamart.com/ta/personal-care/vetti-veru-soap
+Redirect 301 /ta/ta-carrot-soap https://www.ulamart.com/ta/personal-care/ta-carrot-soap
+Redirect 301 /ta/greengram-soap-ta https://www.ulamart.com/ta/personal-care/greengram-soap-ta
+Redirect 301 /ta/black-soap https://www.ulamart.com/ta/personal-care/black-soap
+Redirect 301 /ta/aloe-vera-neem-soap-ta https://www.ulamart.com/ta/personal-care/aloe-vera-neem-soap-ta
+Redirect 301 /ta/kuppaimeni-soap-ta https://www.ulamart.com/ta/personal-care/kuppaimeni-soap-ta
+Redirect 301 /ta/shikakai-herb-soap https://www.ulamart.com/ta/personal-care/shikakai-herb-soap
+Redirect 301 /ta/nalangu-maavu https://www.ulamart.com/ta/personal-care/nalangu-maavu
+Redirect 301 /ta/multani-mitti-soap https://www.ulamart.com/ta/personal-care/multani-mitti-soap
+Redirect 301 /ta/peerkangai-scrubber https://www.ulamart.com/ta/personal-care/peerkangai-scrubber
+Redirect 301 /ta/vetiver-muga-kavasam https://www.ulamart.com/ta/personal-care/vetiver-muga-kavasam
+Redirect 301 /ta/veetu-murungai-podi https://www.ulamart.com/ta/spices/veetu-murungai-podi
+Redirect 301 /ta/veppamennai https://www.ulamart.com/ta/herbal-products/veppamennai
+Redirect 301 /ta/a4-sheets https://www.ulamart.com/ta/stationery/a4-sheets
+Redirect 301 /ta/newspaperu-pencil https://www.ulamart.com/ta/stationery/newspaperu-pencil
+Redirect 301 /ta/paper-pencil https://www.ulamart.com/ta/stationery/paper-pencil
+Redirect 301 /ta/paperu-pen https://www.ulamart.com/ta/stationery/paperu-pen
+Redirect 301 /ta/organic-kelvaragu https://www.ulamart.com/ta/millets/organic-kelvaragu
+Redirect 301 /ta/samai https://www.ulamart.com/ta/millets/samai
+Redirect 301 /ta/organic-thinai https://www.ulamart.com/ta/millets/organic-thinai
+Redirect 301 /ta/kambu https://www.ulamart.com/ta/millets/kambu
+Redirect 301 /ta/panivaragu https://www.ulamart.com/ta/millets/panivaragu
+Redirect 301 /ta/kuthiraivali https://www.ulamart.com/ta/millets/kuthiraivali
+Redirect 301 /ta/karuppu-ulundu https://www.ulamart.com/ta/pulses/karuppu-ulundu
+Redirect 301 /ta/pasi-paruppu https://www.ulamart.com/ta/pulses/pasi-paruppu
+Redirect 301 /ta/odacha-karuppu-ulundu https://www.ulamart.com/ta/pulses/odacha-karuppu-ulundu
+Redirect 301 /ta/thuvaramparuppu https://www.ulamart.com/ta/pulses/thuvaramparuppu
+Redirect 301 /ta/nattu-sakkarai https://www.ulamart.com/ta/sugar-salt/nattu-sakkarai
+Redirect 301 /ta/karuppu-kavuni-arisi-maavu https://www.ulamart.com/ta/flour/karuppu-kavuni-arisi-maavu
+Redirect 301 /ta/mapillai-samba-arisi-maavu https://www.ulamart.com/ta/flour/mapillai-samba-arisi-maavu
+Redirect 301 /ta/poongar-arisi-flour https://www.ulamart.com/ta/flour/poongar-arisi-flour
+Redirect 301 /ta/vellai-ulundu https://www.ulamart.com/ta/pulses/vellai-ulundu
+Redirect 301 /ta/kadal-uppu-non-iodised https://www.ulamart.com/ta/sugar-salt/kadal-uppu-non-iodised
+Redirect 301 /ta/sathu-maavu-kanji https://www.ulamart.com/ta/flour/sathu-maavu-kanji
+Redirect 301 /ta/kambu-mavu https://www.ulamart.com/ta/flour/kambu-mavu
+Redirect 301 /ta/kelvaragu-mavu https://www.ulamart.com/ta/flour/kelvaragu-mavu
+Redirect 301 /ta/veetu-sambar-podi https://www.ulamart.com/ta/spices/veetu-sambar-podi
+Redirect 301 /ta/manjal-thool https://www.ulamart.com/ta/spices/manjal-thool
+Redirect 301 /ta/kadalaaiennai https://www.ulamart.com/ta/oil/kadalaaiennai
+Redirect 301 /ta/nallennai-oil- https://www.ulamart.com/ta/oil/nallennai-oil-
+Redirect 301 /ta/thuyathenkai-oil https://www.ulamart.com/ta/oil/thuyathenkai-oil
+Redirect 301 /ta/murugaithen https://www.ulamart.com/ta/honey/murugaithen
+Redirect 301 /ta/naaval-honey https://www.ulamart.com/ta/honey/naaval-honey
+Redirect 301 /ta/tulsi-honey https://www.ulamart.com/ta/honey/tulsi-honey
+Redirect 301 /ta/maalaithen https://www.ulamart.com/ta/honey/maalaithen
+Redirect 301 /ta/vembuthen https://www.ulamart.com/ta/honey/vembuthen
+Redirect 301 /ta/karuppu-kavuni-kanchi-vathal https://www.ulamart.com/ta/fryums-flakes/karuppu-kavuni-kanchi-vathal
+Redirect 301 /ta/avul-mappillai-samba https://www.ulamart.com/ta/fryums-flakes/avul-mappillai-samba
+Redirect 301 /ta/karuppu-milagu https://www.ulamart.com/ta/spices/karuppu-milagu
+Redirect 301 /ta/copy-of-combo-pack-earthen-pen-stand-paper-pen https://www.ulamart.com/ta/combo-pack/copy-of-combo-pack-earthen-pen-stand-paper-pen
+Redirect 301 /ta/kattuyanam-pachai-arisi https://www.ulamart.com/ta/rice/kattuyanam-pachai-arisi
+Redirect 301 /ta/garudan-samba https://www.ulamart.com/ta/rice/garudan-samba
+Redirect 301 /ta/mappillai-samba-pachai-arisi https://www.ulamart.com/ta/rice/mappillai-samba-pachai-arisi
+Redirect 301 /ta/country-cow-ghee https://www.ulamart.com/ta/oil/country-cow-ghee
+Redirect 301 /ta/multi-purpose-shopping-bag-vegetable-bag https://www.ulamart.com/ta/stationery/multi-purpose-shopping-bag-vegetable-bag
+Redirect 301 /ta/mappillai-samba-red-rice https://www.ulamart.com/ta/rice/mappillai-samba-red-rice
+Redirect 301 /ta/kichili-samba-idisal-arisi https://www.ulamart.com/ta/rice/kichili-samba-idisal-arisi
+Redirect 301 /ta/organic-poongar-raw-hand-pounded-rice https://www.ulamart.com/ta/rice/organic-poongar-raw-hand-pounded-rice
+Redirect 301 /ta/poongar-kai-kutthal-arici https://www.ulamart.com/ta/rice/poongar-kai-kutthal-arici
+Redirect 301 /ta/ottadayan-arisi https://www.ulamart.com/ta/rice/ottadayan-arisi
+Redirect 301 /ta/karandi-coconut-shell https://www.ulamart.com/ta/wooden-utensils/karandi-coconut-shell
+Redirect 301 /ta/serving-spoon-coconut-shell https://www.ulamart.com/ta/catalog/product/view/id/serving-spoon-coconut-shell
+Redirect 301 /ta/thuni-pai https://www.ulamart.com/ta/stationery/thuni-pai
+Redirect 301 /ta/executive-notebook-kit-ulamartcom https://www.ulamart.com/ta/stationery/executive-notebook-kit-ulamartcom
+Redirect 301 /ta/plantable-notebook-pack-of-5-ulamartcom https://www.ulamart.com/ta/stationery/plantable-notebook-pack-of-5-ulamartcom
+Redirect 301 /ta/plantable-paper-pencils-pack-of-10-ulamartcom https://www.ulamart.com/ta/stationery/plantable-paper-pencils-pack-of-10-ulamartcom
+Redirect 301 /ta/recycled-paper-drawing-pencils-10-shades-ulamartcom https://www.ulamart.com/ta/stationery/recycled-paper-drawing-pencils-10-shades-ulamartcom
+Redirect 301 /ta/copy-of-pack-of-5 https://www.ulamart.com/ta/stationery/copy-of-pack-of-5
+Redirect 301 /ta/panakarkandu https://www.ulamart.com/ta/sugar-salt/panakarkandu
+Redirect 301 /ta/pana-karupatti https://www.ulamart.com/ta/sugar-salt/pana-karupatti
+Redirect 301 /ta/clay-veedu https://www.ulamart.com/ta/earthen-clay-cookwares/clay-veedu
+Redirect 301 /ta/spoon-coconut-shell https://www.ulamart.com/ta/wooden-utensils/spoon-coconut-shell
+Redirect 301 /ta/kambu-aval https://www.ulamart.com/ta/fryums-flakes/kambu-aval
+Redirect 301 /ta/country-popcorn https://www.ulamart.com/ta/pulses/country-popcorn
+Redirect 301 /ta/yelakai https://www.ulamart.com/ta/spices/yelakai
+Redirect 301 /ta/seeragam https://www.ulamart.com/ta/spices/seeragam
+Redirect 301 /ta/kirambu https://www.ulamart.com/ta/spices/kirambu
+Redirect 301 /ta/soombu https://www.ulamart.com/ta/spices/soombu
+Redirect 301 /ta/annachipoo https://www.ulamart.com/ta/spices/annachipoo
+Redirect 301 /ta/black-clay-veedu https://www.ulamart.com/ta/earthen-clay-cookwares/black-clay-veedu
+Redirect 301 /ta/karupu-thayirsatti https://www.ulamart.com/ta/earthen-clay-cookwares/karupu-thayirsatti
+Redirect 301 /ta/colour-small-pot-for-kids https://www.ulamart.com/ta/earthen-clay-cookwares/colour-small-pot-for-kids
+Redirect 301 /ta/mappillai-samba-broken-rice https://www.ulamart.com/ta/rice/mappillai-samba-broken-rice
+Redirect 301 /ta/farm-honey https://www.ulamart.com/ta/honey/farm-honey
+Redirect 301 /ta/kudampuli-tamarind https://www.ulamart.com/ta/spices/kudampuli-tamarind
+Redirect 301 /ta/thuyamalli-pachai-arisi https://www.ulamart.com/ta/rice/thuyamalli-pachai-arisi
+Redirect 301 /ta/choppu-saaman-kolam https://www.ulamart.com/ta/earthen-clay-cookwares/choppu-saaman-kolam
+Redirect 301 /ta/mappillai-samba-kanchi-vathal https://www.ulamart.com/ta/fryums-flakes/mappillai-samba-kanchi-vathal
+Redirect 301 /ta/sivan-samba-arisi https://www.ulamart.com/ta/rice/sivan-samba-arisi
+Redirect 301 /ta/kallundai-samba-arisi https://www.ulamart.com/ta/rice/kallundai-samba-arisi
+Redirect 301 /ta/avul-kattuyanam https://www.ulamart.com/ta/fryums-flakes/avul-kattuyanam
+Redirect 301 /ta/double-sided-foot-scrubber-dead-skin-callus-remover-pedicure-tool https://www.ulamart.com/ta/earthen-clay-cookwares/double-sided-foot-scrubber-dead-skin-callus-remover-pedicure-tool
+Redirect 301 /ta/wet-clay https://www.ulamart.com/ta/earthen-clay-cookwares/wet-clay
+Redirect 301 /ta/valan-samba-rice https://www.ulamart.com/ta/rice/valan-samba-rice
+Redirect 301 /ta/aval-karuppu-kavuni https://www.ulamart.com/ta/fryums-flakes/aval-karuppu-kavuni
+Redirect 301 /ta/white-raw-rice https://www.ulamart.com/ta/rice/white-raw-rice
+Redirect 301 /ta/karuppu-kavuni-puzhungal-arisi.html https://www.ulamart.com/ta/rice/karuppu-kavuni-puzhungal-arisi.html
+Redirect 301 /ta/dummy https://www.ulamart.com/ta/rice/dummy
+Redirect 301 /ta/all-products/clay-coffee-cup https://www.ulamart.com/ta/earthen-clay-cookwares/clay-coffee-cup
+Redirect 301 /ta/all-products/kaliman-cup-and-saucer https://www.ulamart.com/ta/earthen-clay-cookwares/kaliman-cup-and-saucer
+Redirect 301 /ta/all-products/choppu-saaman https://www.ulamart.com/ta/earthen-clay-cookwares/choppu-saaman
+Redirect 301 /ta/all-products/small-pot-for-kids https://www.ulamart.com/ta/earthen-clay-cookwares/small-pot-for-kids
+Redirect 301 /ta/all-products/clay-sprouts-pot https://www.ulamart.com/ta/earthen-clay-cookwares/clay-sprouts-pot
+Redirect 301 /ta/all-products/clay-buddha-idol https://www.ulamart.com/ta/earthen-clay-cookwares/clay-buddha-idol
+Redirect 301 /ta/all-products/shikakai-hair-wash https://www.ulamart.com/ta/herbal-products/shikakai-hair-wash
+Redirect 301 /ta/all-products/vetti-veru https://www.ulamart.com/ta/herbal-products/vetti-veru
+Redirect 301 /ta/all-products/earthen-pen-stand https://www.ulamart.com/ta/stationery/earthen-pen-stand
+Redirect 301 /ta/all-products/clay-plate-and-tumbler https://www.ulamart.com/ta/earthen-clay-cookwares/clay-plate-and-tumbler
+Redirect 301 /ta/all-products/small-size-clay-pot https://www.ulamart.com/ta/earthen-clay-cookwares/small-size-clay-pot
+Redirect 301 /ta/all-products/60am-kuruvai https://www.ulamart.com/ta/rice/60am-kuruvai
+Redirect 301 /ta/all-products/thuyamalli https://www.ulamart.com/ta/rice/thuyamalli
+Redirect 301 /ta/all-products/seeraga-samba-rice https://www.ulamart.com/ta/rice/seeraga-samba-rice
+Redirect 301 /ta/all-products/sivappukavuni-arisi https://www.ulamart.com/ta/rice/sivappukavuni-arisi
+Redirect 301 /ta/all-products/karuppu-kavuni-arisi https://www.ulamart.com/ta/rice/karuppu-kavuni-arisi
+Redirect 301 /ta/all-products/kudavazhai-rice https://www.ulamart.com/ta/rice/kudavazhai-rice
+Redirect 301 /ta/all-products/ponni-rice https://www.ulamart.com/ta/rice/ponni-rice
+Redirect 301 /ta/all-products/navara-arisi https://www.ulamart.com/ta/rice/navara-arisi
+Redirect 301 /ta/all-products/organic-idli-arisi https://www.ulamart.com/ta/rice/organic-idli-arisi
+Redirect 301 /ta/all-products/thanga-samba https://www.ulamart.com/ta/rice/thanga-samba
+Redirect 301 /ta/all-products/kattuyanam-arisi https://www.ulamart.com/ta/rice/kattuyanam-arisi
+Redirect 301 /ta/all-products/ta-bamboo-rice https://www.ulamart.com/ta/rice/ta-bamboo-rice
+Redirect 301 /ta/all-products/kullakar-rice https://www.ulamart.com/ta/rice/kullakar-rice
+Redirect 301 /ta/all-products/karunguruvai-rice https://www.ulamart.com/ta/rice/karunguruvai-rice
+Redirect 301 /ta/all-products/kichili-samba https://www.ulamart.com/ta/rice/kichili-samba
+Redirect 301 /ta/all-products/thayirsatti https://www.ulamart.com/ta/earthen-clay-cookwares/thayirsatti
+Redirect 301 /ta/all-products/earthen-classic-coffee-cup https://www.ulamart.com/ta/earthen-clay-cookwares/earthen-classic-coffee-cup
+Redirect 301 /ta/all-products/kattrazhai-murungai-vellari-soap https://www.ulamart.com/ta/personal-care/kattrazhai-murungai-vellari-soap
+Redirect 301 /ta/all-products/orange-soap https://www.ulamart.com/ta/personal-care/orange-soap
+Redirect 301 /ta/all-products/vetti-veru-soap https://www.ulamart.com/ta/personal-care/vetti-veru-soap
+Redirect 301 /ta/all-products/ta-carrot-soap https://www.ulamart.com/ta/personal-care/ta-carrot-soap
+Redirect 301 /ta/all-products/greengram-soap-ta https://www.ulamart.com/ta/personal-care/greengram-soap-ta
+Redirect 301 /ta/all-products/black-soap https://www.ulamart.com/ta/personal-care/black-soap
+Redirect 301 /ta/all-products/aloe-vera-neem-soap-ta https://www.ulamart.com/ta/personal-care/aloe-vera-neem-soap-ta
+Redirect 301 /ta/all-products/kuppaimeni-soap-ta https://www.ulamart.com/ta/personal-care/kuppaimeni-soap-ta
+Redirect 301 /ta/all-products/shikakai-herb-soap https://www.ulamart.com/ta/personal-care/shikakai-herb-soap
+Redirect 301 /ta/all-products/nalangu-maavu https://www.ulamart.com/ta/personal-care/nalangu-maavu
+Redirect 301 /ta/all-products/multani-mitti-soap https://www.ulamart.com/ta/personal-care/multani-mitti-soap
+Redirect 301 /ta/all-products/peerkangai-scrubber https://www.ulamart.com/ta/personal-care/peerkangai-scrubber
+Redirect 301 /ta/all-products/vetiver-muga-kavasam https://www.ulamart.com/ta/personal-care/vetiver-muga-kavasam
+Redirect 301 /ta/all-products/veetu-murungai-podi https://www.ulamart.com/ta/spices/veetu-murungai-podi
+Redirect 301 /ta/all-products/veppamennai https://www.ulamart.com/ta/herbal-products/veppamennai
+Redirect 301 /ta/all-products/a4-sheets https://www.ulamart.com/ta/stationery/a4-sheets
+Redirect 301 /ta/all-products/newspaperu-pencil https://www.ulamart.com/ta/stationery/newspaperu-pencil
+Redirect 301 /ta/all-products/paper-pencil https://www.ulamart.com/ta/stationery/paper-pencil
+Redirect 301 /ta/all-products/paperu-pen https://www.ulamart.com/ta/stationery/paperu-pen
+Redirect 301 /ta/all-products/organic-kelvaragu https://www.ulamart.com/ta/millets/organic-kelvaragu
+Redirect 301 /ta/all-products/samai https://www.ulamart.com/ta/millets/samai
+Redirect 301 /ta/all-products/organic-thinai https://www.ulamart.com/ta/millets/organic-thinai
+Redirect 301 /ta/all-products/kambu https://www.ulamart.com/ta/millets/kambu
+Redirect 301 /ta/all-products/panivaragu https://www.ulamart.com/ta/millets/panivaragu
+Redirect 301 /ta/all-products/kuthiraivali https://www.ulamart.com/ta/millets/kuthiraivali
+Redirect 301 /ta/all-products/karuppu-ulundu https://www.ulamart.com/ta/pulses/karuppu-ulundu
+Redirect 301 /ta/all-products/pasi-paruppu https://www.ulamart.com/ta/pulses/pasi-paruppu
+Redirect 301 /ta/all-products/odacha-karuppu-ulundu https://www.ulamart.com/ta/pulses/odacha-karuppu-ulundu
+Redirect 301 /ta/all-products/thuvaramparuppu https://www.ulamart.com/ta/pulses/thuvaramparuppu
+Redirect 301 /ta/all-products/nattu-sakkarai https://www.ulamart.com/ta/sugar-salt/nattu-sakkarai
+Redirect 301 /ta/all-products/karuppu-kavuni-arisi-maavu https://www.ulamart.com/ta/flour/karuppu-kavuni-arisi-maavu
+Redirect 301 /ta/all-products/mapillai-samba-arisi-maavu https://www.ulamart.com/ta/flour/mapillai-samba-arisi-maavu
+Redirect 301 /ta/all-products/poongar-arisi-flour https://www.ulamart.com/ta/flour/poongar-arisi-flour
+Redirect 301 /ta/all-products/vellai-ulundu https://www.ulamart.com/ta/pulses/vellai-ulundu
+Redirect 301 /ta/all-products/kadal-uppu-non-iodised https://www.ulamart.com/ta/sugar-salt/kadal-uppu-non-iodised
+Redirect 301 /ta/all-products/sathu-maavu-kanji https://www.ulamart.com/ta/flour/sathu-maavu-kanji
+Redirect 301 /ta/all-products/kambu-mavu https://www.ulamart.com/ta/flour/kambu-mavu
+Redirect 301 /ta/all-products/kelvaragu-mavu https://www.ulamart.com/ta/flour/kelvaragu-mavu
+Redirect 301 /ta/all-products/veetu-sambar-podi https://www.ulamart.com/ta/spices/veetu-sambar-podi
+Redirect 301 /ta/all-products/manjal-thool https://www.ulamart.com/ta/spices/manjal-thool
+Redirect 301 /ta/all-products/kadalaaiennai https://www.ulamart.com/ta/oil/kadalaaiennai
+Redirect 301 /ta/all-products/nallennai-oil- https://www.ulamart.com/ta/oil/nallennai-oil-
+Redirect 301 /ta/all-products/thuyathenkai-oil https://www.ulamart.com/ta/oil/thuyathenkai-oil
+Redirect 301 /ta/all-products/murugaithen https://www.ulamart.com/ta/honey/murugaithen
+Redirect 301 /ta/all-products/naaval-honey https://www.ulamart.com/ta/honey/naaval-honey
+Redirect 301 /ta/all-products/tulsi-honey https://www.ulamart.com/ta/honey/tulsi-honey
+Redirect 301 /ta/all-products/maalaithen https://www.ulamart.com/ta/honey/maalaithen
+Redirect 301 /ta/all-products/vembuthen https://www.ulamart.com/ta/honey/vembuthen
+Redirect 301 /ta/all-products/karuppu-kavuni-kanchi-vathal https://www.ulamart.com/ta/fryums-flakes/karuppu-kavuni-kanchi-vathal
+Redirect 301 /ta/all-products/avul-mappillai-samba https://www.ulamart.com/ta/fryums-flakes/avul-mappillai-samba
+Redirect 301 /ta/all-products/karuppu-milagu https://www.ulamart.com/ta/spices/karuppu-milagu
+Redirect 301 /ta/all-products/copy-of-combo-pack-earthen-pen-stand-paper-pen https://www.ulamart.com/ta/combo-pack/copy-of-combo-pack-earthen-pen-stand-paper-pen
+Redirect 301 /ta/all-products/kattuyanam-pachai-arisi https://www.ulamart.com/ta/rice/kattuyanam-pachai-arisi
+Redirect 301 /ta/all-products/garudan-samba https://www.ulamart.com/ta/rice/garudan-samba
+Redirect 301 /ta/all-products/mappillai-samba-pachai-arisi https://www.ulamart.com/ta/rice/mappillai-samba-pachai-arisi
+Redirect 301 /ta/all-products/country-cow-ghee https://www.ulamart.com/ta/oil/country-cow-ghee
+Redirect 301 /ta/all-products/multi-purpose-shopping-bag-vegetable-bag https://www.ulamart.com/ta/stationery/multi-purpose-shopping-bag-vegetable-bag
+Redirect 301 /ta/all-products/mappillai-samba-red-rice https://www.ulamart.com/ta/rice/mappillai-samba-red-rice
+Redirect 301 /ta/all-products/kichili-samba-idisal-arisi https://www.ulamart.com/ta/rice/kichili-samba-idisal-arisi
+Redirect 301 /ta/all-products/organic-poongar-raw-hand-pounded-rice https://www.ulamart.com/ta/rice/organic-poongar-raw-hand-pounded-rice
+Redirect 301 /ta/all-products/poongar-kai-kutthal-arici https://www.ulamart.com/ta/rice/poongar-kai-kutthal-arici
+Redirect 301 /ta/all-products/ottadayan-arisi https://www.ulamart.com/ta/rice/ottadayan-arisi
+Redirect 301 /ta/all-products/karandi-coconut-shell https://www.ulamart.com/ta/wooden-utensils/karandi-coconut-shell
+Redirect 301 /ta/wooden-utensils/serving-spoon-coconut-shell https://www.ulamart.com/ta/catalog/product/view/id/serving-spoon-coconut-shell
+Redirect 301 /ta/all-products/thuni-pai https://www.ulamart.com/ta/stationery/thuni-pai
+Redirect 301 /ta/all-products/executive-notebook-kit-ulamartcom https://www.ulamart.com/ta/stationery/executive-notebook-kit-ulamartcom
+Redirect 301 /ta/all-products/plantable-notebook-pack-of-5-ulamartcom https://www.ulamart.com/ta/stationery/plantable-notebook-pack-of-5-ulamartcom
+Redirect 301 /ta/all-products/plantable-paper-pencils-pack-of-10-ulamartcom https://www.ulamart.com/ta/stationery/plantable-paper-pencils-pack-of-10-ulamartcom
+Redirect 301 /ta/all-products/recycled-paper-drawing-pencils-10-shades-ulamartcom https://www.ulamart.com/ta/stationery/recycled-paper-drawing-pencils-10-shades-ulamartcom
+Redirect 301 /ta/all-products/copy-of-pack-of-5 https://www.ulamart.com/ta/stationery/copy-of-pack-of-5
+Redirect 301 /ta/all-products/panakarkandu https://www.ulamart.com/ta/sugar-salt/panakarkandu
+Redirect 301 /ta/all-products/pana-karupatti https://www.ulamart.com/ta/sugar-salt/pana-karupatti
+Redirect 301 /ta/all-products/clay-veedu https://www.ulamart.com/ta/earthen-clay-cookwares/clay-veedu
+Redirect 301 /ta/all-products/spoon-coconut-shell https://www.ulamart.com/ta/wooden-utensils/spoon-coconut-shell
+Redirect 301 /ta/all-products/kambu-aval https://www.ulamart.com/ta/fryums-flakes/kambu-aval
+Redirect 301 /ta/all-products/country-popcorn https://www.ulamart.com/ta/pulses/country-popcorn
+Redirect 301 /ta/all-products/yelakai https://www.ulamart.com/ta/spices/yelakai
+Redirect 301 /ta/all-products/seeragam https://www.ulamart.com/ta/spices/seeragam
+Redirect 301 /ta/all-products/kirambu https://www.ulamart.com/ta/spices/kirambu
+Redirect 301 /ta/all-products/soombu https://www.ulamart.com/ta/spices/soombu
+Redirect 301 /ta/all-products/annachipoo https://www.ulamart.com/ta/spices/annachipoo
+Redirect 301 /ta/all-products/black-clay-veedu https://www.ulamart.com/ta/earthen-clay-cookwares/black-clay-veedu
+Redirect 301 /ta/all-products/karupu-thayirsatti https://www.ulamart.com/ta/earthen-clay-cookwares/karupu-thayirsatti
+Redirect 301 /ta/all-products/colour-small-pot-for-kids https://www.ulamart.com/ta/earthen-clay-cookwares/colour-small-pot-for-kids
+Redirect 301 /ta/all-products/mappillai-samba-broken-rice https://www.ulamart.com/ta/rice/mappillai-samba-broken-rice
+Redirect 301 /ta/all-products/farm-honey https://www.ulamart.com/ta/honey/farm-honey
+Redirect 301 /ta/all-products/kudampuli-tamarind https://www.ulamart.com/ta/spices/kudampuli-tamarind
+Redirect 301 /ta/all-products/thuyamalli-pachai-arisi https://www.ulamart.com/ta/rice/thuyamalli-pachai-arisi
+Redirect 301 /ta/all-products/choppu-saaman-kolam https://www.ulamart.com/ta/earthen-clay-cookwares/choppu-saaman-kolam
+Redirect 301 /ta/all-products/mappillai-samba-kanchi-vathal https://www.ulamart.com/ta/fryums-flakes/mappillai-samba-kanchi-vathal
+Redirect 301 /ta/all-products/sivan-samba-arisi https://www.ulamart.com/ta/rice/sivan-samba-arisi
+Redirect 301 /ta/all-products/kallundai-samba-arisi https://www.ulamart.com/ta/rice/kallundai-samba-arisi
+Redirect 301 /ta/all-products/avul-kattuyanam https://www.ulamart.com/ta/fryums-flakes/avul-kattuyanam
+Redirect 301 /ta/all-products/double-sided-foot-scrubber-dead-skin-callus-remover-pedicure-tool https://www.ulamart.com/ta/earthen-clay-cookwares/double-sided-foot-scrubber-dead-skin-callus-remover-pedicure-tool
+Redirect 301 /ta/all-products/wet-clay https://www.ulamart.com/ta/earthen-clay-cookwares/wet-clay
+Redirect 301 /ta/all-products/valan-samba-rice https://www.ulamart.com/ta/rice/valan-samba-rice
+Redirect 301 /ta/all-products/aval-karuppu-kavuni https://www.ulamart.com/ta/fryums-flakes/aval-karuppu-kavuni
+Redirect 301 /ta/all-products/white-raw-rice https://www.ulamart.com/ta/rice/white-raw-rice
+Redirect 301 /ta/all-products/karuppu-kavuni-puzhungal-arisi.html https://www.ulamart.com/ta/rice/karuppu-kavuni-puzhungal-arisi.html
+Redirect 301 /ta/all-products/dummy https://www.ulamart.com/ta/rice/dummy
+Redirect 301 /ta/earthen-clay-cookwares/black-clay-house https://www.ulamart.com/ta/earthen-clay-cookwares/black-clay-veedu
+Redirect 301 /ta/pulses/unpolished-toor-dal https://www.ulamart.com/ta/pulses/thuvaramparuppu 
+Redirect 301 /ta/sugar-salt/country-sugar https://www.ulamart.com/ta/sugar-salt/nattu-sakkarai
+Redirect 301 /ta/rice/ottadaiyan-rice https://www.ulamart.com/ta/rice/ottadayan-arisi
+Redirect 301 /ta/pulses/urad-dal-white https://www.ulamart.com/ta/pulses/vellai-ulundu
+Redirect 301 /ta/sugar-salt/palm-sugar https://www.ulamart.com/ta/sugar-salt/panakarkandu
+Redirect 301 /ta/oil/neemoil https://www.ulamart.com/ta/oil/veppamennai
+Redirect 301 /order/ https://www.ulamart.com/checkout/cart
+Redirect 301 /ta/order/ https://www.ulamart.com/ta/checkout/cart
+Redirect 301 /order https://www.ulamart.com/checkout/cart
+Redirect 301 /ta/order https://www.ulamart.com/ta/checkout/cart
+Redirect 301 https://www.ulamart.com/contact/index/ https://www.ulamart.com/contact-us
+Redirect 301 /rice/clay-foot-scrubber https://www.ulamart.com/earthen-clay-cookwares/clay-foot-scrubber
+Redirect 301 /clay-cookwares/clay-foot-scrubber https://www.ulamart.com/earthen-clay-cookwares/clay-foot-scrubber
+Redirect 301 /clay-cookwares/coloured-small-pot-for-kids https://www.ulamart.com/earthen-clay-cookwares/coloured-small-pot-for-kids

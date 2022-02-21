@@ -1,0 +1,125 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+
+/**
+ * Product view template
+ *
+ * @var $block \Magento\Catalog\Block\Product\View
+ */
+?>
+<?php $_helper = $this->helper(Magento\Catalog\Helper\Output::class); ?>
+<?php $_product = $block->getProduct(); ?>
+
+<div class="product-add-form">
+    <form data-product-sku="<?= $block->escapeHtmlAttr($_product->getSku()) ?>"
+          action="<?= $block->escapeUrl($block->getSubmitUrl($_product)) ?>" method="post"
+          id="product_addtocart_form"<?php if ($_product->getOptions()) :?> enctype="multipart/form-data"<?php endif; ?>>
+        <input type="hidden" name="product" value="<?= (int)$_product->getId() ?>" />
+        <input type="hidden" name="selected_configurable_option" value="" />
+        <input type="hidden" name="related_product" id="related-products-field" value="" />
+        <input type="hidden" name="item"  value="<?= (int)$block->getRequest()->getParam('id') ?>" />
+        <?= $block->getBlockHtml('formkey') ?>
+        <?= $block->getChildHtml('form_top') ?>
+        <?php if (!$block->hasOptions()) :?>
+            <?= $block->getChildHtml('product_info_form_content') ?>
+        <?php else :?>
+            <?php if ($_product->isSaleable() && $block->getOptionsContainer() == 'container1') :?>
+                <?= $block->getChildChildHtml('options_container') ?>
+            <?php endif;?>
+        <?php endif; ?>
+
+        <?php if ($_product->isSaleable() && $block->hasOptions() && $block->getOptionsContainer() == 'container2') :?>
+            <?= $block->getChildChildHtml('options_container') ?>
+        <?php endif;?>
+        <?= $block->getChildHtml('form_bottom') ?>
+    </form>
+     <div>
+    <a href="#" id="enquiry-form-click">Contact Support</a>
+</div>
+<div class="enquiry-popup" style="display:none;"><div class="enquiry-content" ><h2 style="font-weight:bold;text-align:center"><span class="close-enquiry-form">×</span><span class="h2"> Product Enquiry Form</span></h2>               
+<div id="popup-mpdal" >
+
+   <?php echo $this->getLayout()->createBlock("Askantech\Communication\Block\Form")->setTemplate("Askantech_Communication::form.phtml")->toHtml(); ?>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+    require([
+        'jquery',
+        'priceBox'
+    ], function($){
+        var dataPriceBoxSelector = '[data-role=priceBox]',
+            dataProductIdSelector = '[data-product-id=<?= $block->escapeHtml($_product->getId()) ?>]',
+            priceBoxes = $(dataPriceBoxSelector + dataProductIdSelector);
+
+        priceBoxes = priceBoxes.filter(function(index, elem){
+            return !$(elem).find('.price-from').length;
+        });
+        priceBoxes.priceBox({'priceConfig': <?= /* @noEscape */ $block->getJsonConfig() ?>});
+    });
+</script>
+<script>
+require(['jquery'], function () {
+    jQuery( "body" ).delegate( "#enquiry-form-click", "click", function() {
+        jQuery('.enquiry-popup').show();
+        jQuery('body').addClass('chat-enquiry-form-open');
+    });
+    jQuery( "body" ).delegate( ".close-enquiry-form", "click", function() {
+        jQuery('.enquiry-popup').hide();
+        jQuery('body').removeClass('chat-enquiry-form-open');
+});
+});
+</script>
+<style>
+.enquiry-popup {
+    position: fixed;
+    z-index: 9;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0 0 0 / 22%);
+}
+.enquiry-popup {
+    padding-top: 50px !important;
+    overflow:hidden;
+}
+body.chat-enquiry-form-open{
+    overflow: hidden;
+}
+.enquiry-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    width: 40%;
+    border-radius: 10px;
+}
+span.close-enquiry-form {
+    float: right;
+    font-size: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: -33px;
+}
+@media screen and (max-width: 767px) {
+    .enquiry-content {
+    width: 90%;
+}
+.enquiry-popup {
+    padding-top: 30% !important;
+    overflow:hidden;
+}
+span.close-enquiry-form{
+    margin-top: -25px;
+}
+}
+</style>

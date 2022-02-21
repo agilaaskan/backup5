@@ -1,0 +1,673 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+use Magento\Framework\App\Action\Action;
+
+/** @var \Magento\CatalogWidget\Block\Product\ProductsList $block */
+?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$baseUrl = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+$storeid = $storeManager->getStore()->getStoreId();
+$TaxHelper = $objectManager->get('Magento\Catalog\Helper\Data');
+?>
+<?php 
+$currencyCode = $storeManager->getStore()->getCurrentCurrencyCode(); 
+$currency = $objectManager->create('Magento\Directory\Model\CurrencyFactory')->create()->load($currencyCode); 
+$currencySymbol = $currency->getCurrencySymbol(); 
+?>
+<?php if ($exist = ($block->getProductCollection() && $block->getProductCollection()->getSize())) : ?>
+    <?php
+    $type = 'widget-product-grid';
+
+    $mode = 'grid';
+
+    $image = 'new_products_content_widget_grid';
+    $tittle=$block->getTitle(); 
+    // $items = $block->getProductCollection()->getItems();
+    //   category
+    $categorysFactory = $objectManager->get('\Magento\Catalog\Model\CategoryFactory');
+    $categoryCollection = $objectManager->get('\Magento\Catalog\Model\ResourceModel\Category\CollectionFactory');
+       $categories = $categoryCollection->create();
+       $categories->addAttributeToSelect('*');
+       $noncat = [1,2,27,19];
+    //   category
+    
+    $showWishlist = true;
+    $showCompare = true;
+    $showCart = true;
+    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+    $description = false;
+    ?>
+<div class="message-success success message" style="display:none;">
+</div>
+<div class="message-error error message" style="display:none;">
+</div>
+<div class="quick-order-widget block widget block-products-list <?= /* @noEscape */ $mode ?>">
+    <div class="block-content">
+         <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
+        <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
+                 <ol class="product-items <?= /* @noEscape */ $type ?>">
+                    <table class="table-quick-order">
+                        <tr class="header-quick-order">
+                            <th class="name-head"><span>Product Name</span></th>
+                            <th>Weight</th>
+                            <th class="qty-head"><span>Quantity</span></th>
+                            <th>Total Price</th>
+                            <th> </th>
+                        </tr>
+                        <tr class="space" style="padding: 10px 0px;display: block;"></tr>
+                            <?php $iterator = 1; ?>
+                            <?php foreach ($categories as $category) {
+                                 $categoryId =  $category->getId();
+                                 if (!in_array($categoryId, $noncat)) {
+                                 $category = $categorysFactory->create()->load($categoryId);
+                                    $items = $category->getProductCollection()
+                                                        ->addAttributeToSelect('*');?> 
+                                    <tr class="category-head">
+                                        <td>
+                                            <p class="category-title"><span><?php echo $category->getName(); ?></span></p>
+                                         </td>
+                                     </tr>
+                                <?php foreach ($items as $_item) : ?>
+                                    <?php if($_item->getIsSalable()) { ?>
+                                    <tr class="body-quick-order">
+                                    <td class="action_detail">
+                                        <div class="product-item-quick">
+                                            <div class="product-item-photo-quick" style="width:60px;">
+                                                <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product-item-photo">
+                                                    <?= $block->getImage($_item, $image)->toHtml() ?>
+                                                </a>
+                                            </div>
+                                            <div class="product-item-details">
+                                                <strong class="product-item-name">
+                                                        <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
+                                                href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>"
+                                                class="product-item-link">
+                                                    <?php $name= $block->escapeHtml($_item->getName()) ?>
+                                                    <?php echo $name ;?>
+                                                    </a>
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="action_drop">
+                                    <?php $ptype = $_item->getTypeId();?>
+                                    <?php  if($ptype=='configurable') { ?>
+                                        <?php $_objectManager = \Magento\Framework\App\ObjectManager::getInstance(); ?>
+                                        <?php //$product = $_objectManager->get('\Magento\Catalog\Model\Product')->load($_item->getId()); ?>
+                                        <?php $productTypeInstance = $_objectManager->get('Magento\ConfigurableProduct\Model\Product\Type\Configurable'); ?>
+                                        <!-- new code -->
+                                        <?php 
+                                            $_children = $_item->getTypeInstance()->getUsedProducts($_item); ?>
+                                            <select name="weightoption" id="weightoption" style="max-width:70%;">
+
+                                            <?php  
+                                            $ii = 1;
+                                            foreach ($_children as $child){ 
+                                                if($child->getIsSalable()) {
+                                                    $cprice = $child->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+                                                    $cprice = round($cprice);
+                                                    $olprice = $child->getPriceInfo()->getPrice('regular_price')->getAmount()->getValue();
+                                                    $olprice = round($olprice);
+                                                    if ( $ii == 1) {
+                                                        $pid = $child->getId(); 
+                                                        $childoldprice = $child->getPriceInfo()->getPrice('regular_price')->getAmount()->getValue();
+                                                        $childfprice = round($child->getPriceInfo()->getPrice('final_price')->getAmount()->getValue());
+                                                    }
+                                                    $childid = $child->getId(); 
+                                                    ?>
+
+                                                <?php if(isset($child['kg'])) {                                          
+                                                $childpotion = $child->getResource()->getAttribute('kg')->getFrontend()->getValue($child); ?>
+                                                    <option alt="<?= $olprice ?>" value="<?= $childid ?>" name="<?= $cprice ?>"><?= $childpotion ?></option>
+                                                <?php 
+                                                }
+                                                if(isset($child['grams'])) {  
+                                                    $childpotion = $child->getResource()->getAttribute('grams')->getFrontend()->getValue($child);  ?>
+                                                        <option alt="<?= $olprice ?>" value="<?= $childid ?>" name="<?= $cprice ?>"><?= $childpotion ?></option>
+                                                    <?php 
+                                                    }
+                                                if(isset($child['litre'])) {  
+                                                    $childpotion = $child->getResource()->getAttribute('litre')->getFrontend()->getValue($child);  ?>
+                                                        <option alt="<?= $olprice ?>" value="<?= $childid ?>" name="<?= $cprice ?>"><?= $childpotion ?></option>
+                                                    <?php 
+                                                    }
+                                            $ii++;
+                                                }
+                                            } ?>
+                                            </select> 
+                                            <?php } else {?>
+                                                <?php $pid = $_item->getId(); 
+                                                $psku = $_item->getSku();
+                                                $childoldprice = $_item->getPriceInfo()->getPrice('regular_price')->getAmount()->getValue(); 
+                                                $childfprice = round($_item->getPriceInfo()->getPrice('final_price')->getAmount()->getValue());
+                                            } ?>
+
+                                    </td>
+                                    <td class="action_qty">
+                                        <button type="button" style="border: none;background: none;box-shadow: none;font-size: 15px;" value="update_qty" name="update_cart_action" id="<?= /* @escapeNotVerified */ $_item->getId() ?>-dec"  class="cart-less decreaseQty-<?= /* @escapeNotVerified */ $_item->getId() ?>">-</button>
+                                        <input id="cart-<?= $block->escapeHtmlAttr($_item->getId()) ?>-qtys"
+                                            name="cart[<?= $block->escapeHtmlAttr($_item->getId()) ?>][qty]"
+                                            data-cart-item-id="<?= $block->escapeHtmlAttr($_item->getSku()) ?>"
+                                            value="1"
+                                            type="number"
+                                            min="1"
+                                            size="4"
+                                            step="any" style="display: inline;width: 40px;"
+                                            title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                                            class="input-text qty"
+                                            oninput="this.value=(parseInt(this.value))"
+                                            data-validate="{required:true,'validate-greater-than-zero':true}" 
+                                            data-role="cart-item-qty" readonly/>                                  
+                                        <button type="button" value="update_qty" style="border: none;background: none;box-shadow: none;font-size: 15px;" name="update_cart_action" id="<?= /* @escapeNotVerified */ $_item->getId() ?>-upt" class="cart-more increaseQty-<?= /* @escapeNotVerified */ $_item->getId() ?>">+</button>                  
+                                    </td>
+                                    <td class="action_price">
+                                    <?php if ($_item->getTypeId() == 'simple') {
+                                            $tprice = $_item->getPriceInfo()->getPrice('final_price')->getAmount()->getValue(); 
+                                           // $tprice = $TaxHelper->getTaxPrice($_item, $_item->getFinalPrice(), true);
+                                            $fprice = round($tprice);
+                                            //$oldprice = $TaxHelper->getTaxPrice($_item, $_item->getPrice(), true);
+                                            $oldprice = $_item->getPriceInfo()->getPrice('regular_price')->getAmount()->getValue(); 
+                                            $oldprice = round($oldprice); ?>
+                                            <input type="hidden" name="oldp" id="oldp" value="<?php echo $fprice; ?>"></input>
+                                            <div id="cusprice" class="price"><?php echo $currencySymbol ?><?php echo $fprice; ?></div>
+
+                                       <?php } else {
+                                            $fprice = $childfprice;
+                                            $oldprice = round($childoldprice); ?>
+                                            <input type="hidden" name="oldp" id="oldp" value="<?php echo $fprice; ?>"></input>
+                                            <div id="cusprice" class="price"><?php echo $currencySymbol ?><?php echo $fprice; ?></div>
+                                        <?php }?>
+                                       
+                                        <?php  $csdt = "0000-01-01";
+                                            $dcurrent =date('Y-m-d');
+                                            if($_item->hasSpecialPrice()) { 
+                                                $cdt = $_item->getSpecialToDate();
+                                                    if(empty($cdt)) {
+                                                        $csdt = $dcurrent;
+                                                    } else {
+                                                    $csdt = date('Y-m-d',strtotime($cdt));
+                                                    }
+                                                    if ($csdt >= $dcurrent) { ?>
+                                                        <input type="hidden" name="oldp" id="olddisp" value="<?php echo $oldprice; ?>"></input>
+                                                        <span id="cusdisprice" class="product-old-price"><?php echo $currencySymbol ?><?php echo $oldprice; ?></span>
+                                                    <?php
+                                                    } 
+                                            } 
+                                            if($_item->getTypeId() == 'configurable'){ ?>
+                                                <input type="hidden" name="oldp" id="olddisp" value="<?php if($oldprice > $fprice) { echo $oldprice; } ?>"></input>
+                                                <span id="cusdisprice" class="product-old-price"><?php if($oldprice > $fprice) { echo $currencySymbol.$oldprice; } ?></span>
+                                            <?php }?>
+                                    </td>
+                                    <td class="action_div">
+                                    
+                                        <div class="quick product-item-actions">
+                                            <?php if ($showCart) : ?>
+                                                <div class="actions-primary">
+                                                    <?php if ($_item->isSaleable()) : ?>
+                                                        <input type="hidden" name="qtyid" id="qtyid" value="<?php echo $_item->getId(); ?>"></input>
+                                                        <input type="hidden" name="prodid" id="childid" value="<?php echo $pid; ?>"></input>
+                                                                            <button 
+                                                                                title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>"
+                                                                                class="action tocart primary cc_btn">Add to Cart</button>
+                                                            
+                                                    <?php else : ?>
+                                                                <?php if ($_item->getIsSalable()) : ?>
+                                                                    <div class="stock available"><span><?= $block->escapeHtml(__('In stock')) ?></span></div>
+                                                                <?php else : ?>
+                                                                    <div class="stock unavailable"><span><?= $block->escapeHtml(__('Out of stock')) ?></span></div>
+                                                                <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <?php } ?>
+                                    </tr>
+                                <?php endforeach;
+                                }  
+                            }?>
+                    </table>
+                </ol>
+        </div>
+          <?= $block->getPagerHtml() ?>
+    </div>
+</div>
+
+<?php endif;?>
+
+<div class="quick-order-summary" id="quick-order-summary">
+<?php
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $cacheManager = $objectManager->create('Magento\Framework\App\Cache\Manager');
+    $cacheManager->clean($cacheManager->getAvailableTypes());
+    include('/home/ulamart/public_html/cartproduct.php'); 
+    $cart = $objectManager->get('\Magento\Checkout\Model\Cart'); 
+    $itemsCollection = $cart->getQuote()->getItemsCollection();
+    $itemsVisible = $cart->getQuote()->getAllVisibleItems();?>
+    <h2 class="head-title">Order Summary</h2>
+    <div class="quick-cart-item">
+        <table>
+            <tbody>
+            <?php 
+            if(count($itemsVisible)) {
+                $discount ="";
+                $totaldiscount = 0;
+                foreach($itemsVisible as $item) { ?>
+                    <?php $products = $objectManager->create('Magento\Catalog\Model\Product')->load($item->getProductId());
+                    $cartoption =""; 
+                    if($products->getVisibility() == 1) {
+                        if(isset($products['kg'])) {                                          
+                            $cartoption = $products->getResource()->getAttribute('kg')->getFrontend()->getValue($products); 
+                        }elseif(isset($products['grams'])) {                                          
+                            $cartoption = $products->getResource()->getAttribute('grams')->getFrontend()->getValue($products); 
+                        }elseif(isset($products['litre'])) {                                          
+                            $cartoption = $products->getResource()->getAttribute('litre')->getFrontend()->getValue($products); 
+                        }
+                    }?>
+                    <tr class="product-list">
+                       <td class="name"><?php echo $item->getName(); ?></td>
+                       <td class="qty">(<?php if($cartoption != "") {echo $cartoption." x ".$item->getQty();} else {echo $item->getQty();} ?>)</td>
+                       <?php  $cartprice = $products->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+                            //$cartprice = $TaxHelper->getTaxPrice($products, $products->getFinalPrice(), true);
+                            $sdt = "0000-01-01";
+                            $current =date('Y-m-d');
+                       if($products->hasSpecialPrice()) { 
+                            $discount =$products->getPriceInfo()->getPrice('regular_price')->getAmount()->getValue();
+                           //$discount = $TaxHelper->getTaxPrice($products, $products->getPrice(), true);
+                           $totaldiscount += (round($discount)) - $cartprice;
+                           $totaldiscount *= $item->getQty();
+                           $dt = $products->getSpecialToDate();
+                           if(empty($dt)) {
+                            $sdt = $current;
+                           } else {
+                           $sdt = date('Y-m-d',strtotime($dt));
+                           }
+                         } ?>
+
+                       <td class="price"><?php echo $currencySymbol ?><?php echo $item->getQty()*round($cartprice); ?> <span>  <?php if ($sdt >= $current) { if($discount){ echo $currencySymbol.$item->getQty()*(round($discount)); } }?></span></td>
+                       <td class="minicart-items">
+                           <div class="secondary">
+                                <input type="hidden" name="delid" id="delid" value="<?php echo $item->getProductId(); ?>"></input>
+                                <button title="action delete" class="action delete cc_del_btn"><span data-bind="i18n: 'Remove'"></span></button>
+                            </div>
+                        </td>
+                    </tr>            
+            <?  }   
+            }
+        ?>
+        </tbody>
+        </table>
+    </div>
+    <div class="quick-cart-total">
+    <table>
+        <tbody>
+            <?php if(count($itemsVisible)) { ?>
+                <?php if($totaldiscount > 0) {?>
+                    <tr class="cart-total">
+                        <td class="title">Offer Price  (Product’s Discount)</td>
+                        <td class="colon">:</td>
+                        <td class="dis-total"><?php echo $currencySymbol ?><?php echo round($totaldiscount); ?></td>
+                    </tr>
+                <?php } ?>
+                <tr class="cart-total grant">
+                <?php $subTotal = $cart->getQuote()->getSubtotal();
+                    $grandTotal = $cart->getQuote()->getGrandTotal(); ?>
+                    <td class="title">Total Price (Payable Amount) </td>
+                    <td class="colon">:</td>
+                    <td class="quick-total"><?php echo $currencySymbol ?><?php echo round($grandTotal); ?></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+    </div>
+    <a class="quick-checkout" href="checkout">CHECKOUT</a>
+</div>
+<div class="ss-mob-quick">
+    <div class="row">
+        <div class="ss-add">
+            <a class="quick-checkout" href="checkout">GO TO CHECKOUT</a>
+        </div>
+        <div class="ss-fav">
+        <a class="go-to-btn" href="#quick-order-summary"><img style="max-width:50px;" src="<?php echo $baseUrl;?>pub/media/home/upquickss.png"></a>
+        </div>
+    </div>
+</div>
+<script>
+require([ "jquery" ], function($) {
+    window.addEventListener('load', function() { setTimeout(function(){
+        jQuery("#quick-order-summary").load(location.href+" #quick-order-summary>*","");
+        },5000); 
+    }); 
+    $(document).scroll(function() {
+        var y = $(this).scrollTop();
+        if (y >= 700) {
+            $(".ss-mob-quick").addClass("current");
+        } else {
+            $(".ss-mob-quick").removeClass("current");
+        } 
+        if( $(window).width() >= 768 ) {
+            if($(window).scrollTop() <= 165) {
+                $("#quick-order-summary").css("position", "relative");
+                $("#quick-order-summary").css("top", "unset");
+                $("#quick-order-summary").css("right", "unset");            
+            }
+            if($(window).scrollTop() > 165) {
+                var top_of_element = $(".page-footer").offset().top;
+                var bottom_of_element = $(".page-footer").offset().top + $(".page-footer").outerHeight();
+                var bottom_of_screen = $(window).scrollTop() + $(window).innerHeight();
+                var top_of_screen = $(window).scrollTop();
+
+                if ((bottom_of_screen > top_of_element) && (top_of_screen < bottom_of_element)){
+                    $("#quick-order-summary").css("position", "relative");
+                    $("#quick-order-summary").css("top", "unset");
+                    $("#quick-order-summary").css("right", "unset");            
+                } else {
+                    $("#quick-order-summary").css("position", "fixed");
+                    $("#quick-order-summary").css("top", "0px");
+                    $("#quick-order-summary").css("right", "0px"); 
+                }         
+            }
+        }
+    }); 
+});
+</script>
+<script>
+require(["jquery"],function($){
+    $('.cart-more').click(function(){
+        var val = $(this).siblings('.input-text.qty').attr('id');
+         var curr=$(this).siblings('.input-text.qty').val();
+         var newAdd = parseInt(curr)+parseInt(1);
+         var symb = "<?php echo $currencySymbol ?>";
+         $(this).siblings('.input-text.qty').val(newAdd);
+         var oprice = $(this).parent().siblings('td.action_price').find('#oldp').val();
+        $(this).parent().siblings('td.action_price').find('#cusprice').text(symb+oprice * newAdd);
+        var odisprice = $(this).parent().siblings('td.action_price').find('#olddisp').val();
+        if (odisprice > 0) {
+        $(this).parent().siblings('td.action_price').find('#cusdisprice').text(symb+odisprice * newAdd);
+        }
+
+    });
+    $('.cart-less').click(function(){
+        var val = $(this).siblings('.input-text.qty').attr('id');
+         var curr=$(this).siblings('.input-text.qty').val();
+         var symb = "<?php echo $currencySymbol ?>";
+         var a=1;
+         if(curr >a){
+             var newAdd = parseInt(curr)-parseInt(1);
+             $(this).siblings('.input-text.qty').val(newAdd);
+             var oprice = $(this).parent().siblings('td.action_price').find('#oldp').val();
+             $(this).parent().siblings('td.action_price').find('#cusprice').text(symb+oprice * newAdd);
+             var odisprice = $(this).parent().siblings('td.action_price').find('#olddisp').val();
+             if (odisprice > 0) {
+                $(this).parent().siblings('td.action_price').find('#cusdisprice').text(symb+odisprice * newAdd);
+
+             }
+         }
+    });
+    $('select#weightoption').on('change', function() {
+        var childid = this.value;
+        var symb = "<?php echo $currencySymbol ?>";
+        $(this).parent().siblings('td.action_div').find('input#childid').val(childid);
+        var nameprice = $('option:selected', this).attr('name');
+        var nameolprice = $('option:selected', this).attr('alt');
+        var cqty = $(this).parent().siblings('td.action_qty').find('.input-text.qty').val();
+        $(this).parent().siblings('td.action_price').find('#cusprice').text(symb+nameprice * cqty);
+        $(this).parent().siblings('td.action_price').find('#oldp').val(nameprice);
+        if (nameolprice > nameprice) {
+            $(this).parent().siblings('td.action_price').find('#olddisp').val(nameolprice);
+            $(this).parent().siblings('td.action_price').find('#cusdisprice').text(symb+nameolprice * cqty);
+        } else {
+            $(this).parent().siblings('td.action_price').find('#olddisp').val('');
+            $(this).parent().siblings('td.action_price').find('#cusdisprice').text('');
+        }
+    });
+});
+</script>
+<script>
+    require(["jquery"],function($){
+    // function quickOrder(cprid) {
+        jQuery('button.cc_btn').click(function(){
+        var get_id = jQuery(this).siblings('input#childid').val();
+
+        $ = jQuery;
+        if(cprid == "") {
+            var cprid = $(this).siblings('input#childid').val();
+        }
+        var baseurl = "<?php echo $baseUrl; ?>";
+        // var ctrl = get_id;
+        var ctrl = $(this).siblings('input#qtyid').val();
+        var qty = $("#cart-"+ctrl+"-qtys").val();
+        var pr_id= get_id;
+         $.ajax({
+            type: 'POST',
+            url: baseurl+'helloworld/index/index',
+            dataType: 'json',
+            showLoader: true,
+            cache: false,
+            data: { 'pr_id' : pr_id, 'qty' : qty},
+            success : function(result){
+            var status = result.status;
+            if(status == '1')
+            {
+                $(".message.success").css("display", "block");
+                $(".message.success").text("Your Product added to your shopping cart. ");
+                $("#quick-order-summary").load(location.href+" #quick-order-summary>*","");
+                setTimeout(function(){
+                $('.message.success').hide();
+                }, 3000);
+                require(['jquery','Magento_Customer/js/customer-data'], function ($,customerData) { 
+                    var sections = ['cart'];
+                        customerData.invalidate(sections);
+                        customerData.reload(sections, true);
+
+                });
+            }
+            else{
+                $(".message.error").css("display", "block");
+                 $(".message.error").text("Please try again Later.");
+                 setTimeout(function(){
+                $('.message.error').hide();
+                }, 3000);
+            }
+
+            }
+        });
+        $(this).addClass("green");
+        $(this).css("background-color","#31b41c");
+        $(this).text("Added");
+    });
+    $( "body" ).delegate( "button.cc_del_btn", "click", function() {
+        var get_ids = $(this).siblings('input#delid').val();
+        var baseurl = "<?php echo $baseUrl; ?>";
+        var prd_id= get_ids;
+         $.ajax({
+            type: 'POST',
+            url: baseurl+'helloworld/index/rcart',
+            dataType: 'json',
+            showLoader: true,
+            cache: false,
+            data: { 'prd_id' : prd_id},
+            success : function(result){
+            var status = result.status;
+            if(status == '1')
+            {
+                $(".message.success").css("display", "block");
+                $(".message.success").text("Your Product Removed from your shopping cart. ");
+                $("#quick-order-summary").load(location.href+" #quick-order-summary>*","");
+                setTimeout(function(){
+                $('.message.success').hide();
+                }, 3000);
+                require(['jquery','Magento_Customer/js/customer-data'], function ($,customerData) { 
+                    var sections = ['cart'];
+                        customerData.invalidate(sections);
+                        customerData.reload(sections, true);
+
+                });
+            }
+            else{
+                $(".message.error").css("display", "block");
+                 $(".message.error").text("Please try again Later.");
+                 setTimeout(function(){
+                $('.message.error').hide();
+                }, 3000);
+                $("#quick-order-summary").load(location.href+" #quick-order-summary>*","");
+
+            }
+
+            }
+        });
+    });
+});
+</script>
+<style>
+    body button.action.tocart.primary.green {background-color: #31b41c;color: #fff;border: 1px solid #31b41c;}
+    body #quick-order .action.primary:hover {padding: 7px 15px;}
+    .product-items {line-height: initial;}
+    tr.header-quick-order {background-color: #ececfd;padding: 5px;color: #000;}
+    tr.header-quick-order th {font-weight: 600;font-size: 14px;color: #000000;}
+    .product-item-quick span.product-image-container {width: 60px !important;}
+    .product-item-quick a.product-item-link {display: inline;color: #000;font-size: 14px;font-weight:bold;}
+    .product-item-quick .product-item-name {display: inline;}
+    .product-item-quick .product-item-name {display: block;padding: 0px 0px;    font-weight: 500;}
+    .product-item-quick .product-item-details{padding:0px 10px;}
+    #quick-order .price-box .price,#quick-order .action_price .price {color: #5bc448;font-family: domine;display:inline-block;padding:0px 0px;font-size: 18px !important;font-weight: 700;}
+    #quick-order .price-box.price-final_price {padding: 10px 0px;}
+    #quick-order a.action.tocart.primary,#quick-order .stock.unavailable {padding: 14px 20px;border-radius: 0px !important;}
+    #quick-order .product-item-actions {margin:0px;}
+    tr.body-quick-order td {border-bottom: 1px solid #d7d7d7;}
+    body.cms-quick-order .breadcrumbs { display: none;}
+    #quick-order .cart-less,#quick-order .cart-more {border: none;background: none;box-shadow:none;font-weight: 600;font-size: 15px;font-family: "poppins";}
+    tr.body-quick-order td {font-size: 14px;}
+    #quick-order span.price-label{display:none;}
+    select#weightoption {max-width: 70%;border-radius: 3px;}
+    #quick-order .price-box .old-price .price {color: #888;text-decoration: line-through;}
+    .page-title-wrapper {display: none;}
+    .quick-cart-item {max-height: 250px;overflow-y: scroll;overflow: auto;-ms-overflow-style: none;scrollbar-width: none;}
+    td.action_qty .input-text.qty{text-align:center;}
+    .ss-mob-quick {display: none;}
+    tr.category-head td {color: #000;}
+    tr.category-head {width: 100%;color: #000;white-space: initial;}
+    tr.category-head td .category-title {
+        background-color: #2f6b17;color: #fff;font-weight: 500;letter-spacing: 0.2em;text-align: center;
+        padding: 5px 2px; margin-top: 5px;border-top-left-radius: 15px;border-bottom-right-radius: 15px;}
+    .ss-mob-quick.current  a.quick-checkout {background-color: #f4a340;}
+/*19-10-21*/
+@media only screen and (min-width:768px) {
+	.quick-order-widget {width: 70%;float: left;}
+	.quick-order-summary {float: left;width: 30%;}
+	.quick-order-summary {padding: 0px 20px;}
+    .quick-order-summary {padding: 0px 15px;}
+    .quick-order-widget .block-content {max-width: 95%;margin: 0 auto;}
+    span.product-old-price {font-size:17px;}
+    .product-item-quick {display: flex;}
+    body button.action.tocart.primary.green {min-width: 106px;}
+    .action_div.product-item-actions .actions-primary{width:100%;}
+    #quick-order .product-item-actions{text-align:end;}
+    tr.body-quick-order td.action_div {padding-right: 0px;}
+    th.name-head span {margin-left: 70px;}
+    th.qty-head span {margin-left: 15px;}
+    #quick-order-summary{position:relative;}
+    tr.header-quick-order th{padding: 21px 10px;}
+    .quick-order-summary .head-title{padding:0px 10px;}
+    /*18-11-21*/
+    tr.cart-total.grant td.title,tr.cart-total.grant td.quick-total {font-size:17px !important;}
+    tr.category-head td .category-title {max-width:50%;}
+	tr.category-head td{display:inline;}
+	tr.category-head td {font-size:14px;}
+}
+    div#quick-order{width:100%;}
+    .cms-quick-order .page-main{max-width:100%;padding-left:0px;padding-right:0px;background-color: #f5f5f6;}
+    .quick-order-widget {background-color: #fff;}
+    .quick-order-summary  .head-title {font-size: 22px;color: #323433;font-weight: 600;}
+    a.quick-checkout {background-color: #f8c146;color: #000;text-decoration: none; padding: 15px 20px;width: 100%;display: block;font-weight: 600;text-align: center;max-width: 95%;margin: 0 auto;}
+    .quick-cart-item tr td.name {width:52%;}
+    .quick-cart-item tr td.qty {width:25%;}
+    tr.cart-total td.title {width:42%;font-size: 12px !important;}
+    tr.cart-total td.colon {width:20%;}
+    .quick-cart-item tr td.price {width:18%;}
+    tr.cart-total td.quick-total {width:28%;}
+    .quick-cart-item tr td.name,tr.cart-total td,.quick-cart-item tr td.qty {color: #000;font-weight: 600;font-size: 13px;padding: 11px 10px;}
+    .quick-cart-item tr td.price,tr.cart-total td.quick-total {color: #5bc448;font-family: domine;padding: 10px 0px;font-size: 15px !important;font-weight: 700;text-align: left;}
+    td.minicart-items {padding: 10px 8px;width: 5%;}
+    .quick-cart-total {margin: 20% 0px 10%;}
+@media only screen and (max-width:767px) {
+    tr.cart-total td.title {width:52% !important;}
+    .quick-order-widget .block-content {max-width: 100%;margin: 0 auto;}
+    .quick-order-widget .action.primary {padding: 8px 25px;font-size: 15px;width: max-content;}
+    /* tr.body-quick-order td {padding: 10px 5px;} */
+    tr.body-quick-order td.action_qty{text-align: center;width: 100px;}
+    div#quick-order {width: 100%;display: flex;flex-direction: column;}
+    #quick-order .quick-order-widget{order:2;}
+    #quick-order .quick-order-summary{order:1;padding: 15px 15px;}
+    #quick-order .cart-less, #quick-order .cart-more{padding: 7px 5px;}
+    tr.header-quick-order th{padding: 21px 5px;}
+    #quick-order .quick-order-summary {position:unset !important;top:unset !important;right:unset !important;}
+    .quick-cart-item tr td.price span{padding: 4px 0px 0px; display: block;}
+    .product-item-photo-quick a.product-item-photo {padding: 0px 10px}
+    #quick-order .product-item-actions {margin: 0px;position: absolute;bottom: 15px;right: 15px;}
+    tr.body-quick-order td.action_div {position: relative;}
+    #quick-order select#weightoption {max-width: 100% !important}
+    div#cusprice {padding-top: 5px !important;}
+    span.whtaspp-btn-icon {display:none;}
+    .ss-mob-quick.current {display: block !important;bottom: 0;transition: 0.3s;box-shadow: 1px -1px 8px #787878;}
+    .ss-mob-quick {background-color: rgb(234, 242, 249);width: 100%;padding: 6px 10px;position: fixed;bottom: -300%;z-index: 111;transition: 0.3s;}
+    .ss-mob-quick.current .row {display: -webkit-box;display: -ms-flexbox;display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
+    .ss-add {width: 88%;}
+    .ss-fav {width: 12%;}
+    tr.category-head td .category-title {max-width:100%;}
+	tr.category-head td{display:block;}
+	tr.category-head td {font-size:13px;}
+}
+    .product-item-quick .product-image-wrapper{padding-bottom: 100% !important;}
+    tr.body-quick-order {width: 100%;}
+    span.product-old-price {text-decoration: line-through;color: #8e8e8e !important;font-family: domine;font-weight: 600;}
+    button.action.delete.cc_del_btn {box-shadow: none;border: none;background: none;padding:0px 5px;}
+    .quick-cart-item tr td.price span{color: #727272 !important;text-decoration: line-through;font-weight: 500;}
+    .dis-total{color: #727272 !important;font-weight: 500;}
+    td.dis-total {padding: 10px 0px !important;font-weight: 500 !important;}
+@media only screen and (max-width:415px) {
+    body #quick-order .action_price .price {font-size:15px !important;}
+    #quick-order .product-item-quick .product-item-details {padding: 0px;}
+    #quick-order .product-item-quick a.product-item-link{font-size:13px;}
+    tr.body-quick-order td {padding-left: 5px;padding-right: 5px;}
+}
+@media only screen and (max-width:767px) and (min-width:600px) {
+    .product-item-quick .product-item-details {max-width: fit-content;}
+    /* .product-item-quick {display: flex;} */
+}
+@media only screen and (max-width:1024px) and (min-width:768px) {
+    select#weightoption {max-width:100% !important;}
+    .product-item-quick a.product-item-link,select#weightoption {font-size:13px !important;}
+    tr.body-quick-order td {padding-left: 5px;padding-right: 5px;}
+    #quick-order .cart-less, #quick-order .cart-more {padding-left: 5px; padding-right: 5px; }
+}
+@media only screen and (max-width:1024px) and (min-width:931px) {
+    tr.body-quick-order td.action_detail {width: 40% !important;}
+}
+
+@media only screen and (max-width:425px) {
+    tr.cart-total td.colon {width: 22% !important;}
+    #quick-order select#weightoption {max-width: 100% !important;padding: 4px 20px 4px 2px;}
+}
+@media only screen and (max-width:321px) {
+    #quick-order .cart-less, #quick-order .cart-more {padding: 7px 2px;}
+    #quick-order #weightoption{max-width:100% !important;}
+    td.action_detail {width: 70px;display: block;}
+}
+@media only screen and (max-width:768px) and (min-width:425px){
+    tr.body-quick-order td {padding-left: 5px;padding-right: 5px;}
+}
+@media only screen and (min-width:1025px){
+    tr.body-quick-order td.action_detail {width: 45%;}
+}
+@media only screen and (max-width:930px) and (min-width:768px){
+    tr.body-quick-order td.action_detail {width: 34%;}
+}
+
+
+</style>

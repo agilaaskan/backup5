@@ -1,0 +1,13 @@
+body .logo img {height:unset}
+body .header.content {padding-top:10px}
+
+
+
+add:
+
+.cod-block p{margin-bottom: 0px}body .block-search input::placeholder{color:#fff}
+
+
+
+changed only staging:product
+body.catalog-product-view .page-main{margin-top:-43px}

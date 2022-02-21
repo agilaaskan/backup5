@@ -1,0 +1,17 @@
+media >768
+body.cms-home .products-grid .product-item-info:hover {border: 1px solid #bbb;}
+body.cms-home .products-grid .product-item-info:hover {padding-left:9px !important;padding-right:9px !important;margin: 0px 0px !important; } 
+body .products-grid .product-item-info {padding-left: 9px;padding-right: 9px;}
+
+@media only screen  and (min-width: 1024px) {
+    .product-item-info:hover .customs.product-item-actions .actions-primary {position: absolute;bottom: -3px;}
+}
+@media only screen  and (max-width: 1024px) and (min-width: 768px){
+.product-item-info:hover .customs.product-item-actions .actions-primary {position: absolute;bottom: -10px;}
+}
+
+
+
+body.wishlist-index-index #wishlist-view-form .box-tocart {display: none;} 
+.customs.product-item-actions { display: none;}
+li.item.product.product-item :hover

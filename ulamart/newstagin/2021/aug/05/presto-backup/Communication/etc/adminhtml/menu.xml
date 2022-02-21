@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Askan Technology
+ *
+ * @category  AskanTech
+ * @package   Askantech_Communication
+ * @author    Askan
+ * @copyright Copyright (c) AskanTech (https://www.askantech.com/)
+ * @license   https://www.askantech.com/Communication/LICENSE.txt
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+      <add id="Askantech_Communication::helloworld" title="AskanTech" module="Askantech_Communication" sortOrder="51" resource="Askantech_Communication::helloworld"/>
+        <add id="Askantech_Communication::post" title="Manage Chat" module="Askantech_Communication" sortOrder="10" action="askantech_communication/post/index" resource="Askantech_Communication::post" parent="Askantech_Communication::helloworld"/>
+    </menu>
+</config>

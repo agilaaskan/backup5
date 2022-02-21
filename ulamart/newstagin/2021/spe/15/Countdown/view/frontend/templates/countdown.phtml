@@ -1,0 +1,37 @@
+<?php 
+if($block->isCountdownEnabled() && $block->getPriceCountDown())
+{
+?>
+	<?php 
+	$date = date_default_timezone_set('Asia/Kolkata');
+	$currentDate =  date('d-m-Y');
+	$newcurrent  =  date('Y-m-d'); 
+	$todate      =  $block->getCountdownEndDate();
+	if(strtotime($todate) == strtotime($currentDate)) {
+	$newtodate = $newcurrent . "T24:00:00";
+	$newtodate  =  str_replace(' ','',$newtodate);
+	}
+	else { 
+		$newtodate = str_replace('/','-',$block->getCountdownEndDate());
+		$newtodate  =  str_replace('00:00:00','T24:00:00',$newtodate);
+		$newtodate  =  str_replace(' ','',$newtodate);
+	}?>
+<div class="title"><?php echo $block->getTile(); ?></div>
+<div id="countdowntimer" class="countdowntimer"><span id="future_date"><span></div>
+ <script>
+	require([
+		'jquery',
+		'Emizentech_Countdown/js/jquery.countdownTimer'
+	], function ($) {
+		console.log('countdowntimer start');
+		jQuery("#future_date").countdowntimer({	
+			startDate : "<?php echo date('Y/m/d H:i:s'); ?>",
+			dateAndTime : "<?php echo $newtodate; ?>",
+			size : "lg",
+			regexpMatchFormat: "([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})",
+// 			regexpReplaceWith: "$1 days $2 hours $3 minutes $4 seconds REMAINING"        
+			regexpReplaceWith: "<div><span>$1</span><span>days</span></div> <div><span>$2</span><span>hours</span></div> <div><span>$3</span><span>minutes</span></div> <div><span>$4</span><span>seconds</span></div>"
+	    });    
+	});
+</script>
+<?php } ?>

@@ -1,0 +1,166 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+?>
+<?php /** @var $block \Magento\Checkout\Block\Onepage\Success */ ?>
+<div class="checkout-success">
+    <?php if ($block->getOrderId()) :?>
+     <?php
+      // custom code
+      $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+      $customerSession = $objectManager->create('Magento\Customer\Model\Session'); 
+      $date = date_default_timezone_set('Asia/Kolkata');
+      $currentdate = date('Y-m-d'); 
+      $curorderid = $block->getOrderId();
+      if (!empty($curorderid)) {
+        $ptn = "/^0/";
+        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+        $connection = $resource->getConnection();
+        $sqls = "SELECT *  FROM `sales_order` WHERE `increment_id` = '$curorderid' LIMIT 1";
+        $results = $connection->fetchAll($sqls);
+          foreach ($results as $rows) {
+            $grandtotals = $rows["grand_total"];
+          }
+        $sqls1 = "SELECT sales_order_address.region_id,sales_order_address.telephone,sales_order_address.firstname,sales_order_address.lastname,sales_order_address.email,sales_order_grid.payment_method FROM `sales_order_grid` INNER JOIN sales_order_address ON sales_order_grid.entity_id = sales_order_address.parent_id WHERE sales_order_grid.increment_id = '$curorderid' LIMIT 1";
+        $results1 = $connection->fetchAll($sqls1);
+          foreach ($results1 as $rows1) {
+            $telephone1 = $rows1["telephone"];
+            $telephone = preg_replace($ptn,'', $telephone1);
+            $cusname = $rows1["firstname"];
+            $cemail = $rows1["email"];
+            $region = $rows1["region_id"];
+            $paymentmet = $rows1["payment_method"];
+            // if ($paymentmet == "cashondelivery") {
+              if(($region >= 533) && ($region <= 568)) {
+                  if(($region == 534) || ($region == 535) || ($region == 564)) {
+                    $wel = "Namaskaram";
+                  } elseif(($region == 559) || ($region == 563)) {
+                    $wel = "Vanakam";
+                  } elseif($region == 550) {
+                    $wel = "Svagatam";
+                  }else {
+                    $wel = "Ji";
+                  }
+                }
+              else {
+                $wel = "Namaste";
+              }
+              if ($paymentmet == "cashondelivery") {
+                $event = "codordered";
+              }else {
+                $event = "OrderPlaced";
+              }
+            }
+        if($customerSession->isLoggedIn()) {
+          $checkem = $customerSession->getCustomer()->getEmail(); // get Email
+          $checkid =  $customerSession->getCustomer()->getId(); // get Id
+          $checkname =  $customerSession->getCustomer()->getFirstname(); // get Id
+        } else {
+          $sqls2 = "SELECT * FROM whatsapp_guest_customer ORDER BY guest_id DESC LIMIT 1";
+          $results2 = $connection->fetchAll($sqls2);
+          if(count($results2)>0){
+            foreach($results2 as $rows2){
+                $checkid = $rows2["guest_id"];
+                $checkid++;
+            }
+          }else {
+            $checkid = 111111;
+          }
+          $guestid = $checkid;
+          $checkem =  "$cemail";
+          $checkname =  "$cusname";
+
+        }
+        $checkname = ucfirst($checkname);
+        // customer custom code                    
+        $curl = curl_init();
+
+          curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://api.interakt.ai/v1/public/track/users/',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS =>'{
+           "userId": "'.$checkid.'",
+          "phoneNumber": "'.$telephone.'",
+          "countryCode": "+91",
+          "traits": {
+          "name": "'.$checkname.'",
+          "email": "'.$checkem.'"
+                    }
+           }',
+          CURLOPT_HTTPHEADER => array(
+          'Content-Type: application/json',
+          'Authorization: Basic UzQteTBVSmZvbzBsX2k4NFhWMUo1UXRfOExua2ZKd0ZRajNSNHZCLTM5STo='
+            ),
+          ));
+
+          $response = curl_exec($curl);
+
+          curl_close($curl);
+          // customer custom code
+           $curl = curl_init();
+
+
+          curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://api.interakt.ai/v1/public/track/events/',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS =>'{
+            "userId":  "'.$checkid.'",
+             "event": "'.$event.'",
+            "traits": {
+                "orderCreatedBy":"'.$checkname.'",
+                "orderNumber": "'.$curorderid.'",
+                "orderValue":"'.$grandtotals.'",
+                "currency": "INR",
+                "batches": "'.$wel.'"
+                },
+              "createdAt": "'.$currentdate.'"
+              }',
+            CURLOPT_HTTPHEADER => array(
+              'Content-Type: application/json',
+              'Authorization: Basic UzQteTBVSmZvbzBsX2k4NFhWMUo1UXRfOExua2ZKd0ZRajNSNHZCLTM5STo='
+            ),
+            ));
+              
+            $response = curl_exec($curl);
+              
+            curl_close($curl);
+          // custom code
+          if(!($customerSession->isLoggedIn())) {
+          $sqls3 = "INSERT INTO whatsapp_guest_customer (guest_id) VALUES ($guestid)";
+          $connection->query($sqls3);
+          }
+      }
+?>
+
+
+        <?php if ($block->getCanViewOrder()) :?>
+            <p><?= $block->escapeHtml(__('Your order number is: %1.', sprintf('<a href="%s" class="order-number"><strong>%s</strong></a>', $block->escapeUrl($block->getViewOrderUrl()), $block->getOrderId())), ['a', 'strong']) ?></p>
+        <?php  else :?>
+            <p><?= $block->escapeHtml(__('Your order is: #<span>%1</span>.', $block->getOrderId()), ['span']) ?></p>
+        <?php endif;?>
+            <p><?= $block->escapeHtml(__('We\'ll email you an order confirmation with details and tracking info.')) ?></p>
+    <?php endif;?>
+
+    <?= $block->getAdditionalInfoHtml() ?>
+
+    <div class="actions-toolbar">
+        <div class="primary">
+            <a class="action primary continue" href="<?= $block->escapeUrl($block->getContinueUrl()) ?>"><span><?= $block->escapeHtml(__('Continue Shopping')) ?></span></a>
+        </div>
+    </div>
+</div>

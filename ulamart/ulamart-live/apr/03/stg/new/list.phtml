@@ -1,0 +1,61 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+use Magento\Framework\App\Action\Action;
+
+/** @var \Magento\CatalogWidget\Block\Product\ProductsList $block */
+?>
+<?php if ($exist = ($block->getProductCollection() && $block->getProductCollection()->getSize())) : ?>
+    <?php
+    $type = 'widget-product-grid';
+
+    $mode = 'list';
+    $items = $block->getProductCollection()->getItems();
+
+    $showWishlist = true;
+    $showCompare = true;
+    $showCart = true;
+    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+    $description = false;
+    ?>
+    <div class="block widget block-products-list <?= /* @noEscape */ $mode ?>">
+        <div class="block-content">
+            <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
+                <ol class="product-items <?= /* @noEscape */ $type ?>">
+                    <?php $iterator = 1; ?>
+                    <?php foreach ($items as $_item) : ?>
+                        <?= /* @noEscape */ ($iterator++ == 1) ? '<li class="product-item product-list">' : '</li><li class="product-item product-list">' ?>
+                        <div class="product-item-info">
+                            <div class="product-item-details">
+                                <strong class="product-item-name">
+                                    <!-- custom category path -->
+                                       <?php $categories = $_item->getCategoryIds(); /*will return category ids array*/
+                                        $j = 0;
+                                        foreach($categories as $key => $category){     
+                                        $cat = $objectManager->create('Magento\Catalog\Model\Category')->load($category);
+                                        $cid = $cat->getId();
+                                          if(($cid != 25) && ($cid != 2) && ($cid != 22) && ($cid != 23)) {
+                                             $catl = $cat->getUrl();
+                                        }
+                                       } 
+                                       $newurl1 = $catl."/".$_item->getUrlKey(); 
+                                       ?> 
+                                     <!-- custom  category path -->
+                                    <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
+                                       href="<?= $newurl1; ?>"
+                                       class="product-item-link">
+                                        <?= $block->escapeHtml($_item->getName()) ?>
+                                    </a>
+                                </strong>
+                            </div>
+                        </div>
+                        <?= ($iterator == count($items) + 1) ? '</li>' : '' ?>
+                    <?php endforeach ?>
+                </ol>
+            </div>
+            <?= $block->getPagerHtml() ?>
+        </div>
+    </div>
+<?php endif;?>

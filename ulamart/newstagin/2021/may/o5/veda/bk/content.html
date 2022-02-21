@@ -1,0 +1,130 @@
+<!--
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_QuickCart
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+ -->
+
+<div class="block-title">
+    <!-- ko if: getCartParam('summary_count') -->
+    <b>
+        <!-- ko if: (maxItemsToDisplay < getCartLineItemsCount()) -->
+        <!-- ko text: maxItemsToDisplay -->
+        <!-- /ko -->
+        <!-- ko i18n: 'of' -->
+        <!-- /ko -->
+        <!--/ko-->
+
+        <!-- ko text: getCartLineItemsCount() -->
+        <!-- /ko -->
+
+        <!-- ko if: (getCartLineItemsCount() === 1) -->
+        <!-- ko i18n: 'Item in Cart'-->
+        <!-- /ko -->
+        <!--/ko-->
+
+        <!-- ko if: (getCartLineItemsCount() > 1) -->
+        <!-- ko i18n: 'Items in Cart'-->
+        <!-- /ko -->
+        <!--/ko-->
+    </b>
+    <!--/ko-->
+</div>
+
+<!-- ko if: getCartParam('summary_count') -->
+<div class="block-content block-items">
+    <strong class="subtitle">
+        <!-- ko i18n: 'Recently added item(s)'-->
+        <!-- /ko -->
+    </strong>
+    <div data-action="scroll" class="minicart-items-wrapper">
+        <ol id="mini-cart" class="minicart-items" data-bind="foreach: { data: getCartItems(), as: 'item' }">
+            <each args="$parent.getRegion($parent.getItemRenderer(item.product_type))" render="{name: getTemplate(), data: item, afterRender: function() {$parents[1].initSidebar()}}" />
+        </ol>
+        <div class="minicart-offer-text">
+            <p style="color: #1C1C1C;padding: 6px 10px 6px;background: #FFFFFF 0% 0% no-repeat padding-box;border: 2px dashed #90BC45;border-radius: 3px;" class="text-offer"><img src="/pub/media/wysiwyg/black-tag.svg" alt="" style="vertical-align: middle;margin-right: 5px;">Rose Water Facial Mist 100Ml worth Rs.375 FREE on orders above Rs.650.</p>
+
+            <div style="display: inline-flex;padding: 0;" class="col-md-12">
+                <div class="col-md-4" style="padding: 0;"><img src="/pub/media/wysiwyg/smartwave/porto/product/30days_icon.png" alt=""></div>
+                <div class="col-md-4" style="padding: 0;"> <img src="/pub/media/wysiwyg/smartwave/porto/product/natural_icon.png" alt=""></div>
+                <div class="col-md-4" style="padding: 0;"><img src="/pub/media/wysiwyg/smartwave/porto/product/seqcure_icon.png" alt=""></div>
+            </div>
+        </div>
+            <div id="minicart-widgets" class="minicart-widgets" data-bind="if: getRegion('promotion').length">
+                <!-- ko foreach: getRegion('promotion') -->
+                <!-- ko template: getTemplate() -->
+                <!-- /ko -->
+                <!--/ko-->
+            </div>        
+      
+            <!-- ko if: getCartParam('summary_count') -->
+
+            <!-- ko foreach: getRegion('extraInfo') -->
+            <!-- ko template: getTemplate() -->
+            <!-- /ko -->
+            <!--/ko-->
+            <div class="payment-badge-text">
+                <img src="/pub/media/wysiwyg/smartwave/porto/homepage/shield.png" alt="">
+                <span>Safe and Secure Payment, Easy Return</span>
+            </div>
+            <div class="actions">
+                <div class="primary">
+                    <a class="action primary viewcart" data-bind="attr: {href: shoppingCartUrl}">
+                        <!-- ko i18n: 'Go to Cart'-->
+                        <!-- /ko -->
+                    </a>
+                    <button id="top-cart-btn-checkout" type="button" class="action primary checkout" data-action="close" data-bind="
+                            if: getCartParam('possible_onepage_checkout'),
+                            attr: {
+                                title: $t('Proceed to Checkout')
+                            },
+                            click: closeMinicart()
+                        ">
+                        <!-- ko i18n: 'Proceed to Pay'-->
+                        <!-- /ko -->
+                    </button>
+                    <div data-bind="html: getCartParam('extra_actions')"></div>
+                </div>
+            </div>
+            <!-- /ko -->
+
+            <!-- ko foreach: getRegion('sign-in-popup') -->
+            <!-- ko template: getTemplate() -->
+            <!-- /ko -->
+            <!--/ko-->
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko ifnot: getCartParam('summary_count') -->
+    <strong class="subtitle empty" data-bind="visible: closeSidebar()">
+        <!-- ko i18n: 'You have no items in your shopping cart.'-->
+        <!-- /ko -->
+    </strong>
+    <!-- ko if: getCartParam('cart_empty_message') -->
+    <p class="minicart empty text" data-bind="text: getCartParam('cart_empty_message')"></p>
+    <div class="actions">
+        <div class="secondary">
+            <a class="action viewcart" data-bind="attr: {href: shoppingCartUrl}">
+                <!-- ko i18n: 'View and Edit Cart'-->
+                <!-- /ko -->
+            </a>
+        </div>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->

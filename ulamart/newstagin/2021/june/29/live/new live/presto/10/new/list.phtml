@@ -1,0 +1,233 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var Magento\Review\Block\Product\View\ListView $block */
+
+$_items = $block->getReviewsCollection()->getItems();
+$format = $block->getDateFormat() ?: \IntlDateFormatter::SHORT;
+?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$baseUrl = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+$customerSession = $objectManager->create('Magento\Customer\Model\Session'); 
+?>
+<?php
+$product = $block->getProduct(); ?>
+<?php if (count($_items)) : ?>
+<div class="block review-list" id="customer-reviews">
+    <?php if (!$block->getHideTitle()) : ?>
+        <div class="block-title rev">
+            <h2><strong><?= $block->escapeHtml(__('Customer Reviews')) ?></strong></h2>
+        </div>
+        <p class="write-rev"><a href="#review-clink">Write a review </a></p>
+        <div class="mob-review" style="display:none;">
+        <p class="mob-rev"><a href="#review-form1">Write a review </a></p>
+        <p class="mob-all-rev">View All</p>
+        <!-- popup review -->
+        <div class="review-pop">
+        <div class="close-pop"><i class="fa fa-times" aria-hidden="true"></i></div>
+        <div class="popup-write-rev">
+            <img  class="rev-image" src="<?php echo $baseUrl;?>pub/media/catalog/product<?php echo $product->getData('image'); ?>">
+            <h3 class="rev-pop-head"><?php echo $product->getName(); ?></h3>
+            <!-- custom rating -->
+            <?php 
+            $_productid = $product->getId(); 
+            $RatingOb = $objectManager->create('Magento\Review\Model\Rating')->getEntitySummary($_productid);   
+            $ratings = $RatingOb->getSum()/$RatingOb->getCount(); ?>
+                <div class="product-reviews-summary popup">
+                <div class="rating-summary">
+                    <span class="label"><span>Rating:</span></span>
+                    <div class="rating-result">
+                        <span style="width:<?php echo $ratings; ?>%"><span><span><?php echo $ratings; ?></span>% of <span>100</span></span></span>
+                    </div>
+                    <?php echo '('.$RatingOb->getCount().')'; ?>
+                </div> 
+            </div>
+            <!-- custom rating -->
+            <p id="wr-review"> Write a reiview </p>
+            <!-- inside review -->
+                <div class="popup-inside-review" style="display:none;">
+                <div class="close-rev-pop"><i class="fa fa-times" aria-hidden="true"></i></div>
+                <form action="<?= $block->escapeUrl($block->getAction()) ?>" class="review-form" method="post" id="review-form" data-role="product-review-form" data-bind="scope: 'review-form'">
+                <?= $block->getBlockHtml('formkey') ?>
+                <?= $block->getChildHtml('form_fields_before') ?>
+                <h3 class="review-inner-head">How would you are rate this items</h3>
+                <?php if ($block->getRatings() && $block->getRatings()->getSize()) : ?>
+        <span id="input-message-box"></span>
+        <fieldset class="field required review-field-ratings">
+            <div class="control">
+                <div class="nested" id="product-review-table">
+                    <?php foreach ($block->getRatings() as $_rating) : ?>
+                        <div class="field choice review-field-rating">
+                            <div class="control review-control-vote">
+                            <?php $options = $_rating->getOptions();?>
+                            <?php $iterator = 1; foreach ($options as $_option) : ?>
+                                <input
+                                    type="radio"
+                                    name="ratings[<?= $block->escapeHtmlAttr($_rating->getId()) ?>]"
+                                    id="<?= $block->escapeHtmlAttr($_rating->getRatingCode()) ?>_<?= $block->escapeHtmlAttr($_option->getValue()) ?>"
+                                    value="<?= $block->escapeHtmlAttr($_option->getId()) ?>"
+                                    class="radio"
+                                    data-validate="{'rating-required':true}"
+                                    aria-labelledby="<?= $block->escapeHtmlAttr($_rating->getRatingCode()) ?>_rating_label <?= $block->escapeHtmlAttr($_rating->getRatingCode()) ?>_<?= $block->escapeHtmlAttr($_option->getValue()) ?>_label" />
+                                <label
+                                    class="rating-<?= $block->escapeHtmlAttr($iterator) ?>"
+                                    for="<?= $block->escapeHtmlAttr($_rating->getRatingCode()) ?>_<?= $block->escapeHtmlAttr($_option->getValue()) ?>"
+                                    title="<?= $block->escapeHtmlAttr(__('%1 %2', $iterator, $iterator > 1 ? __('stars') : __('star'))) ?>"
+                                    id="<?= $block->escapeHtmlAttr($_rating->getRatingCode()) ?>_<?= $block->escapeHtmlAttr($_option->getValue()) ?>_label">
+                                    <span><?= $block->escapeHtml(__('%1 %2', $iterator, $iterator > 1 ? __('stars') : __('star'))) ?></span>
+                                </label>
+                                <?php $iterator++; ?>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <input type="hidden" name="validate_rating" class="validate-rating" value="" />
+            </div>
+        </fieldset>
+    <?php endif ?>
+                      <div class="field review-field-nickname required">
+                        <label for="nickname_field" class="label"><span><?= $block->escapeHtml(__('Nickname')) ?></span></label>
+                        <div class="control">
+                            <input type="text" name="nickname" id="nickname_field" class="input-text" data-validate="{required:true}" data-bind="value: nickname()" />
+                        </div>
+                    </div>
+                    <div class="field review-field-summary required">
+                        <label for="summary_field" class="label"><span><?= $block->escapeHtml(__('Summary')) ?></span></label>
+                        <div class="control">
+                            <input type="text" name="title" id="summary_field" class="input-text" data-validate="{required:true}" data-bind="value: review().title" />
+                        </div>
+                    </div>
+                    <div class="field review-field-text required">
+                        <label for="review_field" class="label"><span><?= $block->escapeHtml(__('Review')) ?></span></label>
+                        <div class="control">
+                            <textarea name="detail" id="review_field" cols="5" rows="3" data-validate="{required:true}" data-bind="value: review().detail"></textarea>
+                        </div>
+                    </div>
+                <div class="actions-toolbar review-form-actions">
+                    <div class="primary actions-primary">
+                        <button type="submit" class="action submit primary popup"><span><?= $block->escapeHtml(__('Submit Review')) ?></span></button>
+                    </div>
+                </div>
+            </form>
+                </div>
+            <!-- inside review -->
+        </div>
+        <ol class="items review-items pop">
+        <?php foreach ($_items as $_review) : ?>
+            <?php if(($_review->getTitle() != " ") || ($_review->getDetail() != " ")) {?>
+            <li class="item review-item pop">
+               <div class="custom-rev">
+                <?php if (count($_review->getRatingVotes())) : ?>
+                    <div class="review-ratings custom">
+                    <?php foreach ($_review->getRatingVotes() as $_vote) : ?>
+                    <div class="rating-summary item">
+                        <div class="rating-result" title="<?= $block->escapeHtmlAttr($_vote->getPercent()) ?>%">
+                            <span style="width:<?= $block->escapeHtmlAttr($_vote->getPercent()) ?>%">
+                                <span><?php echo $_vote->getPercent(); ?>%</span>
+                            </span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                <div class="review-details custom">
+                    <p class="review-author">
+                        <strong class="review-details-value"><?php echo $_review->getNickname(); ?></strong>
+                    </p>
+                </div>
+                </div>
+                <p class="review-title custom"><?php echo $_review->getTitle(); ?></p>
+                <p class="review-content">
+                    <?php echo $_review->getDetail(); ?>
+                    </p>
+               
+            </li>
+                    <?php } ?>
+        <?php endforeach; ?>
+        </ol>
+        </div>
+        <!-- popup review -->
+        </div>
+    <?php endif ?>
+    <div class="block-content">
+        <div class="toolbar review-toolbar">
+            <?= $block->getChildHtml('toolbar') ?>
+        </div>
+       <div class="mobile-custom-rew">
+        <ol class="items review-items rev">
+        <?php foreach ($_items as $_review) : ?>
+            <?php if(($_review->getTitle() != " ") || ($_review->getDetail() != " ")) {?>    
+            <li class="item review-item custom" itemscope itemprop="review" itemtype="http://schema.org/Review">
+               <div class="custom-rev">
+                <?php if (count($_review->getRatingVotes())) : ?>
+                    <div class="review-ratings custom">
+                     <div itemprop="itemReviewed" itemscope itemtype="http://schema.org/Product">
+                        <h1 style="display:none;" itemprop="name"><?php echo $product->getName(); ?></h1>
+                    </div>
+                    <?php foreach ($_review->getRatingVotes() as $_vote) : ?>
+                    <div class="rating-summary item" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                
+                        <div class="rating-result" title="<?= $block->escapeHtmlAttr($_vote->getPercent()) ?>%">
+                            <meta itemprop="worstRating" content = "1"/>
+                            <meta itemprop="bestRating" content = "100"/>
+                            <span style="width:<?= $block->escapeHtmlAttr($_vote->getPercent()) ?>%">
+                                <span itemprop="ratingValue"><?= $block->escapeHtml($_vote->getPercent()) ?>%</span>
+                            </span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                <div class="review-details custom">
+                    <p class="review-author">
+                        <strong class="review-details-value" itemprop="author"><?= $block->escapeHtml($_review->getNickname()) ?></strong>
+                    </p>
+                </div>
+                </div>
+                    <p class="review-title custom" itemprop="name"><?= $block->escapeHtml($_review->getTitle()) ?></p>
+                <p class="review-content desk" itemprop="description">
+                    <?php $cdetail = nl2br($block->escapeHtml($_review->getDetail())); ?>
+                    <?php  echo $cdetail;?>
+                </p>
+                <p class="review-content mobile"  style="display:none">
+                    <?php $cdetail = $_review->getDetail(); ?>
+                   
+                    <?php if (strlen($cdetail) > 150) {
+                        // truncate string
+                        $stringCut = substr($cdetail, 0, 120);
+                        $endPoint = strrpos($stringCut, ' ');
+
+                        //if the string doesn't contain any space then it will cut without word basis.
+                        $cdetail = $endPoint? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
+                        $cdetail .= '... <span class="mob-all-rev inside">Read More</span>';
+                        }
+                        echo $cdetail;?>
+                </p>
+            </li>
+        <?php } ?>
+        <?php endforeach; ?>
+        </ol>
+                    </div>
+        <div class="toolbar review-toolbar">
+            <?= $block->getChildHtml('toolbar') ?>
+        </div>
+    </div>
+</div>
+<?php endif;?>
+<script type="text/x-magento-init">
+{
+    "[data-role=product-review-form]": {
+        "Magento_Ui/js/core/app": <?= /* @noEscape */ $block->getJsLayout() ?>
+    },
+    "#review-form": {
+        "Magento_Review/js/error-placement": {},
+        "Magento_Review/js/validate-review": {}
+    }
+}
+</script>

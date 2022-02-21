@@ -1,0 +1,13 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$baseUrl = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+$customerSession = $objectManager->create('Magento\Customer\Model\Session'); ?>
+<?php
+$product = $block->getProduct(); ?>
+<?php $_finalPrice = $product->getFinalPrice(); 
+$_price = $product->getPriceInfo()->getPrice('regular_price')->getValue(); 
+if($_finalPrice < $_price):
+$saveprice = $_price - $_finalPrice ;
+$_savingPercent = 100 - round(($_finalPrice / $_price)*100);
+endif; ?>

@@ -1,0 +1,46 @@
+.colorDefinition {
+    color : #ff6b5a;
+}
+
+.size_xl {
+   font-size:50px;
+   border-width: 8px;
+   border-radius: 6px;
+}
+
+.size_lg {font-size:14px; text-transform: uppercase;text-align:center;}
+
+.size_md {
+   font-size:30px;
+   border-width: 5px;
+   border-radius: 4px;
+}
+
+.size_sm {
+   font-size:20px;
+   border-width: 3px;
+   border-radius: 3px;
+}
+
+.size_xs {
+   font-size:15px;
+   border-width: 2px;
+   border-radius: 2px;
+}
+
+.title {
+  color: #f97171;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+#countdowntimer{
+	border-radius: 10px;
+    border-width: 5px;
+    padding: 5px;
+}
+.size_lg div {max-width:45px;display:inline-block;background-color:#000;font-size:9px;color:#fff;}
+.size_lg div span:first-child{border-bottom:1px solid #fff;font-size:20px;}
+.size_lg div span{display:inline-block;}
+.size_lg div span:nth-child(2) {margin: 3px 0px;}

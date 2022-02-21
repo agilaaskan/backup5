@@ -1,0 +1,158 @@
+<p> checking </p>
+<script>
+require(["jquery"],function($){
+    // show variant
+ jQuery('a.button-quickShop').click(function(){
+        var elmId = jQuery(this).attr("id");
+        $ = jQuery;
+        $('.quickShopPopup.scrollbar.is-open').removeClass('is-open');
+        $('.product-item-details').removeClass("is-open");
+        $('.quickShopPopup.scrollbar .halo-quickShop').remove();
+        $('.card-figcaption.is-open').removeClass('is-open');
+        $(this).children("span").css("display", "none");
+        $(this).append('<i class="fa fa-circle-o-notch fa-spin"></i>');
+        var baseurl = "<?php echo $baseUrl; ?>";
+        var pr_id= elmId;
+         $.ajax({
+            type: 'POST',
+            url: baseurl+'helloworld/index/product',
+            dataType: 'json',
+            showLoader: false,
+            cache: false,
+            data: { 'pr_id' : pr_id},
+            success : function(result){
+                $("a.quickadd-"+elmId).children("span").css("display", "inline");
+                $("a.quickadd-"+elmId).children("i").remove();
+                $("a.quickadd-"+elmId).parent().parent().parent('.actions-primary').parent('.product-item-actions').addClass("is-open");
+                $("a.quickadd-"+elmId).parent().parent().parent().parent('.product-item-actions').next('.product-item-details').addClass("is-open");
+            var status = result.status;
+            var option = result.option;
+            var childid = result.childid;
+            var cprice = result.cprice;
+            var symb = "<?php echo $currencySymbol ?>";
+            var attr = result.attr;
+                if(status == '1')
+                {  
+                    $("a.quickadd-"+elmId).parent().next().addClass('is-open');
+                    $("a.quickadd-"+elmId).parent().parent('.card-figcaption').addClass('is-open');
+                    var quickview_data='<div class="halo-quickShop"><div class="form-field selected"><label class="form-label form-label--inlineSmall" id="rectangle-group-label"><span>'+option[0]+'</span>'+attr+'<small> : '+symb+cprice[0]+'</small></label>';
+                    for(var ss=0;ss < option.length;ss++){
+                        if(ss == 0) {
+                            var dem = '<div class="form-option-wrapper"> <input class="form-radio" checked type="radio" id="attribute_rectangle__'+childid[ss]+'" name="'+cprice[ss]+'" value="'+childid[ss]+'"> <label class="form-option"><span class="form-option-variant">'+option[ss]+'</span></label></div>';
+                            quickview_data += dem;
+                        } else {
+                            var dem = '<div class="form-option-wrapper"> <input class="form-radio" type="radio" id="attribute_rectangle__'+childid[ss]+'" name="'+cprice[ss]+'" value="'+childid[ss]+'"> <label class="form-option"><span class="form-option-variant">'+option[ss]+'</span></label></div>';
+                            quickview_data += dem;
+                        }
+                        
+                    }
+                    quickview_data +='</div><div class="action-quick-btn"><div id="add-to-cart-wrapper-quick"><div class="form-action"><a href="javascript:void(0)" id="form-action-addToCart" class="button button--tertiary" role="button">SUBMIT</a></div></div><div class="halo-quickShop-action"><a href="javascript:void(0)" class="button halo-quickShop-close" aria-label="'+elmId+'" role="button"> <span>CANCEL</span></a></div></div></div>';
+                    $("a.quickadd-"+elmId).parent().next().html(quickview_data);
+                }
+                else{
+                    $("a.quickadd-"+elmId).parent().next().removeClass('is-open');
+                }
+            }
+        });
+    });
+    // close variant
+    $( "body" ).delegate( "a.halo-quickShop-close", "click", function() {
+           var clsid = jQuery(this).attr("aria-label");
+            $("a.quickadd-"+clsid).parent().next().find('.halo-quickShop').remove();
+            $("a.quickadd-"+clsid).parent().parent('.card-figcaption').removeClass('is-open');
+            $("a.quickadd-"+clsid).parent().parent().parent().parent('.product-item-actions').removeClass("is-open");
+            $("a.quickadd-"+clsid).parent().parent().parent().parent('.product-item-actions').next('.product-item-details').removeClass("is-open");
+    });
+     // change variant
+     $( "body" ).delegate( "label.form-option", "click", function() {
+        $('.halo-quickShop input.form-radio').prop( "checked", false );
+        $(this).prev('input.form-radio').prop( "checked", true );
+        $('#form-action-addToCart').text("SUBMIT");
+        var cprice = $(this).prev('input.form-radio').attr("name");
+        var variant = $(this).children('span').text();
+        $(this).parents('.form-option-wrapper').parent('.form-field').addClass("selected");
+        var symb = "<?php echo $currencySymbol ?>"; 
+            $('.form-field.selected').children('label').find('span').text(variant);
+            $('.form-field.selected').children('label').find('small').text(' : '+symb+cprice);
+    });
+    //add variant product
+    $( "body" ).delegate( "#form-action-addToCart", "click", function() {
+        if ($(".quickShopPopup.is-open .form-radio").is(":checked")) {
+        var radioValue = $(this).parents('.action-quick-btn').parent('.halo-quickShop').children(".form-field").find(".form-radio:checked").val();
+        $(this).text("Adding..");
+        var parentid = $('.card-figcaption.is-open span').text();       
+        $(this).css("cursor","not-allowed");
+        var baseurl = "<?php echo $baseUrl; ?>";
+        var prd_id= radioValue;
+        $.ajax({
+            type: 'POST',
+            url: baseurl+'helloworld/index/quickadd',
+            dataType: 'json',
+            async: false,
+            showLoader: false,
+            cache: false,
+            data: { 'pr_id' : prd_id, 'qty' : 1,'parentid' : parentid},
+            success : function(result){
+                $('#form-action-addToCart').text("ADDED");
+             $('#form-action-addToCart').css("cursor","grab");
+            //  $('.quickShopPopup.scrollbar.is-open .halo-quickShop').remove();
+            //  $('.card-figcaption.is-open').removeClass('is-open');
+            //  $('.product-item-info .product-item-actions').removeClass("is-open");
+            var status = result.status;
+            var pname = result.pname;
+                if(status == '1')
+                {
+                    require(['jquery','Magento_Customer/js/customer-data'], function ($,customerData) { 
+                    var sections = ['cart'];
+                        customerData.invalidate(sections);
+                        customerData.reload(sections, true);
+                    });
+                    // $(window).scrollTop(20);
+                    var ys = $(window).scrollTop();
+                    if (ys >= 272) {
+                        $(".page.messages").addClass("scroll");
+                    } else {
+                        $(".page.messages").addClass("scroll");
+                    }
+                    $(".page.messages").html('<div class="message-success success message" data-ui-id="message-success"><div data-bind="html: message.text">You added '+pname+' to your <a href="'+baseurl+'"checkout/cart/">shopping cart</a>.</div></div>');
+                    setTimeout(function(){
+                    $('.message-success.success.message').remove();
+                    }, 3000);
+                    
+                }
+                else{
+                    // $(window).scrollTop(20);
+                    var ys = $(window).scrollTop();
+                    if (ys >= 272) {
+                        $(".page.messages").addClass("scroll");
+                    } else {
+                        $(".page.messages").addClass("scroll");
+                    }
+                    $(".page.messages").html('<div class="message-error error message" data-ui-id="message-success"><div data-bind="html: message.text"> Something Went wrong.Please try agian later.</div></div>');
+                    setTimeout(function(){
+                    $('.message-error.error.message').remove();
+                    }, 3000);
+                }
+            }
+        });
+        } else{
+            $(this).parents('.form-action').append('<div class="ui-tooltip ui-widget ui-corner-all ui-widget-content"><div class="ui-tooltip-content">Please select one this option</div></div>');
+                setTimeout(function(){
+                    $('.action-quick-btn .ui-tooltip').remove();
+                }, 3000);
+            }  
+    });
+});
+</script>
+<style>
+body.cms-home .ui-tooltip{display: block;border: 1px solid #ededed;padding: 10px;position: absolute;z-index: 9999;bottom: 45px;width: max-content;left: 0px;}
+.card-figcaption-bottom a i:nth-child(2) {display: none;}
+@media only screen and (max-width:767px) {
+    .page.messages.scroll div.message {position: fixed;top: 5px;z-index: 9999999;left: 5px;width: 97%;}
+ }
+ @media only screen and (min-width:768px) {
+    body.cms-home .products-grid .product-item-info:hover {padding-top: 0px !important;}
+    body.cms-home .product-item-actions .actions-secondary>.action{line-height: 28px !important;}
+    .page.messages.scroll div.message{position: fixed;top: 5px;z-index: 9999999;left: 10%;right: 10%;width: 80%;}
+ } 
+</style>

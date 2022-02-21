@@ -1,0 +1,124 @@
+<script>
+require(["jquery"],function($){
+    //add variant product
+    $( "body" ).delegate( "#form-action-addToCart", "click", function() {
+        if ($(".quickShopPopup.is-open .form-radio").is(":checked")) {
+        var radioValue = $(this).parents('.action-quick-btn').parent('.halo-quickShop').children(".form-field").find(".form-radio:checked").val();
+        $(this).text("Adding..");
+        var parentid = $('.card-figcaption.is-open span').text();       
+        $(this).css("cursor","not-allowed");
+        var baseurl = "https://dev.ulamart.com/";
+        var prd_id= radioValue;
+        $.ajax({
+            type: 'POST',
+            url: baseurl+'helloworld/index/quickadd',
+            dataType: 'json',
+            showLoader: false,
+            cache: false,
+            data: { 'pr_id' : prd_id, 'qty' : 1,'parentid' : parentid},
+            success : function(result){
+                $('#form-action-addToCart').text("ADDED");
+             $('#form-action-addToCart').css("cursor","grab");
+            //  $('.quickShopPopup.scrollbar.is-open .halo-quickShop').remove();
+            //  $('.card-figcaption.is-open').removeClass('is-open');
+            //  $('.product-item-info .product-item-actions').removeClass("is-open");
+            var status = result.status;
+            var pname = result.pname;
+                if(status == '1')
+                {
+                    require(['jquery','Magento_Customer/js/customer-data'], function ($,customerData) { 
+                    var sections = ['cart'];
+                        customerData.invalidate(sections);
+                        customerData.reload(sections, true);
+                    });
+                    // $(window).scrollTop(20);
+                    var ys = $(window).scrollTop();
+                    if (ys >= 272) {
+                        $(".page.messages").addClass("scroll");
+                    } else {
+                        $(".page.messages").addClass("scroll");
+                    }
+                    $(".page.messages").html('<div class="message-success success message" data-ui-id="message-success"><div data-bind="html: message.text">You added '+pname+' to your <a href="'+baseurl+'"checkout/cart/">shopping cart</a>.</div></div>');
+                    setTimeout(function(){
+                    $('.message-success.success.message').remove();
+                    }, 3000);
+                    
+                }
+                else{
+                    // $(window).scrollTop(20);
+                    var ys = $(window).scrollTop();
+                    if (ys >= 272) {
+                        $(".page.messages").addClass("scroll");
+                    } else {
+                        $(".page.messages").addClass("scroll");
+                    }
+                    $(".page.messages").html('<div class="message-error error message" data-ui-id="message-success"><div data-bind="html: message.text"> Something Went wrong.Please try agian later.</div></div>');
+                    setTimeout(function(){
+                    $('.message-error.error.message').remove();
+                    }, 3000);
+                }
+            }
+        });
+        } else{
+            $(this).parents('.form-action').append('<div class="ui-tooltip ui-widget ui-corner-all ui-widget-content"><div class="ui-tooltip-content">Please select one this option</div></div>');
+                setTimeout(function(){
+                    $('.action-quick-btn .ui-tooltip').remove();
+                }, 3000);
+            }  
+    });
+    //add simple product
+    $( "body" ).delegate( "#simple-action-addToCart", "click", function() {
+        $(this).children("span").text("Adding..");
+        var prd_id = $(this).children("span").attr('class');
+        $(this).css("cursor","not-allowed");
+        var baseurl = "https://dev.ulamart.com/";
+        $.ajax({
+            type: 'POST',
+            url: baseurl+'helloworld/index/index',
+            dataType: 'json',
+            showLoader: false,
+            cache: false,
+            data: { 'pr_id' : prd_id, 'qty' : 1},
+            success : function(result){
+                $('#simple-action-addToCart span').text("ADDED");
+                $('#simple-action-addToCart span').text("ADD TO CART");
+                var status = result.status;
+                var pname = result.pname;
+                if(status == '1')
+                {
+                    require(['jquery','Magento_Customer/js/customer-data'], function ($,customerData) { 
+                    var sections = ['cart'];
+                        customerData.invalidate(sections);
+                        customerData.reload(sections, true);
+                    });
+                    // $(window).scrollTop(20);
+                    var ys = $(window).scrollTop();
+                    if (ys >= 272) {
+                        $(".page.messages").addClass("scroll");
+                    } else {
+                        $(".page.messages").addClass("scroll");
+                    }
+                    $(".page.messages").html('<div class="message-success success message" data-ui-id="message-success"><div data-bind="html: message.text">You added '+pname+' to your <a href="'+baseurl+'"checkout/cart/">shopping cart</a>.</div></div>');
+                    setTimeout(function(){
+                    $('.message-success.success.message').remove();
+                    }, 3000);
+                    
+                }
+                else{
+                    // $(window).scrollTop(20);
+                    var ys = $(window).scrollTop();
+                    if (ys >= 272) {
+                        $(".page.messages").addClass("scroll");
+                    } else {
+                        $(".page.messages").addClass("scroll");
+                    }
+                    $(".page.messages").html('<div class="message-error error message" data-ui-id="message-success"><div data-bind="html: message.text"> Something Went wrong.Please try agian later.</div></div>');
+                    setTimeout(function(){
+                    $('.message-error.error.message').remove();
+                    }, 3000);
+                }
+            }
+        });
+    });
+});
+</script>

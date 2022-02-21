@@ -1,0 +1,61 @@
+ <!-- sale countdown -->
+ <?php if($_product->getTypeId() == 'simple'){ 
+                                            $date = date_default_timezone_set('Asia/Kolkata');
+                                            $currentDate =  date('d-m-Y');
+                                            $todate      =  $_product->getSpecialToDate();
+                                            $fromdate    =  $_product->getSpecialFromDate(); 
+                                            $newcurrent  =  date('Y-m-d');                                        
+                                            // 2021/08/12 00:00:00
+                                            if($_product->getSpecialPrice() != 0 || $_product->getSpecialPrice()) {
+                                                if($_product->getSpecialToDate() != null) {
+                                                    if(strtotime($todate) >= strtotime($currentDate) && strtotime($fromdate) <= strtotime($currentDate)){ 
+                                                        if(strtotime($todate) == strtotime($currentDate)) {
+                                                            $newtodate = $newcurrent . "T24:00:00";
+                                                            $newtodate  =  str_replace(' ','',$newtodate);
+                                                        }
+                                                        else { 
+                                                            $newtodate = str_replace('/','-',$_product->getSpecialToDate());
+                                                            $newtodate  =  str_replace('00:00:00','T24:00:00',$newtodate);
+                                                            $newtodate  =  str_replace(' ','',$newtodate);
+                                                        }?>
+                                                        <div id="countdowntimer" class="countdowntimer"><p style="color: #e66b6b;">Hurry up! sale end soon</p><span id="catalog_date<?php echo $jj; ?>" class="catalog_date"><span></div>
+                                                        <script>
+                                                         var current = "<?php echo date('Y/m/d H:i:s'); ?>";
+                                                         var var1 = "<?php echo $jj; ?>";
+                                                         var last = "<?php echo $newtodate;?>";
+                                                        // Set the date we're counting down to
+                                                        var countDownDate = new Date("<?php echo $newtodate;?>").getTime();
+
+                                                        // Update the count down every 1 second
+                                                        var x = setInterval(function() {
+
+                                                        // Get today's date and time
+                                                        var now = new Date().getTime();
+                                                        
+                                                            
+                                                        // Find the distance between now and the count down date
+                                                        var distance = countDownDate - now;
+                                                            
+                                                        // Time calculations for days, hours, minutes and seconds
+                                                        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                                            
+                                                        // Output the result in an element with id="demo"
+                                                        document.getElementById("catalog_date"+var1).innerHTML = days + "d " + hours + "h "
+                                                        + minutes + "m " + seconds + "s ";
+                                                        
+                                                        // If the count down is over, write some text 
+                                                        if (distance < 0) {
+                                                            clearInterval(x);
+                                                            document.getElementById("demo").innerHTML = "EXPIRED";
+                                                        }
+                                                        }, 1000);
+                                                        </script>
+                                                        <?php $jj++;
+                                                     }   
+                                                }
+                                            } 
+                                        }?>
+                                        <!-- sale countdown -->

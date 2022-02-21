@@ -1,0 +1,266 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$baseUrl = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+$customerSession = $objectManager->create('Magento\Customer\Model\Session'); 
+$_helper = $this->helper('Magento\Catalog\Helper\Output');?>
+
+
+
+<div class="ss-pro-description">
+<?php
+$product = $block->getProduct(); ?>
+<!-- description -->
+<?php $feat1=$product->getData('description');?>
+<?php if ($feat1 != '') { ?>
+<div id="desp" class="sss-container ss-desp ss-fl-ig ">
+    <div class="product-overlay-bg"></div>
+    <h2 class="pro-title">Product Description</h2>
+    <div class="desp-box ss-pt-eight show-more-height">  
+        <?php echo $feat1; ?>
+       
+    </div>
+    <div class="show-more ss-more-eight">View more...</div>
+</div>
+<?php } ?>
+<!-- benefits -->
+<?php
+$feat2=$product->getData('health_benefit');?>
+           <?php if ($feat2 != '') {   ?>
+<div id="hp" class="sss-container ss-hb ss-fl-ig">
+<div class="product-overlay-bg"></div>
+<h2 class="pro-title">Health Benefits</h2>
+    <div class="hb-pt ss-pt-one txt show-more-height">
+        <div class="row">
+            <?php echo $feat2; ?>
+        </div>
+    </div>
+     <div class="show-more ss-more-one">View more...</div>
+</div>
+<?php } ?> 
+<!-- video -->
+<?php
+$vcont=$product->getData('video_content');
+$vimg1=$_helper->productAttribute($product, $product->getData('video_image1'), 'video_image1');
+$vimg2=$_helper->productAttribute($product, $product->getData('video_image2'), 'video_image2');
+$vurl=$product->getData('video_custom_url'); ?>
+<?php if (($vcont != '') && ($vurl != '') || (($vimg1 != '') || ($vimg2 != ''))){
+    if ($vimg1 == '') { 
+        $vimg1 = '<span class="disp-wht"></span>';
+      } 
+     if ($vimg2 == ''){
+        $vimg2 = '<img class="rc-tt" src="'.$baseUrl.'pub/media/home/ula_logo-source.png">';
+    }  
+?>
+<div id="vd" class="sss-container ss-pop-video ss-fl-ig">
+<div class="product-overlay-bg"></div>
+    <div class="row">       
+        <div class="ss-col-40">                                           
+            <div class="ss-vid-bg">
+                <h3>Videos</h3>
+                   <?php echo $vcont; ?>
+                     <button onclick="myFunction()" id="myBtns-1">View more...</button>  
+            </div>
+        </div>
+        <div class="ss-col-60">                                           
+                <!-- <h3 class="ss-mob-txt">Videos</h3> -->
+                        <div class="ss-ig-vd">
+                        <?php echo $vimg1; ?>    
+                        <div class="ss-pop-vd">
+                                <a href="#" class="pp-vd">
+                                <?php echo $vimg2;  ?>  
+                                </a>
+                                <div class="lightbox light2 close" >
+                                <div class="videoModal modal hide fade in" role="dialog" aria-hidden="false" style="display: block;">
+                                        <div class="modal-body">
+                                        <?php echo $vurl; ?>
+                                        </div>
+                                        <div class="modal-footer"></div>
+                                </div>
+                                </div>
+                        </div>
+                        </div>
+                </div>
+        </div>
+</div>
+ <?php } ?>
+</div>
+<!-- recipies -->
+<?php
+$feat3=$product->getData('recipies');?>
+     <?php if ($feat3 != '') {   ?>
+<div id="recp" class="ss-recipes"> 
+<h2 class="pro-title">Recipies</h2> 
+   <div class="sss-container ss-pt-seven ss-recp ss-fl-ig recp-pt  show-more-height">
+            <?php echo $feat3; ?>
+   </div>
+   <div class="show-more ss-more-seven">View more...</div>
+</div>
+<?php } ?> 
+<!-- FARMER -->
+<?php
+$fcont1=$product->getData('farmer_conent1');
+$fcont2=$product->getData('farmer_conent2');
+$fcont3=$product->getData('farmer_conent3');
+$fcont4=$product->getData('farmer_conent4');
+$fcont5=$product->getData('farmer_conent5');
+$fimg1=$_helper->productAttribute($product, $product->getData('farmer_image1'), 'farmer_image1');
+$fimg2=$_helper->productAttribute($product, $product->getData('farmer_image2'), 'farmer_image2');
+$fimg3=$_helper->productAttribute($product, $product->getData('farmer_image3'), 'farmer_image3');
+$fimg4=$_helper->productAttribute($product, $product->getData('farmer_image4'), 'farmer_image4');
+$fimg5=$_helper->productAttribute($product, $product->getData('farmer_image5'), 'farmer_image5');
+if (($fcont1 != '') && ($fimg1 != '') || ($fcont2 != '') && ($fimg2 != '') || ($fcont3 != '') && ($fimg3 != '') || ($fcont4 != '') && ($fimg4 != '') || ($fcont5 != '')  && ($fimg5 != '')) {
+?>
+
+<div id="rw" class="ss-rev">    
+<h2 class="pro-title">Farmer Information</h2>   
+        <div class="demo">
+                <div class="sss-container ss-rws ss-fl-ig">
+                    <div class="row">
+                        <div class="ss-col-100">
+                            <div id="testimonial-slider" class="slideshow-container">
+                            <?php if (($fcont1 != '') && ($fimg1 != '')) { ?>
+                                <div class="ss-profiles mySlides fade" style="display: block;">
+                               
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                                <?php echo $fimg1; ?>
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial ss-pt-nine show-more-height">
+                                             <?php echo $fcont1; ?>
+                                            </div>
+                                            <div class="show-more ss-more-nine">View more...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (($fcont2 != '') && ($fimg2 != '')) { ?>
+                                <div class="ss-profiles mySlides fade" style="display: none;">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                            <?php echo $fimg2; ?>
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial ss-pt-nine show-more-height">
+                                            <?php echo $fcont2; ?>
+                                            </div>
+                                            <div class="show-more ss-more-nine">View more...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (($fcont3 != '') && ($fimg3 != '')) { ?>
+                                <div class="ss-profiles mySlides fade" style="display: none;">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                            <?php echo $fimg3; ?>
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial ss-pt-nine show-more-height">
+                                            <?php echo $fcont3; ?>
+                                            </div>
+                                            <div class="show-more ss-more-nine">View more...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (($fcont4 != '') && ($fimg4 != '')) { ?>
+                                <div class="ss-profiles mySlides fade" style="display: none;">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                            <?php echo $fimg4; ?> 
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial ss-pt-nine show-more-height" >
+                                            <?php echo $fcont4; ?>
+                                            </div>
+                                            <div class="show-more ss-more-nine">View more...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (($fcont5 != '') && ($fimg5 != '')) { ?>
+                                <div class="ss-profiles mySlides fade" style="display: none;">
+                                    <div class="row">
+                                        <div class="ss-col-50">
+                                            <div class="ss-prof-ig">
+                                            <?php echo $fimg5; ?>
+                                            </div>
+                                        </div>
+                                        <div class="ss-col-50">
+                                            <div class="testimonial ss-pt-nine show-more-height">
+                                            <?php echo $fcont5; ?>
+                                            </div>
+                                            <div class="show-more ss-more-nine">View more...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                                <div class="owl-buttons">
+                                    <a class="" onclick="plusSlides(-1)">❮</a>
+                                    <a class="" onclick="plusSlides(1)">❯</a>
+                                </div>
+                            </div>
+                            <div class="ss-dots" style="text-align:center">
+                            <?php if ($fcont1 != '')  { ?>
+                                <span class="dot active" onclick="currentSlide(1)"><?php echo $fimg1; ?></span>
+                            <?php } ?>
+                            <?php if ($fcont2 != '') { ?>
+                                <span class="dot" onclick="currentSlide(2)"><?php echo $fimg2; ?></span>
+                            <?php } ?>
+                            <?php if ($fcont3 != '') { ?>
+                                <span class="dot" onclick="currentSlide(3)"><?php echo $fimg3; ?></span>
+                            <?php } ?>
+                            <?php if ($fcont4 != '') { ?>
+                                <span class="dot" onclick="currentSlide(4)"><?php echo $fimg4; ?></span>
+                            <?php } ?>
+                            <?php if ($fcont5 != '') { ?>
+                                <span class="dot" onclick="currentSlide(5)"><?php echo $fimg5; ?></span>
+                            <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>    
+</div>
+<?php } ?>
+<?php $product2 = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());?>
+<?php $product3 = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());?>
+<?php $custaurl = $product2->setStoreId(2)->getUrlModel()->getUrlInStore($product2, ['_escape' => true]); ?>
+<?php $cusenurl=  $product3->setStoreId(1)->getUrlModel()->getUrlInStore($product3, ['_escape' => true]);?>
+
+
+<?php $faaq = $product->getData('custom_faq'); ?>
+<?php if ($faaq != '') { ?>
+<div class="sss-container cfaq">
+<h3 class="pro-title">FAQ</h3> 
+<?php echo $faaq; ?>
+</div>
+<?php } ?>
+
+<div class="sss-container ss-acc ss-fl-ig custom-city">
+                <h2><?php echo $product->getName(); ?> be delivered in the below cities</h2>  
+                      
+ <?php echo $this->getLayout()
+            ->createBlock('Magento\Cms\Block\Block')
+            ->setBlockId('city-block')
+            ->toHtml(); 
+ ?>
+</div>
+<script>
+require([ "jquery" ], function($) {
+    $(document).ready(function(){
+        $('a.taurl').attr("href", "<?php echo $custaurl; ?>");
+        $('a.enurl').attr("href", "<?php echo $cusenurl; ?>");
+    });
+});
+</script>

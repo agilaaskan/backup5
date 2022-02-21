@@ -1,0 +1,264 @@
+
+function addClass(o, c) {
+    var re = new RegExp("(^|\\s)" + c + "(\\s|$)", "g")
+    if (re.test(o.className)) return
+    o.className = (o.className + " " + c).replace(/\s+/g, " ").replace(/(^ | $)/g, "")
+}
+
+function removeClass(o, c) {
+    var re = new RegExp("(^|\\s)" + c + "(\\s|$)", "g")
+    o.className = o.className.replace(re, "$1").replace(/\s+/g, " ").replace(/(^ | $)/g, "")
+}
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function () {
+    modal.style.display = "block";
+}
+span.onclick = function () {
+    modal.style.display = "none";
+}
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+var minus = document.querySelector("#minus");
+var plus = document.querySelector("#plus");
+var input = document.querySelector("#input");
+
+var quantity = 1;
+
+input.value = quantity;
+
+minus.addEventListener('click', function (event) {
+    if (quantity > 1) {
+        quantity--;
+        input.value = quantity;
+    }
+});
+plus.addEventListener('click', function (event) {
+    quantity++;
+    input.value = quantity;
+});
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+document.getElementById("defaultOpen").click();
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+    showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+    showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+    var i;
+    var slides = document.getElementsByClassName("mySlides");
+    var dots = document.getElementsByClassName("dot");
+    if (n > slides.length) { slideIndex = 1 }
+    if (n < 1) { slideIndex = slides.length }
+    for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex - 1].style.display = "block";
+    dots[slideIndex - 1].className += " active";
+}
+var acc = document.getElementsByClassName("lightbox");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("close");  
+        });
+}
+function toggleItem(elem) {
+    for (var i = 0; i < elem.length; i++) {
+    elem[i].addEventListener("click", function(e) {
+    var current = this;
+    for (var i = 0; i < elem.length; i++) {
+    if (current != elem[i]) {
+    elem[i].classList.remove('active');
+    } else if (current.classList.contains('active') === true) {
+    current.classList.remove('active');
+    } else {
+    current.classList.add('active')
+    }
+    }
+    e.preventDefault();
+    });
+    };
+    }
+    toggleItem(document.querySelectorAll('.ss-pro-vertical'));
+(function () {
+    var button = document.querySelector('a.pp-vd');
+    var box = document.querySelector('.lightbox');
+    button.addEventListener('click', function () {
+        box.classList.toggle('close');
+    });
+})();
+if (window.innerWidth <= 1024) {
+    var acc = document.getElementsByClassName("ss-adn");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("open");    
+        });
+    }
+    function myFunction() {
+        var dots = document.getElementById("dots");
+        var moreText = document.getElementById("more");
+        var btnText = document.getElementById("myBtns");
+
+        if (dots.style.display === "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Read more";
+            moreText.style.display = "none";
+        } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Read less";
+            moreText.style.display = "inline";
+        }
+    }
+    function myFunction() {
+        var dots = document.getElementById("dots-1");
+        var moreText = document.getElementById("more-1");
+        var btnText = document.getElementById("myBtns-1");
+
+        if (dots.style.display === "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Read more";
+            moreText.style.display = "none";
+        } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Read less";
+            moreText.style.display = "inline";
+        }
+    }
+    window.addEventListener('scroll', function (e) {
+        var box = document.querySelector('.page-wrapper.scrolled');
+        var x = window.scrollY;
+        if (x >= 1700) {
+            box.classList.add("move");
+        } else {
+            box.classList.remove("move");
+        }
+    });
+    window.addEventListener('scroll', function (e) {
+        var box = document.querySelector('.mob-nav.wrap.scrol');
+        var x = window.scrollY;
+        if (x >= 1700) {
+            box.classList.add("current");
+        } else {
+            box.classList.remove("current");
+        }
+    });
+    (function () {
+        var button = document.querySelector('.ss-menu-bgr-cls');
+        var box = document.querySelector('.ss-burger-menu');
+        button.addEventListener('click', function () {
+            box.classList.toggle('open');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-mob-menus');
+        var box = document.querySelector('.ss-burger-menu');
+        button.addEventListener('click', function () {
+            box.classList.toggle('open');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-mob-menu');
+        var box = document.querySelector('.ss-burger-menu');
+        button.addEventListener('click', function () {
+            box.classList.toggle('open');
+        });
+    })();
+    const buttonRight = document.getElementById('slideRight');
+    const buttonLeft = document.getElementById('slideLeft');
+
+    buttonRight.onclick = function () {
+        document.getElementById('ss-stick').scrollLeft += 70;
+    };
+    buttonLeft.onclick = function () {
+        document.getElementById('ss-stick').scrollLeft -= 70;
+    };
+    window.addEventListener('scroll', function (e) {
+        var box = document.querySelector('.ss-mob-cart');
+        var x = window.scrollY;
+        if (x >= 1050) {
+            box.classList.add("current");
+        } else {
+            box.classList.remove("current");
+        }
+    })
+    (function () {
+        var button = document.querySelector('.show-more');
+        var box = document.querySelector('.txt');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-more-one');
+        var box = document.querySelector('.ss-pt-one');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-more-two');
+        var box = document.querySelector('.ss-pt-two');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-more-three');
+        var box = document.querySelector('.ss-pt-three');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-more-four');
+        var box = document.querySelector('.ss-pt-four');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-more-five');
+        var box = document.querySelector('.ss-pt-five');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+    (function () {
+        var button = document.querySelector('.ss-more-six');
+        var box = document.querySelector('.ss-pt-six');
+        button.addEventListener('click', function () {
+            box.classList.toggle('show-more-height');
+        });
+    })();
+}
+
+

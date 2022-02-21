@@ -1,0 +1,70 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Update Cart'); ?>
+<?php if ($_product->isSaleable()) :?>
+    <div class="box-tocart update">
+        <fieldset class="fieldset">
+            <?php if ($block->shouldRenderQuantity()) :?>
+            <label class="label" for="qty"><span><?= $block->escapeHtml(__('Quantity')) ?></span></label>
+            <div class="field qty">
+                <div class="control">
+                <input type="button" class="custom-less" value="-"/>
+                    <input type="number"
+                           name="qty"
+                           id="qty"
+                           min="0"
+                           value=""
+                           title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                           class="input-text qty"
+                           data-validate="<?= $block->escapeHtmlAttr(json_encode($block->getQuantityValidators())) ?>" readonly/>
+                <input type="button" class="custom-more" value="+"/>
+                </div>
+            </div>
+            <?php endif; ?>
+            <div class="actions">
+                <button type="submit"
+                        title="<?= $block->escapeHtmlAttr($buttonTitle) ?>"
+                        class="action primary tocart"
+                        id="product-updatecart-button">
+                    <span><?= $block->escapeHtml($buttonTitle) ?></span>
+                </button>
+                <?= $block->getChildHtml('', true) ?>
+            </div>
+        </fieldset>
+    </div>
+    <script type="text/x-magento-init">
+        {
+            "#product_addtocart_form": {
+                "validation": {},
+                "addToCart": {
+                    "cartButtonId": "#product-updatecart-button",
+                    "cartForm": "#product_addtocart_form"
+                }
+            }
+        }
+    </script>
+<?php endif; ?>
+<script>
+    require(["jquery"],function($){
+        $('.custom-less').on('click', function () {
+            var a=1;
+            var input = jQuery('#qty');
+            var str= parseInt(jQuery("#qty").val());
+                if(str >a){
+                  input.val(parseFloat(input.val()) - 1);
+                }
+        });
+
+        $('.custom-more').on('click', function () {
+            var input = jQuery('#qty');
+            input.val(parseFloat(input.val()) + 1);
+        });
+});
+</script>
